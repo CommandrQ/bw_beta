@@ -82,7 +82,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Terminal body with scanline sweep */
     .terminal-body {
       flex: 1;
       padding: 18px 20px;
@@ -97,7 +96,6 @@
     .terminal-body::-webkit-scrollbar { width: 6px; }
     .terminal-body::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 
-    /* Animated scanline sweep — only inside the body */
     .terminal-body::after {
       content: '';
       position: absolute;
@@ -122,13 +120,6 @@
       100% { top: 110%; }
     }
 
-    .line { display: flex; gap: 8px; }
-    .prompt { color: #00ff41; flex-shrink: 0; }
-    .output { color: #c0c0c0; }
-    .dim { color: #555; }
-    .accent { color: #00bfff; }
-    .success { color: #28c840; }
-
     .cursor {
       display: inline-block;
       width: 9px; height: 15px;
@@ -151,31 +142,7 @@
     </div>
 
     <div class="terminal-body">
-      <div class="line"><span class="dim"># Welcome to my corner of the internet</span></div>
-
-      <div class="line" style="margin-top:8px">
-        <span class="prompt">→</span><span class="output">whoami</span>
-      </div>
-      <div class="line">
-        <span class="output"><span class="accent">Your Name</span> — developer / designer / human</span>
-      </div>
-
-      <div class="line" style="margin-top:12px">
-        <span class="prompt">→</span><span class="output">ls ./projects</span>
-      </div>
-      <div class="line"><span class="dim">drwxr-xr-x&nbsp;&nbsp;</span><span class="success">project-one/</span></div>
-      <div class="line"><span class="dim">drwxr-xr-x&nbsp;&nbsp;</span><span class="success">project-two/</span></div>
-      <div class="line"><span class="dim">drwxr-xr-x&nbsp;&nbsp;</span><span class="success">project-three/</span></div>
-
-      <div class="line" style="margin-top:12px">
-        <span class="prompt">→</span><span class="output">cat contact.txt</span>
-      </div>
-      <div class="line"><span class="output">email&nbsp;&nbsp;&nbsp;<span class="accent">you@example.com</span></span></div>
-      <div class="line"><span class="output">github&nbsp;&nbsp;<span class="accent">github.com/yourhandle</span></span></div>
-
-      <div class="line" style="margin-top:12px">
-        <span class="prompt">→</span><span class="cursor"></span>
-      </div>
+      <span class="cursor"></span>
     </div>
   </div>
 </body>
