@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terminal</title>
+  <title>Vanguard Knetwerk</title>
   <style>
+    /* =============================================
+       RESET
+    ============================================= */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* =============================================
+       BACKDROP
+    ============================================= */
     html, body {
       width: 100%; height: 100%;
       overflow: hidden;
       background-color: #080810;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
       padding-top: 6vh;
       font-family: 'Courier New', Courier, monospace;
     }
@@ -24,6 +31,9 @@
       z-index: 0;
     }
 
+    /* =============================================
+       TERMINAL WINDOW
+    ============================================= */
     .terminal-window {
       position: relative;
       z-index: 1;
@@ -40,6 +50,9 @@
       overflow: hidden;
     }
 
+    /* =============================================
+       TITLE BAR
+    ============================================= */
     .title-bar {
       background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
       padding: 10px 14px;
@@ -50,20 +63,26 @@
       user-select: none;
     }
 
-    .buttons { display: flex; gap: 8px; align-items: center; }
+    .buttons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
 
     .btn {
       width: 13px; height: 13px;
       border-radius: 50%;
-      cursor: pointer;
       position: relative;
+    }
+
+    /* Red — clickable, navigates to directory.html */
+    .btn-close {
+      background: #ff5f57;
+      border: 1px solid #e0443e;
+      cursor: pointer;
       transition: filter 0.15s;
     }
-    .btn:hover { filter: brightness(1.2); }
-    .btn-close { background: #ff5f57; border: 1px solid #e0443e; }
-    .btn-min   { background: #febc2e; border: 1px solid #d6a21b; }
-    .btn-max   { background: #28c840; border: 1px solid #1aab2e; }
-
+    .btn-close:hover { filter: brightness(1.2); }
     .btn-close::before, .btn-close::after {
       content: '';
       position: absolute;
@@ -77,11 +96,25 @@
     }
     .btn-close::before { transform: translate(-50%, -50%) rotate(45deg); }
     .btn-close::after  { transform: translate(-50%, -50%) rotate(-45deg); }
-    .btn-close:hover::before, .btn-close:hover::after { opacity: 1; }
+    .btn-close:hover::before,
+    .btn-close:hover::after { opacity: 1; }
+
+    /* Yellow & Green — static, not clickable */
+    .btn-min {
+      background: #febc2e;
+      border: 1px solid #d6a21b;
+      cursor: default;
+      pointer-events: none;
+    }
+    .btn-max {
+      background: #28c840;
+      border: 1px solid #1aab2e;
+      cursor: default;
+      pointer-events: none;
+    }
 
     .title-text {
       flex: 1;
-      text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -98,8 +131,8 @@
     }
 
     @keyframes led-pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41, 0 0 20px rgba(0,255,65,0.6); }
-      50%       { opacity: 0.6; box-shadow: 0 0 2px #00ff41, 0 0 5px #00ff41, 0 0 10px rgba(0,255,65,0.3); }
+      0%, 100% { opacity: 1;   box-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41, 0 0 20px rgba(0,255,65,0.6); }
+      50%       { opacity: 0.6; box-shadow: 0 0 2px #00ff41, 0 0 5px  #00ff41, 0 0 10px rgba(0,255,65,0.3); }
     }
 
     .title-label {
@@ -110,6 +143,10 @@
       text-shadow: 0 0 8px rgba(0,255,65,0.7);
     }
 
+    /* =============================================
+       TERMINAL BODY
+       — Add your page content inside .terminal-body
+    ============================================= */
     .terminal-body {
       flex: 1;
       padding: 18px 20px;
@@ -122,11 +159,12 @@
     }
     .terminal-body::-webkit-scrollbar { display: none; }
 
+    /* Scanline sweep */
     .terminal-body::after {
       content: '';
       position: absolute;
       left: 0; right: 0;
-      top: -10%;
+      top: -20%;
       height: 20%;
       background: linear-gradient(
         to bottom,
@@ -153,16 +191,33 @@
       animation: blink 1.1s step-end infinite;
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* =============================================
+       COPYRIGHT
+    ============================================= */
+    .copyright {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      color: rgba(255,255,255,0.2);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
 
+  <!-- BACKDROP: animated star field -->
   <canvas id="stars"></canvas>
 
+  <!-- TERMINAL WINDOW -->
   <div class="terminal-window">
+
+    <!-- Title Bar -->
     <div class="title-bar">
       <div class="buttons">
-        <div class="btn btn-close"></div>
+        <div class="btn btn-close" onclick="window.location.href='directory.html'" title="Directory"></div>
         <div class="btn btn-min"></div>
         <div class="btn btn-max"></div>
       </div>
@@ -172,38 +227,42 @@
       </div>
     </div>
 
+    <!-- Body: put your content here -->
     <div class="terminal-body">
       <span class="cursor"></span>
     </div>
+
   </div>
 
+  <!-- COPYRIGHT -->
+  <p class="copyright">&copy; 2026 Vanguard Citizen Services</p>
+
+  <!-- =============================================
+       STAR FIELD SCRIPT
+  ============================================= -->
   <script>
     const canvas = document.getElementById('stars');
-    const ctx = canvas.getContext('2d');
+    const ctx    = canvas.getContext('2d');
 
-    let stars = [];
     const STAR_COUNT = 200;
+    let stars = [];
+
+    function randomBetween(a, b) { return a + Math.random() * (b - a); }
 
     function resize() {
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
     }
 
-    function randomBetween(a, b) {
-      return a + Math.random() * (b - a);
-    }
-
     function createStar() {
       return {
-        x: randomBetween(0, canvas.width),
-        y: randomBetween(0, canvas.height),
-        radius: randomBetween(0.4, 1.6),
-        // twinkle phase offset so they don't all pulse together
-        phase: randomBetween(0, Math.PI * 2),
-        speed: randomBetween(0.3, 1.2),   // twinkle speed
-        // golden colour range: deep gold to bright pale gold
-        hue: randomBetween(38, 52),
-        sat: randomBetween(70, 100),
+        x:         randomBetween(0, canvas.width),
+        y:         randomBetween(0, canvas.height),
+        radius:    randomBetween(0.4, 1.6),
+        phase:     randomBetween(0, Math.PI * 2),
+        speed:     randomBetween(0.3, 1.2),
+        hue:       randomBetween(38, 52),
+        sat:       randomBetween(70, 100),
         baseLight: randomBetween(55, 80),
       };
     }
@@ -215,25 +274,18 @@
 
     function draw(timestamp) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       const t = timestamp / 1000;
 
       for (const s of stars) {
-        // oscillate opacity between ~0.15 and 1.0
         const twinkle = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
         const alpha   = 0.15 + 0.85 * twinkle;
         const light   = s.baseLight + 10 * twinkle;
 
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-
-        // soft glow
         const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.radius * 4);
         glow.addColorStop(0,   `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha})`);
         glow.addColorStop(0.4, `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha * 0.4})`);
         glow.addColorStop(1,   `hsla(${s.hue}, ${s.sat}%, ${light}%, 0)`);
 
-        // draw glow halo
         ctx.save();
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.radius * 4, 0, Math.PI * 2);
@@ -241,7 +293,6 @@
         ctx.fill();
         ctx.restore();
 
-        // draw core dot
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
         ctx.fillStyle = `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha})`;
