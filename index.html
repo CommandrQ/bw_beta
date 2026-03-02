@@ -33,24 +33,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      position: relative;
-    }
-
-    /* Scanlines overlay */
-    .terminal-window::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 3px,
-        rgba(0, 0, 0, 0.18) 3px,
-        rgba(0, 0, 0, 0.18) 4px
-      );
-      pointer-events: none;
-      z-index: 10;
-      border-radius: 10px;
     }
 
     .title-bar {
@@ -61,8 +43,6 @@
       border-bottom: 1px solid #111;
       flex-shrink: 0;
       user-select: none;
-      position: relative;
-      z-index: 1;
     }
 
     .buttons { display: flex; gap: 8px; align-items: center; }
@@ -102,6 +82,7 @@
       letter-spacing: 0.5px;
     }
 
+    /* Terminal body with scanline sweep */
     .terminal-body {
       flex: 1;
       padding: 18px 20px;
@@ -112,10 +93,34 @@
       scrollbar-width: thin;
       scrollbar-color: #333 transparent;
       position: relative;
-      z-index: 1;
     }
     .terminal-body::-webkit-scrollbar { width: 6px; }
     .terminal-body::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+    /* Animated scanline sweep — only inside the body */
+    .terminal-body::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -10%;
+      height: 20%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 255, 65, 0.03) 40%,
+        rgba(0, 255, 65, 0.06) 50%,
+        rgba(0, 255, 65, 0.03) 60%,
+        transparent 100%
+      );
+      pointer-events: none;
+      animation: scanline-sweep 6s linear infinite;
+    }
+
+    @keyframes scanline-sweep {
+      0%   { top: -20%; }
+      100% { top: 110%; }
+    }
 
     .line { display: flex; gap: 8px; }
     .prompt { color: #00ff41; flex-shrink: 0; }
