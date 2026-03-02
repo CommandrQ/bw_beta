@@ -115,12 +115,14 @@
     .terminal-body {
       flex: 1;
       padding: 18px 20px;
-      overflow: hidden;
+      overflow-y: auto;
       color: #00ff41;
       font-size: 14px;
       line-height: 1.7;
       position: relative;
+      scrollbar-width: none;
     }
+    .terminal-body::-webkit-scrollbar { display: none; }
 
     .terminal-body::after {
       content: '';
@@ -176,9 +178,3 @@
   </div>
 </body>
 </html>
-
-
-Changes made:
-	∙	Scrollbar removed — swapped overflow-y: auto for overflow: hidden on the terminal body
-	∙	Glowing green LED in the title bar with a slow pulse animation
-	∙	“Vanguard Knetwerk active” in green with a matching text glow, centered alongside the LED​​​​​​​​​​​​​​​​
