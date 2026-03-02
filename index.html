@@ -80,21 +80,47 @@
       color: #888;
       font-size: 13px;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .led {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00ff41;
+      box-shadow:
+        0 0 4px #00ff41,
+        0 0 10px #00ff41,
+        0 0 20px rgba(0, 255, 65, 0.6);
+      animation: led-pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes led-pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41, 0 0 20px rgba(0,255,65,0.6); }
+      50%       { opacity: 0.6; box-shadow: 0 0 2px #00ff41, 0 0 5px #00ff41, 0 0 10px rgba(0,255,65,0.3); }
+    }
+
+    .title-label {
+      color: #00ff41;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(0, 255, 65, 0.7);
     }
 
     .terminal-body {
       flex: 1;
       padding: 18px 20px;
-      overflow-y: auto;
+      overflow: hidden;
       color: #00ff41;
       font-size: 14px;
       line-height: 1.7;
-      scrollbar-width: thin;
-      scrollbar-color: #333 transparent;
       position: relative;
     }
-    .terminal-body::-webkit-scrollbar { width: 6px; }
-    .terminal-body::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 
     .terminal-body::after {
       content: '';
@@ -138,7 +164,10 @@
         <div class="btn btn-min"></div>
         <div class="btn btn-max"></div>
       </div>
-      <div class="title-text">guest@yoursite — bash — 80×24</div>
+      <div class="title-text">
+        <div class="led"></div>
+        <span class="title-label">Vanguard Knetwerk active</span>
+      </div>
     </div>
 
     <div class="terminal-body">
@@ -147,3 +176,9 @@
   </div>
 </body>
 </html>
+
+
+Changes made:
+	∙	Scrollbar removed — swapped overflow-y: auto for overflow: hidden on the terminal body
+	∙	Glowing green LED in the title bar with a slow pulse animation
+	∙	“Vanguard Knetwerk active” in green with a matching text glow, centered alongside the LED​​​​​​​​​​​​​​​​
