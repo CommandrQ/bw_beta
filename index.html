@@ -10,10 +10,7 @@
     html, body {
       width: 100%; height: 100%;
       overflow: hidden;
-      background-color: #1a1a2e;
-      background-image: 
-        radial-gradient(ellipse at 20% 50%, rgba(120, 40, 200, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(0, 180, 255, 0.1) 0%, transparent 50%);
+      background-color: #080810;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -21,7 +18,15 @@
       font-family: 'Courier New', Courier, monospace;
     }
 
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
     .terminal-window {
+      position: relative;
+      z-index: 1;
       width: min(860px, 92vw);
       height: min(560px, 80vh);
       background-color: #0d0d0d;
@@ -77,9 +82,6 @@
     .title-text {
       flex: 1;
       text-align: center;
-      color: #888;
-      font-size: 13px;
-      letter-spacing: 0.5px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -87,14 +89,10 @@
     }
 
     .led {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: #00ff41;
-      box-shadow:
-        0 0 4px #00ff41,
-        0 0 10px #00ff41,
-        0 0 20px rgba(0, 255, 65, 0.6);
+      box-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41, 0 0 20px rgba(0,255,65,0.6);
       animation: led-pulse 2s ease-in-out infinite;
       flex-shrink: 0;
     }
@@ -109,7 +107,7 @@
       font-size: 12px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      text-shadow: 0 0 8px rgba(0, 255, 65, 0.7);
+      text-shadow: 0 0 8px rgba(0,255,65,0.7);
     }
 
     .terminal-body {
@@ -127,16 +125,15 @@
     .terminal-body::after {
       content: '';
       position: absolute;
-      left: 0;
-      right: 0;
+      left: 0; right: 0;
       top: -10%;
       height: 20%;
       background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(0, 255, 65, 0.03) 40%,
-        rgba(0, 255, 65, 0.06) 50%,
-        rgba(0, 255, 65, 0.03) 60%,
+        rgba(0,255,65,0.03) 40%,
+        rgba(0,255,65,0.06) 50%,
+        rgba(0,255,65,0.03) 60%,
         transparent 100%
       );
       pointer-events: none;
@@ -159,6 +156,9 @@
   </style>
 </head>
 <body>
+
+  <canvas id="stars"></canvas>
+
   <div class="terminal-window">
     <div class="title-bar">
       <div class="buttons">
@@ -176,5 +176,89 @@
       <span class="cursor"></span>
     </div>
   </div>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    let stars = [];
+    const STAR_COUNT = 200;
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function randomBetween(a, b) {
+      return a + Math.random() * (b - a);
+    }
+
+    function createStar() {
+      return {
+        x: randomBetween(0, canvas.width),
+        y: randomBetween(0, canvas.height),
+        radius: randomBetween(0.4, 1.6),
+        // twinkle phase offset so they don't all pulse together
+        phase: randomBetween(0, Math.PI * 2),
+        speed: randomBetween(0.3, 1.2),   // twinkle speed
+        // golden colour range: deep gold to bright pale gold
+        hue: randomBetween(38, 52),
+        sat: randomBetween(70, 100),
+        baseLight: randomBetween(55, 80),
+      };
+    }
+
+    function init() {
+      resize();
+      stars = Array.from({ length: STAR_COUNT }, createStar);
+    }
+
+    function draw(timestamp) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const t = timestamp / 1000;
+
+      for (const s of stars) {
+        // oscillate opacity between ~0.15 and 1.0
+        const twinkle = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
+        const alpha   = 0.15 + 0.85 * twinkle;
+        const light   = s.baseLight + 10 * twinkle;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+
+        // soft glow
+        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.radius * 4);
+        glow.addColorStop(0,   `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha})`);
+        glow.addColorStop(0.4, `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha * 0.4})`);
+        glow.addColorStop(1,   `hsla(${s.hue}, ${s.sat}%, ${light}%, 0)`);
+
+        // draw glow halo
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius * 4, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+        ctx.restore();
+
+        // draw core dot
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => {
+      resize();
+      stars = Array.from({ length: STAR_COUNT }, createStar);
+    });
+
+    init();
+    requestAnimationFrame(draw);
+  </script>
+
 </body>
 </html>
