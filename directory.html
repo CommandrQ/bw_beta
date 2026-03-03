@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanguard Knetwerk | Command Decision</title>
+  <title>VCS Central</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -66,7 +66,7 @@
       display: flex; justify-content: center;
     }
 
-    .menu-container {
+    #menu-container {
       position: absolute; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; flex-direction: column; align-items: center;
     }
@@ -81,13 +81,12 @@
     .menu-item h2 { font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 5px; color: var(--gold-armor); }
     .menu-item p { font-size: 0.8rem; color: var(--active-green); opacity: 0.8; margin-bottom: 20px; }
 
-    /* ACTION BUTTON */
     .intel-btn {
       background: transparent; border: 1px solid var(--gold-armor);
       color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
       padding: 8px 16px; font-size: 10px; letter-spacing: 2px;
       cursor: pointer; transition: all 0.3s ease;
-      box-shadow: inset 0 0 5px rgba(201, 162, 62, 0.2);
+      text-decoration: none; display: inline-block;
     }
 
     .intel-btn:hover {
@@ -96,10 +95,7 @@
       transform: scale(1.05);
     }
 
-    /* ROTATION CONTROLS */
-    .nav-controls {
-      display: flex; gap: 40px; margin-top: 30px;
-    }
+    .nav-controls { display: flex; gap: 40px; margin-top: 30px; }
 
     .nav-btn {
       background: transparent; border: 1px solid var(--gold-armor);
@@ -137,23 +133,8 @@
 
     <div class="terminal-body">
       <div class="menu-viewport">
-        <div class="menu-container" id="menu-container">
-          <div class="menu-item">
-            <h2>VCS SUPPORT CENTER</h2>
-            <p>(COMING SOON)</p>
-            <button class="intel-btn" onclick="alert('Access Denied: Sector Under Construction')">SYSTEM INTEL</button>
+        <div id="menu-container">
           </div>
-          <div class="menu-item">
-            <h2>STORY MODE</h2>
-            <p>(COMING SOON)</p>
-            <button class="intel-btn" onclick="alert('Access Denied: Narrative Locked')">SYSTEM INTEL</button>
-          </div>
-          <div class="menu-item">
-            <h2>PUBLIC ARCHIVES</h2>
-            <p>(COMING SOON)</p>
-            <button class="intel-btn" onclick="alert('Access Denied: Database Encrypted')">SYSTEM INTEL</button>
-          </div>
-        </div>
       </div>
 
       <div class="nav-controls">
@@ -168,42 +149,77 @@
   </footer>
 
   <script>
-    const CONFIG = { enableStars: true, autoBootDelay: 500 };
-    let currentIndex = 0;
-    const menuContainer = document.getElementById('menu-container');
-    const items = document.querySelectorAll('.menu-item');
-    const totalItems = items.length;
+    // --- MENU REGISTRY ---
+    // Quickly add, remove, or edit entries here!
+    const MENU_ENTRIES = [
+      { 
+        title: "VCS SUPPORT CENTER", 
+        status: "(COMING SOON)", 
+        url: "#vcs-intel" 
+      },
+      { 
+        title: "STORY MODE", 
+        status: "(COMING SOON)", 
+        url: "#story-intel" 
+      },
+      { 
+        title: "PUBLIC ARCHIVES", 
+        status: "(COMING SOON)", 
+        url: "#archives-intel" 
+      },
+      // Example of adding a new entry:
+      // { title: "THE RESERVES", status: "(ACTIVE)", url: "reserves.html" }
+    ];
 
+    let currentIndex = 0;
+    const container = document.getElementById('menu-container');
+
+    // 1. Initialize Menu
+    function initMenu() {
+      MENU_ENTRIES.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        div.innerHTML = `
+          <h2>${entry.title}</h2>
+          <p>${entry.status}</p>
+          <a href="${entry.url}" class="intel-btn">SYSTEM INTEL</a>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // 2. Rotation Logic
     function rotateMenu(direction) {
       currentIndex += direction;
-      if (currentIndex < 0) currentIndex = totalItems - 1;
-      if (currentIndex >= totalItems) currentIndex = 0;
+      if (currentIndex < 0) currentIndex = MENU_ENTRIES.length - 1;
+      if (currentIndex >= MENU_ENTRIES.length) currentIndex = 0;
       
-      const offset = currentIndex * -180; // Match the height of .menu-item
-      menuContainer.style.transform = `translateY(${offset}px)`;
+      const offset = currentIndex * -180;
+      container.style.transform = `translateY(${offset}px)`;
     }
 
+    // 3. Boot & Animation
     window.addEventListener('DOMContentLoaded', () => {
+      initMenu();
       setTimeout(() => {
         document.getElementById('window').classList.add('active');
-      }, CONFIG.autoBootDelay);
+      }, 500);
     });
 
-    if (CONFIG.enableStars) {
-      const canvas = document.getElementById('stars');
-      const ctx = canvas.getContext('2d');
-      const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-      resize();
-      window.addEventListener('resize', resize);
-      let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, s: Math.random() * 2 }));
-      const animate = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
-        stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.12; if (s.y < 0) s.y = canvas.height; });
-        requestAnimationFrame(animate);
-      };
-      animate();
+    // Star Engine
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+    let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, s: Math.random() * 2 }));
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
+      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.12; if (s.y < 0) s.y = canvas.height; });
+      requestAnimationFrame(animate);
     }
+    animate();
   </script>
 </body>
 </html>
