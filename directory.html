@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard Knetwerk | Command Decision</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-black: #0A0A0A;
+      --navy-depth: #0A2540;
+      --gold-armor: #C9A23E;
+      --lilac-pulse: #C08CCF;
+      --starlight: #F2F6FF;
+      --active-green: #00ff41;
+      --header-grey: #1a1a1a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
+    body {
+      width: 100%; height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
+      display: flex; justify-content: center; align-items: center;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+    }
+
+    canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* UI LAYOUT */
+    #boot-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: var(--bg-black);
+      display: flex; justify-content: center; align-items: center;
+    }
+
+    .boot-btn {
+      padding: 15px 40px; background: transparent;
+      border: 2px solid var(--gold-armor); color: var(--gold-armor);
+      font-family: 'Cinzel Decorative', serif; font-size: 18px;
+      letter-spacing: 4px; text-transform: uppercase; cursor: pointer;
+    }
+
+    /* OLD SCHOOL WINDOW CONTAINER */
+    .terminal-window {
+      position: relative; z-index: 10;
+      width: min(900px, 94vw); height: 0px; 
+      background-color: rgba(10, 10, 10, 0.98);
+      border: 2px solid rgba(201, 162, 62, 0.6);
+      border-radius: 6px 6px 4px 4px;
+      display: flex; flex-direction: column; overflow: hidden; opacity: 0;
+      transition: height 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.1s;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .terminal-window.active { opacity: 1; height: min(600px, 80vh); }
+
+    /* HEADER BAR */
+    .terminal-header {
+      height: 32px;
+      background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+      border-bottom: 2px solid rgba(201, 162, 62, 0.6);
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      justify-content: space-between;
+    }
+
+    .header-title {
+      color: var(--gold-armor);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .control-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-armor);
+      opacity: 0.6;
+    }
+
+    /* TERMINAL CONTENT */
+    .terminal-body {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 60px 40px; color: var(--starlight);
+      font-family: 'Orbitron', sans-serif; font-size: 16px;
+      line-height: 2.5;
+    }
+
+    #action-container {
+      margin-top: 40px; opacity: 0; transition: opacity 1s ease;
+      display: flex; justify-content: center; gap: 20px;
+    }
+
+    .vanguard-btn {
+      background: var(--bg-black); border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
+      padding: 12px 24px; font-size: 13px; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
+    }
+
+    .vanguard-btn:hover {
+      border-color: var(--lilac-pulse); color: var(--starlight);
+      box-shadow: 0 0 20px var(--lilac-pulse); transform: translateY(-2px);
+    }
+
+    footer {
+      position: absolute; bottom: 20px; width: 100%;
+      text-align: center; color: var(--starlight);
+      font-family: 'Orbitron', sans-serif; font-size: 10px;
+      letter-spacing: 2px; text-transform: uppercase;
+      opacity: 0.6; text-shadow: 0 0 10px rgba(242, 246, 255, 0.8);
+      pointer-events: none; z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="boot-overlay">
+    <button class="boot-btn" onclick="Vanguard.init()">Initialize Vanguard</button>
+  </div>
+
+  <canvas id="stars"></canvas>
+
+  <div class="terminal-window" id="window">
+    <div class="terminal-header">
+      <div class="header-controls">
+        <div class="control-dot"></div>
+        <div class="control-dot"></div>
+        <div class="control-dot" style="background: var(--gold-armor); opacity: 0.8;"></div>
+      </div>
+      <div class="header-title">Vanguard Station 01 // Command Decision</div>
+      <div style="width: 46px;"></div> </div>
+
+    <div class="terminal-body">
+      <div id="action-container">
+        <button class="vanguard-btn" onclick="Vanguard.nav('directory.html')">Proceed to Terminal</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Powered by Vanguard Citizen Services
+  </footer>
+
+  <script>
+    /** * CONFIGURATION SWITCHES */
+    const CONFIG = {
+      enableStars: true,
+      postBootDelay: 1000
+    };
+
+    const Vanguard = {
+      init() {
+        document.getElementById('boot-overlay').style.display = 'none';
+        document.getElementById('window').classList.add('active');
+        
+        // Show buttons immediately after the window opens
+        setTimeout(() => {
+          document.getElementById('action-container').style.opacity = '1';
+        }, CONFIG.postBootDelay);
+      },
+
+      nav(dest) {
+        window.location.href = dest;
+      }
+    };
+
+    // ✨ STAR ENGINE
+    if (CONFIG.enableStars) {
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+      resize();
+      window.addEventListener('resize', resize);
+      let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, s: Math.random() * 2 }));
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
+        stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.12; if (s.y < 0) s.y = canvas.height; });
+        requestAnimationFrame(animate);
+      };
+      animate();
+    }
+  </script>
+</body>
+</html>
