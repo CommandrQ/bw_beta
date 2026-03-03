@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VCS Central</title>
+  <title>Vanguard Knetwerk | Command Decision</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -14,6 +14,7 @@
       --gold-armor: #C9A23E;
       --starlight: #F2F6FF;
       --active-green: #00ff41;
+      --white: #FFFFFF;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -33,11 +34,11 @@
       position: relative; z-index: 10;
       width: min(900px, 94vw); height: 0px; 
       background-color: rgba(10, 10, 10, 0.98);
-      border: 2px solid rgba(201, 162, 62, 0.6);
+      border: 2px solid rgba(255, 255, 255, 0.6);
       border-radius: 6px 6px 4px 4px;
       display: flex; flex-direction: column; overflow: hidden; opacity: 0;
       transition: height 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.2s;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
     }
 
     .terminal-window.active { opacity: 1; height: min(600px, 80vh); }
@@ -45,13 +46,13 @@
     .terminal-header {
       height: 32px;
       background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
-      border-bottom: 2px solid rgba(201, 162, 62, 0.6);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.6);
       display: flex; align-items: center; padding: 0 15px; justify-content: space-between;
     }
 
-    .header-title { color: var(--gold-armor); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+    .header-title { color: var(--white); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
     .header-controls { display: flex; gap: 8px; }
-    .control-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--gold-armor); opacity: 0.6; }
+    .control-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--white); opacity: 0.6; }
 
     /* MENU SYSTEM */
     .terminal-body {
@@ -78,7 +79,7 @@
       text-align: center;
     }
 
-    .menu-item h2 { font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 5px; color: var(--gold-armor); }
+    .menu-item h2 { font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 5px; color: var(--white); }
     .menu-item p { font-size: 0.8rem; color: var(--active-green); opacity: 0.8; margin-bottom: 20px; }
 
     .intel-btn {
@@ -125,7 +126,7 @@
       <div class="header-controls">
         <div class="control-dot"></div>
         <div class="control-dot"></div>
-        <div class="control-dot" style="background: var(--gold-armor); opacity: 0.8;"></div>
+        <div class="control-dot" style="background: var(--white); opacity: 0.8;"></div>
       </div>
       <div class="header-title">Fort Toward Terminal //</div>
       <div style="width: 46px;"></div>
@@ -149,8 +150,6 @@
   </footer>
 
   <script>
-    // --- MENU REGISTRY ---
-    // Quickly add, remove, or edit entries here!
     const MENU_ENTRIES = [
       { 
         title: "VCS SUPPORT CENTER", 
@@ -166,15 +165,12 @@
         title: "PUBLIC ARCHIVES", 
         status: "(COMING SOON)", 
         url: "#archives-intel" 
-      },
-      // Example of adding a new entry:
-      // { title: "THE RESERVES", status: "(ACTIVE)", url: "reserves.html" }
+      }
     ];
 
     let currentIndex = 0;
     const container = document.getElementById('menu-container');
 
-    // 1. Initialize Menu
     function initMenu() {
       MENU_ENTRIES.forEach(entry => {
         const div = document.createElement('div');
@@ -188,7 +184,6 @@
       });
     }
 
-    // 2. Rotation Logic
     function rotateMenu(direction) {
       currentIndex += direction;
       if (currentIndex < 0) currentIndex = MENU_ENTRIES.length - 1;
@@ -198,7 +193,6 @@
       container.style.transform = `translateY(${offset}px)`;
     }
 
-    // 3. Boot & Animation
     window.addEventListener('DOMContentLoaded', () => {
       initMenu();
       setTimeout(() => {
@@ -206,7 +200,6 @@
       }, 500);
     });
 
-    // Star Engine
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
