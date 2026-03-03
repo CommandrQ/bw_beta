@@ -25,6 +25,7 @@
       background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
       display: flex; justify-content: center; align-items: center;
       font-family: 'Inter', sans-serif;
+      position: relative;
     }
 
     canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
@@ -89,6 +90,16 @@
       border-color: var(--lilac-pulse); color: var(--starlight);
       box-shadow: 0 0 20px var(--lilac-pulse); transform: translateY(-2px);
     }
+
+    /* COPYRIGHT FOOTER */
+    footer {
+      position: absolute; bottom: 20px; width: 100%;
+      text-align: center; color: var(--starlight);
+      font-family: 'Orbitron', sans-serif; font-size: 10px;
+      letter-spacing: 2px; text-transform: uppercase;
+      opacity: 0.6; text-shadow: 0 0 10px rgba(242, 246, 255, 0.8);
+      pointer-events: none; z-index: 10;
+    }
   </style>
 </head>
 <body>
@@ -111,6 +122,10 @@
     </div>
   </div>
 
+  <footer>
+    &copy; 2026 Powered by Vanguard Citizen Services
+  </footer>
+
   <script>
     /** * CONFIGURATION SWITCHES */
     const CONFIG = {
@@ -131,7 +146,6 @@
         "Welcome Home."
       ],
 
-      // ⌨️ BOOT LOGIC
       init() {
         document.getElementById('boot-overlay').style.display = 'none';
         document.getElementById('window').classList.add('active');
