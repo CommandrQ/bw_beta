@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanguard Knetwerk | Cold Boot</title>
+  <title>Vanguard Knetwerk | Centered Sync</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -65,13 +65,13 @@
     }
 
     /* =============================================
-       CRT BOOT ANIMATION (THE STRIKE)
+       TERMINAL WINDOW & CRT BOOT
     ============================================= */
     .terminal-window {
       position: relative;
       z-index: 10;
       width: min(900px, 94vw);
-      height: 0px; /* Start closed */
+      height: 0px; 
       background-color: rgba(10, 10, 10, 0.98);
       border: 1px solid rgba(201, 162, 62, 0); 
       border-radius: 4px;
@@ -81,21 +81,14 @@
       opacity: 0;
     }
 
-    /* The Flash Line */
-    .terminal-window::before {
+    .terminal-window.striking::before {
       content: '';
       position: absolute;
       top: 50%; left: 50%;
-      width: 0%; height: 2px;
+      width: 100%; height: 2px;
       background: white;
       box-shadow: 0 0 15px white;
       transform: translate(-50%, -50%);
-      z-index: 20;
-      opacity: 0;
-    }
-
-    /* Booting states */
-    .terminal-window.striking::before {
       animation: crt-strike 0.4s ease-out forwards;
     }
 
@@ -110,12 +103,9 @@
     @keyframes crt-strike {
       0% { width: 0%; opacity: 0; }
       50% { width: 100%; opacity: 1; }
-      100% { width: 100%; opacity: 0; transform: translate(-50%, -50%) scaleY(0); }
+      100% { width: 100%; opacity: 0; }
     }
 
-    /* =============================================
-       TERMINAL CONTENT
-    ============================================= */
     .title-bar {
       background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
       padding: 12px 16px;
@@ -123,16 +113,21 @@
       align-items: center;
       border-bottom: 2px solid var(--gold-armor);
       flex-shrink: 0;
-      opacity: 0;
     }
-    .expanding .title-bar { opacity: 1; transition: opacity 0.5s 0.3s; }
+
+    .title-text {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
 
     .led {
       width: 8px; height: 8px;
       background-color: var(--active-green);
       border-radius: 50%;
       box-shadow: 0 0 8px var(--active-green);
-      margin-right: 15px;
     }
 
     .title-label {
@@ -142,13 +137,21 @@
       letter-spacing: 3px;
     }
 
+    /* =============================================
+       CENTERED TERMINAL BODY
+    ============================================= */
     .terminal-body {
       flex: 1;
-      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* Vertical Center */
+      align-items: center;     /* Horizontal Center */
+      text-align: center;
+      padding: 40px;
       color: var(--starlight);
       font-family: 'Orbitron', sans-serif;
-      font-size: 14px;
-      line-height: 2.2;
+      font-size: 16px;
+      line-height: 2.5;
       position: relative;
     }
 
@@ -158,9 +161,28 @@
       pointer-events: none;
       z-index: 5;
       background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+      opacity: 0.2;
+    }
+
+    /* THE CURSOR */
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1.2em;
+      background-color: var(--active-green);
+      vertical-align: middle;
+      margin-left: 5px;
+      box-shadow: 0 0 8px var(--active-green);
+      animation: blink 0.8s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     .gold-text { color: var(--gold-armor); text-shadow: 0 0 8px var(--gold-armor); }
+    .lilac-text { color: var(--lilac-pulse); text-shadow: 0 0 8px var(--lilac-pulse); }
   </style>
 </head>
 <body>
@@ -173,26 +195,32 @@
 
   <div class="terminal-window" id="window">
     <div class="title-bar">
-      <div class="led"></div>
-      <span class="title-label">Vanguard Knetwerk Active</span>
+      <div class="title-text">
+        <div class="led"></div>
+        <span class="title-label">Vanguard Knetwerk Active</span>
+      </div>
     </div>
 
     <div class="terminal-body" id="console">
       <div class="crt-overlay"></div>
-      <div id="typewriter"></div>
+      <div id="text-container">
+        </div>
+      <div id="active-line">
+        <span id="typing-slot"></span><span class="cursor"></span>
+      </div>
     </div>
   </div>
 
   <script>
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function playSound(freq, type, volume, duration, ramp = true) {
+    function playSound(freq, type, volume, duration) {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = type;
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
       gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-      if(ramp) gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
@@ -200,114 +228,111 @@
     }
 
     function bootSequence() {
-      // 1. Fade Button
       document.getElementById('boot-overlay').style.opacity = '0';
       audioCtx.resume();
       
       setTimeout(() => {
         document.getElementById('boot-overlay').style.display = 'none';
         const win = document.getElementById('window');
-        
-        // 2. The Strike Sound & Visual
-        playSound(800, 'sawtooth', 0.1, 0.1); // High electric snap
+        playSound(800, 'sawtooth', 0.1, 0.1);
         win.classList.add('striking');
         
-        // 3. The Expansion
         setTimeout(() => {
           win.classList.remove('striking');
           win.classList.add('expanding');
-          playSound(60, 'sine', 0.2, 2, false); // Low hum starts
-          playSound(12000, 'sine', 0.02, 1.5); // High pitched CRT whine
           startTypewriter();
         }, 400);
       }, 600);
     }
 
     // =============================================
-    // TYPEWRITER (SYMBOLS & LINES)
+    // CENTERED TYPEWRITER ENGINE
     // =============================================
     const lines = [
-      "<span class='gold-text'>[VANGUARD COLD-BOOT SUCCESSFUL]</span>",
-      "> Relay: STARLIGHT-7",
+      "<span class='gold-text'>[VANGUARD OS v3.2 ONLINE]</span>",
+      "Starlight relay synchronized.",
       " ",
-      "> Syncing with THE RESERVES...",
-      "> Accessing THE RUINS...",
+      "> Accessing <span class='gold-text'>THE RESERVES</span>...",
+      "> Monitoring <span class='lilac-text'>THE RUINS</span>...",
       " ",
-      "> Knight, the squad is ready. Command?"
+      "Welcome back, Knight."
     ];
 
     let lineIdx = 0;
-    const container = document.getElementById('typewriter');
+    const historyContainer = document.getElementById('text-container');
+    const typingSlot = document.getElementById('typing-slot');
+    const activeLineDiv = document.getElementById('active-line');
 
     function startTypewriter() {
       if (lineIdx < lines.length) {
-        let div = document.createElement('div');
-        div.style.marginBottom = "8px";
-        container.appendChild(div);
-        
         let currentLine = lines[lineIdx];
+        typingSlot.innerHTML = ""; // Clear current typing slot
+        
+        // Handle lines with HTML instantly
         if (currentLine.includes('<')) {
+          const div = document.createElement('div');
           div.innerHTML = currentLine;
+          historyContainer.appendChild(div);
           lineIdx++;
-          setTimeout(startTypewriter, 400);
+          setTimeout(startTypewriter, 500);
+        } else if (currentLine === " ") {
+          const spacer = document.createElement('div');
+          spacer.style.height = "20px";
+          historyContainer.appendChild(spacer);
+          lineIdx++;
+          setTimeout(startTypewriter, 200);
         } else {
           let charIdx = 0;
           function typeChar() {
             if (charIdx < currentLine.length) {
-              div.textContent += currentLine[charIdx];
+              typingSlot.textContent += currentLine[charIdx];
               playSound(Math.random() * 50 + 150, 'square', 0.03, 0.05);
               charIdx++;
-              setTimeout(typeChar, 30);
+              setTimeout(typeChar, 40);
             } else {
+              // Line finished: Move it to history and clear slot
+              const finishedLine = document.createElement('div');
+              finishedLine.textContent = currentLine;
+              historyContainer.appendChild(finishedLine);
+              typingSlot.textContent = "";
               lineIdx++;
-              setTimeout(startTypewriter, 500);
+              setTimeout(startTypewriter, 700);
             }
           }
           typeChar();
         }
+      } else {
+        // Hide the typing cursor line at the very end if desired
+        // activeLineDiv.style.display = 'none';
       }
     }
 
     // =============================================
-    // STAR ENGINE
+    // STAR ENGINE (PS2 STYLIZED)
     // =============================================
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
-    let stars = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    let stars = Array.from({ length: 50 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      s: Math.random() * 2
+    }));
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    class Star {
-      constructor() {
-        this.x = Math.random() * window.innerWidth;
-        this.y = Math.random() * window.innerHeight;
-        this.size = Math.random() * 1.5 + 0.5;
-      }
-      draw() {
-        ctx.fillStyle = "rgba(192, 140, 207, 0.4)";
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
+      stars.forEach(s => {
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2);
         ctx.fill();
-        this.y -= 0.15;
-        if (this.y < 0) this.y = canvas.height;
-      }
+        s.y -= 0.2;
+        if (s.y < 0) s.y = canvas.height;
+      });
+      requestAnimationFrame(animate);
     }
-
-    function init() {
-      resize();
-      stars = Array.from({ length: 60 }, () => new Star());
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        stars.forEach(s => s.draw());
-        requestAnimationFrame(animate);
-      }
-      animate();
-    }
-
-    init();
+    animate();
     window.addEventListener('resize', resize);
   </script>
 </body>
