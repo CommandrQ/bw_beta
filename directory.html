@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Fort Toward | Tactical HUD</title>
+  <title>Vanguard Tactical | Flat Map</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -11,9 +11,9 @@
     :root {
       --bg-dark: #050505;
       --grid-green: #0a2f0a;
-      --castle-blue: #2040c0;
-      --castle-border: #ffffff;
-      --hut-green: #30a060;
+      --map-blue: #2040c0;
+      --map-green: #30a060;
+      --map-border: #ffffff;
       --gold: #C9A23E;
       --highlight: #f03030;
     }
@@ -28,78 +28,65 @@
       overflow: hidden; color: #fff;
     }
 
-    /* SCANLINE EFFECT */
-    body::after {
-      content: " "; position: fixed; inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-      background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: 100;
-    }
-
+    /* THE PIXEL SCREEN */
     .screen-container {
       position: relative; width: 100vw; height: 100vh;
-      background-image: linear-gradient(var(--grid-green) 1px, transparent 1px), linear-gradient(90deg, var(--grid-green) 1px, transparent 1px);
-      background-size: 40px 40px; display: flex; flex-direction: column;
-    }
-
-    .header {
-      padding: 10px; border-bottom: 2px solid var(--gold);
-      background: rgba(0,0,0,0.9); display: flex; justify-content: space-between;
-      font-size: 8px; z-index: 20;
-    }
-
-    /* 3D VIEWPORT */
-    .viewport {
-      flex: 1; perspective: 1200px;
-      display: flex; justify-content: center; align-items: center;
-    }
-
-    .world {
-      position: relative; width: 400px; height: 400px;
-      transform-style: preserve-3d;
-      transform: scale(1.2) rotateX(60deg) rotateZ(-30deg);
-      transition: transform 0.1s ease-out;
-    }
-
-    /* BOX MAKER HELPER */
-    .box {
-      position: absolute; transform-style: preserve-3d;
-      background: var(--castle-blue); border: 2px solid var(--castle-border);
+      background-image: 
+        linear-gradient(var(--grid-green) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-green) 1px, transparent 1px);
+      background-size: 24px 24px;
+      display: flex; flex-direction: column;
       image-rendering: pixelated;
     }
 
-    /* CASTLE COMPONENTS */
-    .castle-wall { width: 200px; height: 200px; top: 100px; left: 100px; border: 4px solid #fff; }
-    
-    .tower {
-      width: 60px; height: 60px; background: var(--castle-blue);
-      border: 3px solid #fff; position: absolute;
-      transform: translateZ(60px); display: flex; align-items: center; justify-content: center; font-size: 6px;
+    .header {
+      padding: 12px; border-bottom: 2px solid var(--gold);
+      background: rgba(0,0,0,0.9); display: flex; justify-content: space-between;
+      font-size: 8px; z-index: 50;
     }
 
-    /* THE HUT (CITIZENS SUPPORT) */
-    .hut {
-      width: 50px; height: 40px; background: var(--hut-green);
-      border: 2px solid #fff; position: absolute;
-      top: 320px; left: 175px; /* Positioned outside the "castle" square */
-      transform: translateZ(10px);
+    /* PAN & ZOOM VIEWPORT */
+    .viewport {
+      flex: 1; position: relative; overflow: hidden;
+      cursor: grab; display: flex; align-items: center; justify-content: center;
+    }
+
+    .map-layer {
+      position: absolute; width: 2000px; height: 2000px;
+      transform-origin: center; transition: transform 0.1s ease-out;
+    }
+
+    /* PIXEL ASSETS */
+    .room {
+      position: absolute; background: var(--map-blue);
+      border: 2px solid var(--map-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 6px; text-align: center;
+    }
+
+    /* THE BIG CASTLE (Flat block structure) */
+    .castle-outer { width: 144px; height: 144px; top: 928px; left: 928px; background: transparent; border: 4px solid var(--map-border); }
+    .castle-keep { width: 48px; height: 48px; top: 976px; left: 976px; border: 2px solid var(--gold); }
+    
+    /* THE HUT (Citizens Support - Outside) */
+    .hut { 
+      width: 24px; height: 24px; background: var(--map-green); 
+      top: 1096px; left: 988px; /* Positioned just outside the southern castle wall */
     }
 
     .tag {
-      position: absolute; top: -15px; left: 0; background: var(--gold);
-      color: #000; font-size: 5px; padding: 2px; white-space: nowrap;
+      position: absolute; top: -12px; background: var(--gold);
+      color: #000; font-size: 4px; padding: 1px 3px; white-space: nowrap;
     }
 
-    /* VANGUARD SERVICE (IN THE KEEP) */
-    .vanguard-keep {
-      width: 80px; height: 80px; top: 160px; left: 160px;
-      background: var(--castle-blue); border: 2px solid var(--gold);
-      transform: translateZ(30px); text-align: center; padding-top: 10px; font-size: 6px;
-    }
+    /* INDICATORS */
+    .flash { animation: flash-anim 0.8s infinite; }
+    @keyframes flash-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .info-overlay {
+    .info-bar {
       position: absolute; bottom: 0; width: 100%;
-      background: rgba(0,0,0,0.9); border-top: 2px solid var(--gold);
-      padding: 15px; font-size: 8px; z-index: 20;
+      background: rgba(0,0,0,0.95); border-top: 2px solid var(--gold);
+      padding: 15px; font-size: 8px; z-index: 50;
     }
   </style>
 </head>
@@ -107,84 +94,91 @@
 
   <div class="screen-container">
     <div class="header">
-      <span>FORT TOWARD // CASTLE SECTOR</span>
+      <span>FORT TOWARD // SECTOR: NATION A</span>
       <span id="coord">X:00 Y:00</span>
     </div>
 
     <div class="viewport" id="v">
-      <div class="world" id="world">
+      <div class="map-layer" id="map">
         
-        <div class="castle-wall"></div>
+        <div class="room" style="width: 240px; height: 12px; top: 994px; left: 800px;"></div>
+        <div class="room" style="width: 12px; height: 240px; top: 880px; left: 994px;"></div>
 
-        <div class="hut" onclick="update('CITIZENS SUPPORT', 'OUTSIDE WALLS. HUB FOR NEW ARRIVALS.')">
-          <div class="tag">OPENING SOON</div>
-          <span style="font-size: 5px;">HUT</span>
+        <div class="castle-outer" onclick="ui('FORT TOWARD', 'MAIN DEFENSIVE PERIMETER.')"></div>
+        
+        <div class="room castle-keep flash" onclick="ui('VANGUARD SERVICES', 'MAIN ADMINISTRATION HUB.')">
+          VCS
         </div>
 
-        <div class="vanguard-keep" onclick="update('VANGUARD SERVICES', 'MAIN KEEP. CENTRAL ADMINISTRATION.')">
-          VANGUARD<br>SERVICES
+        <div class="room hut" onclick="ui('CITIZENS SUPPORT', 'OUTSIDE GATES. OPENING SOON.')">
+          <div class="tag">COMING SOON</div>
+          HUT
         </div>
-
-        <div class="tower" style="top: 80px; left: 80px;">T1</div>
-        <div class="tower" style="top: 80px; left: 260px;">T2</div>
-        <div class="tower" style="top: 260px; left: 80px;">T3</div>
-        <div class="tower" style="top: 260px; left: 260px;">T4</div>
 
       </div>
     </div>
 
-    <div class="info-overlay">
-      <div id="t" style="color: var(--gold); margin-bottom: 5px;">TACTICAL SCAN</div>
-      <div id="d">SELECT LOCATION FOR DATA...</div>
+    <div class="info-bar">
+      <div id="t" style="color: var(--gold); margin-bottom: 5px;">DATA TERMINAL</div>
+      <div id="d">TAP SECTOR TO ANALYZE...</div>
     </div>
   </div>
 
   <script>
-    const world = document.getElementById('world');
-    let zoom = 1.2;
-    let rX = 60;
-    let rZ = -30;
+    const map = document.getElementById('map');
+    let scale = 2.5; // Initial zoom on base
+    let posX = 0, posY = 0;
 
-    function update(t, d) {
+    function ui(t, d) {
       document.getElementById('t').innerText = t;
       document.getElementById('d').innerText = d;
     }
 
-    // Touch & Mouse Control
-    let dragging = false, sX, sY;
+    // PAN & ZOOM LOGIC
+    let isDown = false, startX, startY;
 
-    const start = (e) => {
-      dragging = true;
-      sX = e.pageX || e.touches[0].pageX;
-      sY = e.pageY || e.touches[0].pageY;
+    const onStart = (e) => {
+      isDown = true;
+      startX = (e.pageX || e.touches[0].pageX) - posX;
+      startY = (e.pageY || e.touches[0].pageY) - posY;
+      document.getElementById('v').style.cursor = 'grabbing';
     };
 
-    const move = (e) => {
-      if (!dragging) return;
-      const x = e.pageX || e.touches[0].pageX;
-      const y = e.pageY || e.touches[0].pageY;
+    const onMove = (e) => {
+      if (!isDown) return;
+      posX = (e.pageX || e.touches[0].pageX) - startX;
+      posY = (e.pageY || e.touches[0].pageY) - startY;
+      render();
       
-      rZ += (x - sX) * 0.5;
-      rX -= (y - sY) * 0.5;
-      
-      sX = x; sY = y;
-      world.style.transform = `scale(${zoom}) rotateX(${rX}deg) rotateZ(${rZ}deg)`;
-      document.getElementById('coord').innerText = `X:${Math.floor(x/10)} Y:${Math.floor(y/10)}`;
+      const xHUD = Math.floor(Math.abs(posX/10));
+      const yHUD = Math.floor(Math.abs(posY/10));
+      document.getElementById('coord').innerText = `X:${xHUD} Y:${yHUD}`;
     };
 
-    window.addEventListener('mousedown', start);
-    window.addEventListener('touchstart', start);
-    window.addEventListener('mousemove', move);
-    window.addEventListener('touchmove', move);
-    window.addEventListener('mouseup', () => dragging = false);
-    window.addEventListener('touchend', () => dragging = false);
+    const onEnd = () => {
+      isDown = false;
+      document.getElementById('v').style.cursor = 'grab';
+    };
 
-    // Mouse Wheel Zoom
+    window.addEventListener('mousedown', onStart);
+    window.addEventListener('touchstart', onStart);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onMove);
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchend', onEnd);
+
     window.addEventListener('wheel', (e) => {
-      zoom += e.deltaY * -0.001;
-      zoom = Math.min(Math.max(0.5, zoom), 3);
-      world.style.transform = `scale(${zoom}) rotateX(${rX}deg) rotateZ(${rZ}deg)`;
+      scale += e.deltaY * -0.002;
+      scale = Math.min(Math.max(0.5, scale), 6);
+      render();
     });
+
+    function render() {
+      map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+    }
+
+    // Center map initially
+    render();
   </script>
 </body>
 </html>
