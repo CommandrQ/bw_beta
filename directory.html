@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Fort Toward Terminal</title>
+  <title>Vanguard Tactical | Fort Toward</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark: #050505; --grid-green: #0a2f0a; --map-blue: #2040c0;
       --map-green: #30a060; --map-border: #ffffff; --gold: #C9A23E;
-      --highlight: #f03030; --shaft-color: #666;
+      --highlight: #f03030; --shaft-color: #555;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
     body {
@@ -24,109 +24,118 @@
     }
     .header { padding: 12px; border-bottom: 2px solid var(--gold); background: rgba(0,0,0,0.9); display: flex; justify-content: space-between; font-size: 8px; z-index: 50; }
     .viewport { flex: 1; position: relative; overflow: hidden; cursor: grab; display: flex; align-items: center; justify-content: center; }
-    .map-layer { position: absolute; width: 2000px; height: 2000px; transform-origin: center; transition: transform 0.1s ease-out; }
+    .map-layer { position: absolute; width: 3000px; height: 3000px; transform-origin: center; }
 
-    /* DYNAMIC ROOM STYLES */
-    .room { position: absolute; border: 2px solid var(--map-border); display: flex; align-items: center; justify-content: center; font-size: 6px; text-align: center; cursor: pointer; transition: filter 0.2s; }
-    .room:hover { filter: brightness(1.5); }
-    .castle-outer { position: absolute; width: 144px; height: 144px; top: 928px; left: 928px; border: 4px solid var(--map-border); pointer-events: none; }
-    .connector-shaft { position: absolute; width: 8px; background: repeating-linear-gradient(0deg, var(--shaft-color), var(--shaft-color) 4px, transparent 4px, transparent 8px); border-left: 1px solid #fff; border-right: 1px solid #fff; z-index: 2; }
-    .tag { position: absolute; top: -12px; background: var(--gold); color: #000; font-size: 4px; padding: 1px 3px; white-space: nowrap; }
-    .flash { animation: flash-anim 0.8s infinite; }
-    @keyframes flash-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    /* ROOM & CONNECTORS */
+    .room { position: absolute; border: 2px solid var(--map-border); display: flex; align-items: center; justify-content: center; font-size: 6px; text-align: center; cursor: pointer; z-index: 10; }
+    .room:hover { filter: brightness(1.2); border-color: var(--gold); }
+    
+    .connector { position: absolute; background: var(--shaft-color); z-index: 5; opacity: 0.6; }
+    .v-shaft { width: 6px; border-left: 1px solid #fff; border-right: 1px solid #fff; }
+    .h-shaft { height: 6px; border-top: 1px solid #fff; border-bottom: 1px solid #fff; }
 
-    /* MODAL & HUD */
-    #about-screen { position: fixed; inset: 0; z-index: 1000; background: rgba(5, 5, 5, 0.95); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 4px double var(--gold); margin: 20px; }
-    .info-bar { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.95); border-top: 2px solid var(--gold); padding: 15px; font-size: 8px; z-index: 50; }
+    .tag { position: absolute; top: -14px; background: var(--gold); color: #000; font-size: 5px; padding: 1px 4px; border: 1px solid #fff; }
+    .flash { animation: flash-anim 1s infinite; }
+    @keyframes flash-anim { 0%, 100% { border-color: var(--gold); } 50% { border-color: #fff; } }
+
+    /* HUD & ABOUT */
+    #about-screen { position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.95); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; border: 4px double var(--gold); margin: 20px; }
+    .info-bar { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); border-top: 2px solid var(--gold); padding: 15px; font-size: 8px; z-index: 50; }
   </style>
 </head>
 <body>
 
 <div class="screen-container">
   <div class="header"><span>FORT TOWARD // SECTOR: NATION A</span><span id="coord">X:00 Y:00</span></div>
-  <div class="viewport" id="v"><div class="map-layer" id="map-root"><div class="castle-outer"></div></div></div>
-  <div class="info-bar"><div id="t" style="color: var(--gold); margin-bottom: 5px;">VCS DATA TERMINAL</div><div id="d">SECURE LINK ESTABLISHED.</div></div>
+  <div class="viewport" id="v"><div class="map-layer" id="map-root"></div></div>
+  <div class="info-bar"><div id="t" style="color: var(--gold); margin-bottom: 5px;">VCS DATA TERMINAL</div><div id="d">SYSTEMS ONLINE. SELECT NODE.</div></div>
 </div>
 
 <div id="about-screen">
-  <h1 style="color: var(--gold); font-size: 14px; margin-bottom: 20px;">VANGUARD SERVICES</h1>
-  <div style="font-size: 9px; line-height: 1.6; max-width: 600px; text-align: center; font-family: 'Inter', sans-serif;">
-    <p>Vanguard Citizen Services (VCS) is a creative studio that acts as the administrative heart of Fort Toward.</p><br>
-    <p>Their primary goal is to achieve total sector stability by providing a safe harbor for all citizens, and are dedicated to transforming Fort Toward from a military stronghold into a thriving home where progress is protected and resources from The Reserves are shared equitably.</p>
+  <h1 style="color: var(--gold); font-size: 14px; margin-bottom: 20px;">VANGUARD CITIZEN SERVICES</h1>
+  <div style="font-size: 9px; line-height: 1.8; max-width: 700px; text-align: left; font-family: 'Inter', sans-serif;">
+    <p><strong>The Humanitarian Anchor:</strong> Vanguard Citizen Services (VCS) acts as the administrative heart and humanitarian anchor for Nation A. We serve as the vital bridge between the strategic command of the Big Castle and the daily lives of the residents inhabiting the surface colonies.</p><br>
+    <p><strong>Mission of Stability:</strong> Our primary goal is to achieve total sector stability by providing a safe harbor for all citizens. We are dedicated to transforming Fort Toward from a military stronghold into a thriving home where progress is protected and resources from **The Reserves** are shared equitably.</p><br>
+    <p><strong>Surface Security:</strong> By maintaining the secure link between the deep VCS Hub and the surface-level Hut, we ensure the safety of all new arrivals. We work tirelessly to move the nation forward, building a resilient future even in the shadow of **The Ruins**.</p>
   </div>
-  <button onclick="closeAbout()" style="margin-top:20px; padding: 10px; background: var(--highlight); color: white; border: none; font-family: 'Press Start 2P'; cursor: pointer;">RETURN</button>
+  <button onclick="closeAbout()" style="margin-top:30px; padding: 12px 24px; background: var(--highlight); color: white; border: none; font-family: 'Press Start 2P'; cursor: pointer;">RETURN</button>
 </div>
 
 <script>
-  /**
-   * LOCATION REGISTRY
-   * Add new locations here. Shape (Square/Wide/Tall) is assigned randomly.
-   */
+  // REGISTRY: Add locations here.
   const LOCATIONS = [
-    { id: 'vcs', name: 'VCS', top: 976, left: 976, color: 'var(--map-blue)', isHub: true, desc: 'Central Administration Keep.' },
-    { id: 'hut', name: 'HUT', top: 800, left: 984, color: 'var(--map-green)', tag: 'OPENING SOON', desc: 'Surface Access Point.' },
-    // You can add more like this:
-    // { id: 'ruins', name: 'RUINS', top: 1100, left: 1050, color: '#444', desc: 'The Ruins Sector.' }
+    { id: 'vcs', name: 'VCS HUB', x: 1400, y: 1400, color: 'var(--map-blue)', isHub: true, desc: 'Primary Vanguard Administrative Keep.' },
+    { id: 'hut', name: 'HUT', x: 1400, y: 1100, color: 'var(--map-green)', tag: 'OPENING SOON', desc: 'Surface Access Point for Nation A.' },
+    { id: 'reserves', name: 'RESERVES', x: 1650, y: 1400, color: 'var(--map-blue)', desc: 'Strategic resource storage.' },
+    { id: 'ruins', name: 'RUINS', x: 1150, y: 1400, color: '#444', desc: 'The Ruins: Sector Reclaimed.' }
   ];
 
-  const mapRoot = document.getElementById('map-root');
+  const root = document.getElementById('map-root');
 
-  function initMap() {
+  function buildMap() {
     LOCATIONS.forEach(loc => {
-      const el = document.createElement('div');
-      
-      // Random Shape Logic
+      // 1. Assign Random Pixel Shape
       const shapes = [
-        { w: 48, h: 48 }, // Square
-        { w: 72, h: 36 }, // Wide
-        { w: 36, h: 72 }  // Tall
+        { w: 48, h: 48 }, // Small Square
+        { w: 96, h: 48 }, // Wide Rectangle
+        { w: 48, h: 96 }, // Tall Rectangle
+        { w: 72, h: 72 }  // Big Square
       ];
-      const shape = loc.isHub ? { w: 48, h: 48 } : shapes[Math.floor(Math.random() * shapes.length)];
+      const shape = loc.isHub ? { w: 80, h: 80 } : shapes[Math.floor(Math.random() * shapes.length)];
       
+      const el = document.createElement('div');
       el.className = `room ${loc.isHub ? 'flash' : ''}`;
       el.style.width = `${shape.w}px`;
       el.style.height = `${shape.h}px`;
-      el.style.top = `${loc.top}px`;
-      el.style.left = `${loc.left}px`;
+      el.style.left = `${loc.x}px`;
+      el.style.top = `${loc.y}px`;
       el.style.backgroundColor = loc.color;
       el.innerHTML = loc.tag ? `<div class="tag">${loc.tag}</div>${loc.name}` : loc.name;
       
-      if(loc.isHub) {
-        el.style.borderColor = 'var(--gold)';
-        el.onclick = openAbout;
-      } else {
-        el.onclick = () => { document.getElementById('t').innerText = loc.name; document.getElementById('d').innerText = loc.desc; };
-      }
+      el.onclick = loc.isHub ? openAbout : () => { 
+        document.getElementById('t').innerText = loc.name; 
+        document.getElementById('d').innerText = loc.desc; 
+      };
       
-      mapRoot.appendChild(el);
+      root.appendChild(el);
 
-      // Automatic Shaft Connector to the Hub (VCS)
-      if(loc.id !== 'vcs') {
+      // 2. Simple Non-Overlapping Connectors (To Hub)
+      if (!loc.isHub) {
+        const hub = LOCATIONS.find(l => l.isHub);
         const shaft = document.createElement('div');
-        shaft.className = 'connector-shaft';
-        const vcs = LOCATIONS.find(l => l.id === 'vcs');
-        const length = Math.abs(loc.top - vcs.top);
-        shaft.style.height = `${length}px`;
-        shaft.style.left = `${vcs.left + 20}px`;
-        shaft.style.top = `${Math.min(loc.top, vcs.top) + 40}px`;
-        mapRoot.appendChild(shaft);
+        
+        if (loc.x === hub.x) {
+          // Vertical Shaft
+          shaft.className = 'connector v-shaft';
+          const top = Math.min(loc.y, hub.y) + 40;
+          shaft.style.height = `${Math.abs(loc.y - hub.y) - 20}px`;
+          shaft.style.left = `${loc.x + (shape.w / 2) - 3}px`;
+          shaft.style.top = `${top}px`;
+        } else {
+          // Horizontal Shaft
+          shaft.className = 'connector h-shaft';
+          const left = Math.min(loc.x, hub.x) + 40;
+          shaft.style.width = `${Math.abs(loc.x - hub.x) - 20}px`;
+          shaft.style.top = `${loc.y + (shape.h / 2) - 3}px`;
+          shaft.style.left = `${left}px`;
+        }
+        root.appendChild(shaft);
       }
     });
   }
 
-  // UI & Panning Logic
-  let scale = 2.0, posX = 0, posY = 80, isDown = false, sX, sY;
-  const about = document.getElementById('about-screen');
-  function openAbout() { about.style.display = 'flex'; }
-  function closeAbout() { about.style.display = 'none'; }
-  const render = () => { mapRoot.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; };
+  // Camera & Interaction
+  let scale = 1.5, posX = -400, posY = -100, isDown = false, sX, sY;
+  function openAbout() { document.getElementById('about-screen').style.display = 'flex'; }
+  function closeAbout() { document.getElementById('about-screen').style.display = 'none'; }
+  const render = () => { root.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; };
   
   window.addEventListener('mousedown', (e) => { if(e.target.classList.contains('room')) return; isDown = true; sX = e.pageX - posX; sY = e.pageY - posY; });
   window.addEventListener('mousemove', (e) => { if (!isDown) return; posX = e.pageX - sX; posY = e.pageY - sY; render(); });
   window.addEventListener('mouseup', () => isDown = false);
-  window.addEventListener('wheel', (e) => { scale += e.deltaY * -0.002; scale = Math.min(Math.max(0.5, scale), 6); render(); });
+  window.addEventListener('wheel', (e) => { scale += e.deltaY * -0.0015; scale = Math.min(Math.max(0.4, scale), 4); render(); }, {passive: false});
 
-  initMap();
+  buildMap();
   render();
 </script>
 </body>
