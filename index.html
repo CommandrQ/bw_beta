@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanguard Knetwerk | Centered Sync</title>
+  <title>Vanguard Knetwerk | Command Decision</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -23,166 +23,99 @@
       width: 100%; height: 100vh;
       overflow: hidden;
       background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: flex; justify-content: center; align-items: center;
       font-family: 'Inter', sans-serif;
     }
 
     canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
     /* =============================================
-       BOOT OVERLAY
+       TERMINAL WINDOW & BOOT
     ============================================= */
     #boot-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
+      position: fixed; inset: 0; z-index: 100;
       background: var(--bg-black);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.5s ease;
+      display: flex; justify-content: center; align-items: center;
     }
 
     .boot-btn {
-      padding: 15px 40px;
-      background: transparent;
-      border: 2px solid var(--gold-armor);
-      color: var(--gold-armor);
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 18px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s;
+      padding: 15px 40px; background: transparent;
+      border: 2px solid var(--gold-armor); color: var(--gold-armor);
+      font-family: 'Cinzel Decorative', serif; font-size: 18px;
+      letter-spacing: 4px; text-transform: uppercase; cursor: pointer;
     }
 
-    .boot-btn:hover {
-      background: var(--gold-armor);
-      color: var(--bg-black);
-      box-shadow: 0 0 30px var(--gold-armor);
-    }
-
-    /* =============================================
-       TERMINAL WINDOW & CRT BOOT
-    ============================================= */
     .terminal-window {
-      position: relative;
-      z-index: 10;
-      width: min(900px, 94vw);
-      height: 0px; 
+      position: relative; z-index: 10;
+      width: min(900px, 94vw); height: 0px; 
       background-color: rgba(10, 10, 10, 0.98);
-      border: 1px solid rgba(201, 162, 62, 0); 
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      opacity: 0;
-    }
-
-    .terminal-window.striking::before {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 100%; height: 2px;
-      background: white;
-      box-shadow: 0 0 15px white;
-      transform: translate(-50%, -50%);
-      animation: crt-strike 0.4s ease-out forwards;
+      border: 1px solid rgba(201, 162, 62, 0.4); border-radius: 4px;
+      display: flex; flex-direction: column; overflow: hidden; opacity: 0;
     }
 
     .terminal-window.expanding {
-      opacity: 1;
-      height: min(600px, 80vh);
-      border: 1px solid rgba(201, 162, 62, 0.4);
-      transition: height 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.1s;
-      box-shadow: 0 0 40px rgba(192, 140, 207, 0.1), 0 40px 100px rgba(0,0,0,0.9);
-    }
-
-    @keyframes crt-strike {
-      0% { width: 0%; opacity: 0; }
-      50% { width: 100%; opacity: 1; }
-      100% { width: 100%; opacity: 0; }
-    }
-
-    .title-bar {
-      background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      border-bottom: 2px solid var(--gold-armor);
-      flex-shrink: 0;
-    }
-
-    .title-text {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-    }
-
-    .led {
-      width: 8px; height: 8px;
-      background-color: var(--active-green);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--active-green);
-    }
-
-    .title-label {
-      color: var(--gold-armor);
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 12px;
-      letter-spacing: 3px;
+      opacity: 1; height: min(600px, 80vh);
+      transition: height 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.1s;
     }
 
     /* =============================================
-       CENTERED TERMINAL BODY
+       ACTION BUTTONS
     ============================================= */
-    .terminal-body {
-      flex: 1;
+    #action-container {
+      margin-top: 40px;
+      opacity: 0;
+      transition: opacity 1s ease;
       display: flex;
-      flex-direction: column;
-      justify-content: center; /* Vertical Center */
-      align-items: center;     /* Horizontal Center */
-      text-align: center;
-      padding: 40px;
-      color: var(--starlight);
+      justify-content: center;
+      gap: 20px; /* Space between buttons */
+    }
+
+    .vanguard-btn {
+      background: var(--bg-black);
+      border: 1px solid var(--gold-armor);
+      color: var(--gold-armor);
       font-family: 'Orbitron', sans-serif;
-      font-size: 16px;
-      line-height: 2.5;
+      padding: 12px 24px;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
       position: relative;
     }
 
-    .crt-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 5;
-      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
-      opacity: 0.2;
+    .vanguard-btn:hover {
+      border-color: var(--lilac-pulse);
+      color: var(--starlight);
+      box-shadow: 0 0 20px var(--lilac-pulse);
+      transform: translateY(-2px);
     }
 
-    /* THE CURSOR */
+    .vanguard-btn:active {
+      background: var(--starlight);
+      box-shadow: 0 0 40px var(--starlight);
+    }
+
+    /* =============================================
+       TERMINAL BODY
+    ============================================= */
+    .terminal-body {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 60px 40px; color: var(--starlight);
+      font-family: 'Orbitron', sans-serif; font-size: 16px;
+      line-height: 2.5; position: relative;
+    }
+
     .cursor {
-      display: inline-block;
-      width: 10px;
-      height: 1.2em;
-      background-color: var(--active-green);
-      vertical-align: middle;
-      margin-left: 5px;
-      box-shadow: 0 0 8px var(--active-green);
+      display: inline-block; width: 10px; height: 1.2em;
+      background-color: var(--active-green); vertical-align: middle;
+      margin-left: 8px; box-shadow: 0 0 8px var(--active-green);
       animation: blink 0.8s step-end infinite;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     .gold-text { color: var(--gold-armor); text-shadow: 0 0 8px var(--gold-armor); }
-    .lilac-text { color: var(--lilac-pulse); text-shadow: 0 0 8px var(--lilac-pulse); }
   </style>
 </head>
 <body>
@@ -194,19 +127,15 @@
   <canvas id="stars"></canvas>
 
   <div class="terminal-window" id="window">
-    <div class="title-bar">
-      <div class="title-text">
-        <div class="led"></div>
-        <span class="title-label">Vanguard Knetwerk Active</span>
-      </div>
-    </div>
-
     <div class="terminal-body" id="console">
-      <div class="crt-overlay"></div>
-      <div id="text-container">
-        </div>
+      <div id="text-history"></div>
       <div id="active-line">
-        <span id="typing-slot"></span><span class="cursor"></span>
+        <span id="typing-slot"></span><span class="cursor" id="main-cursor"></span>
+      </div>
+      
+      <div id="action-container">
+        <button class="vanguard-btn" onclick="nav('intro.html')">Who?</button>
+        <button class="vanguard-btn" onclick="nav('directory.html')">Good to be back</button>
       </div>
     </div>
   </div>
@@ -221,115 +150,84 @@
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
       gain.gain.setValueAtTime(volume, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
     }
 
     function bootSequence() {
-      document.getElementById('boot-overlay').style.opacity = '0';
+      document.getElementById('boot-overlay').style.display = 'none';
       audioCtx.resume();
-      
-      setTimeout(() => {
-        document.getElementById('boot-overlay').style.display = 'none';
-        const win = document.getElementById('window');
-        playSound(800, 'sawtooth', 0.1, 0.1);
-        win.classList.add('striking');
-        
-        setTimeout(() => {
-          win.classList.remove('striking');
-          win.classList.add('expanding');
-          startTypewriter();
-        }, 400);
-      }, 600);
+      document.getElementById('window').classList.add('expanding');
+      setTimeout(startTypewriter, 800);
     }
 
-    // =============================================
-    // CENTERED TYPEWRITER ENGINE
-    // =============================================
+    function nav(dest) {
+      playSound(500, 'sawtooth', 0.1, 0.2); // Flash click sound
+      setTimeout(() => { window.location.href = dest; }, 250);
+    }
+
     const lines = [
       "<span class='gold-text'>[VANGUARD OS v3.2 ONLINE]</span>",
-      "Starlight relay synchronized.",
-      " ",
-      "> Accessing <span class='gold-text'>THE RESERVES</span>...",
-      "> Monitoring <span class='lilac-text'>THE RUINS</span>...",
+      "> Accessing THE RESERVES...",
+      "> Monitoring THE RUINS...",
       " ",
       "Welcome back, Knight."
     ];
 
     let lineIdx = 0;
-    const historyContainer = document.getElementById('text-container');
-    const typingSlot = document.getElementById('typing-slot');
-    const activeLineDiv = document.getElementById('active-line');
+    const history = document.getElementById('text-history');
+    const slot = document.getElementById('typing-slot');
 
     function startTypewriter() {
       if (lineIdx < lines.length) {
         let currentLine = lines[lineIdx];
-        typingSlot.innerHTML = ""; // Clear current typing slot
-        
-        // Handle lines with HTML instantly
-        if (currentLine.includes('<')) {
+        slot.innerHTML = ""; 
+
+        if (currentLine.includes('<') || currentLine === " ") {
           const div = document.createElement('div');
-          div.innerHTML = currentLine;
-          historyContainer.appendChild(div);
+          div.innerHTML = currentLine === " " ? "&nbsp;" : currentLine;
+          history.appendChild(div);
           lineIdx++;
-          setTimeout(startTypewriter, 500);
-        } else if (currentLine === " ") {
-          const spacer = document.createElement('div');
-          spacer.style.height = "20px";
-          historyContainer.appendChild(spacer);
-          lineIdx++;
-          setTimeout(startTypewriter, 200);
+          setTimeout(startTypewriter, 600);
         } else {
           let charIdx = 0;
           function typeChar() {
             if (charIdx < currentLine.length) {
-              typingSlot.textContent += currentLine[charIdx];
+              slot.textContent += currentLine[charIdx];
               playSound(Math.random() * 50 + 150, 'square', 0.03, 0.05);
               charIdx++;
               setTimeout(typeChar, 40);
             } else {
-              // Line finished: Move it to history and clear slot
               const finishedLine = document.createElement('div');
               finishedLine.textContent = currentLine;
-              historyContainer.appendChild(finishedLine);
-              typingSlot.textContent = "";
+              history.appendChild(finishedLine);
+              slot.textContent = "";
               lineIdx++;
-              setTimeout(startTypewriter, 700);
+              setTimeout(startTypewriter, 800);
             }
           }
           typeChar();
         }
       } else {
-        // Hide the typing cursor line at the very end if desired
-        // activeLineDiv.style.display = 'none';
+        // FINISHED TYPING: Wait 2s then fade in buttons
+        document.getElementById('main-cursor').style.display = 'none';
+        setTimeout(() => {
+          document.getElementById('action-container').style.opacity = '1';
+          playSound(800, 'sine', 0.05, 0.6); // System alert "ping"
+        }, 2000);
       }
     }
 
-    // =============================================
-    // STAR ENGINE (PS2 STYLIZED)
-    // =============================================
+    // STAR ENGINE
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     resize();
-    let stars = Array.from({ length: 50 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      s: Math.random() * 2
-    }));
-
+    let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2 }));
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
-      stars.forEach(s => {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2);
-        ctx.fill();
-        s.y -= 0.2;
-        if (s.y < 0) s.y = canvas.height;
-      });
+      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.12; if (s.y < 0) s.y = canvas.height; });
       requestAnimationFrame(animate);
     }
     animate();
