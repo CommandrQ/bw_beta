@@ -29,9 +29,7 @@
 
     canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-    /* =============================================
-       TERMINAL WINDOW & BOOT
-    ============================================= */
+    /* UI LAYOUT */
     #boot-overlay {
       position: fixed; inset: 0; z-index: 100;
       background: var(--bg-black);
@@ -51,62 +49,20 @@
       background-color: rgba(10, 10, 10, 0.98);
       border: 1px solid rgba(201, 162, 62, 0.4); border-radius: 4px;
       display: flex; flex-direction: column; overflow: hidden; opacity: 0;
-    }
-
-    .terminal-window.expanding {
-      opacity: 1; height: min(600px, 80vh);
       transition: height 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.1s;
     }
 
-    /* =============================================
-       ACTION BUTTONS
-    ============================================= */
-    #action-container {
-      margin-top: 40px;
-      opacity: 0;
-      transition: opacity 1s ease;
-      display: flex;
-      justify-content: center;
-      gap: 20px; /* Space between buttons */
-    }
+    .terminal-window.active { opacity: 1; height: min(600px, 80vh); }
 
-    .vanguard-btn {
-      background: var(--bg-black);
-      border: 1px solid var(--gold-armor);
-      color: var(--gold-armor);
-      font-family: 'Orbitron', sans-serif;
-      padding: 12px 24px;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    .vanguard-btn:hover {
-      border-color: var(--lilac-pulse);
-      color: var(--starlight);
-      box-shadow: 0 0 20px var(--lilac-pulse);
-      transform: translateY(-2px);
-    }
-
-    .vanguard-btn:active {
-      background: var(--starlight);
-      box-shadow: 0 0 40px var(--starlight);
-    }
-
-    /* =============================================
-       TERMINAL BODY
-    ============================================= */
     .terminal-body {
       flex: 1; display: flex; flex-direction: column;
       justify-content: center; align-items: center; text-align: center;
       padding: 60px 40px; color: var(--starlight);
       font-family: 'Orbitron', sans-serif; font-size: 16px;
-      line-height: 2.5; position: relative;
+      line-height: 2.5;
     }
 
+    /* TYPING & BUTTONS */
     .cursor {
       display: inline-block; width: 10px; height: 1.2em;
       background-color: var(--active-green); vertical-align: middle;
@@ -116,121 +72,152 @@
 
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     .gold-text { color: var(--gold-armor); text-shadow: 0 0 8px var(--gold-armor); }
+
+    #action-container {
+      margin-top: 40px; opacity: 0; transition: opacity 1s ease;
+      display: flex; justify-content: center; gap: 20px;
+    }
+
+    .vanguard-btn {
+      background: var(--bg-black); border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
+      padding: 12px 24px; font-size: 13px; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
+    }
+
+    .vanguard-btn:hover {
+      border-color: var(--lilac-pulse); color: var(--starlight);
+      box-shadow: 0 0 20px var(--lilac-pulse); transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
 
   <div id="boot-overlay">
-    <button class="boot-btn" onclick="bootSequence()">Initialize Vanguard</button>
+    <button class="boot-btn" onclick="Vanguard.init()">Initialize Vanguard</button>
   </div>
 
   <canvas id="stars"></canvas>
 
   <div class="terminal-window" id="window">
-    <div class="terminal-body" id="console">
+    <div class="terminal-body">
       <div id="text-history"></div>
       <div id="active-line">
         <span id="typing-slot"></span><span class="cursor" id="main-cursor"></span>
       </div>
-      
       <div id="action-container">
-        <button class="vanguard-btn" onclick="nav('directory.html')">Good to be back</button>
+        <button class="vanguard-btn" onclick="Vanguard.nav('directory.html')">Good to be back</button>
       </div>
     </div>
   </div>
 
   <script>
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    /** * CONFIGURATION SWITCHES */
+    const CONFIG = {
+      enableStars: true,
+      enableTypewriter: true,
+      typingSpeed: 40,
+      bootDelay: 800,
+      postTypeDelay: 2000
+    };
 
-    function playSound(freq, type, volume, duration) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(); osc.stop(audioCtx.currentTime + duration);
-    }
+    const Vanguard = {
+      lineIdx: 0,
+      lines: [
+        "<span class='gold-text'>[VANGUARD OS v3.2 ONLINE]</span>",
+        "> Loading Database.",
+        "> loading Options...",
+        " ",
+        "Welcome Home."
+      ],
 
-    function bootSequence() {
-      document.getElementById('boot-overlay').style.display = 'none';
-      audioCtx.resume();
-      document.getElementById('window').classList.add('expanding');
-      setTimeout(startTypewriter, 800);
-    }
-
-    function nav(dest) {
-      playSound(500, 'sawtooth', 0.1, 0.2); // Flash click sound
-      setTimeout(() => { window.location.href = dest; }, 250);
-    }
-
-    const lines = [
-      "<span class='gold-text'>[VANGUARD OS v3.2 ONLINE]</span>",
-      "> Loading Database.",
-      "> loading Options...",
-      " ",
-      "Welcome Home."
-    ];
-
-    let lineIdx = 0;
-    const history = document.getElementById('text-history');
-    const slot = document.getElementById('typing-slot');
-
-    function startTypewriter() {
-      if (lineIdx < lines.length) {
-        let currentLine = lines[lineIdx];
-        slot.innerHTML = ""; 
-
-        if (currentLine.includes('<') || currentLine === " ") {
-          const div = document.createElement('div');
-          div.innerHTML = currentLine === " " ? "&nbsp;" : currentLine;
-          history.appendChild(div);
-          lineIdx++;
-          setTimeout(startTypewriter, 600);
+      // ⌨️ BOOT LOGIC
+      init() {
+        document.getElementById('boot-overlay').style.display = 'none';
+        document.getElementById('window').classList.add('active');
+        
+        if (CONFIG.enableTypewriter) {
+          setTimeout(() => this.typewriter(), CONFIG.bootDelay);
         } else {
-          let charIdx = 0;
-          function typeChar() {
-            if (charIdx < currentLine.length) {
-              slot.textContent += currentLine[charIdx];
-              playSound(Math.random() * 50 + 150, 'square', 0.03, 0.05);
-              charIdx++;
-              setTimeout(typeChar, 40);
-            } else {
-              const finishedLine = document.createElement('div');
-              finishedLine.textContent = currentLine;
-              history.appendChild(finishedLine);
-              slot.textContent = "";
-              lineIdx++;
-              setTimeout(startTypewriter, 800);
-            }
-          }
-          typeChar();
+          this.skipToFinal();
         }
-      } else {
-        // FINISHED TYPING: Wait 2s then fade in buttons
+      },
+
+      typewriter() {
+        const history = document.getElementById('text-history');
+        const slot = document.getElementById('typing-slot');
+        
+        if (this.lineIdx < this.lines.length) {
+          let currentLine = this.lines[this.lineIdx];
+          slot.innerHTML = "";
+
+          if (currentLine.includes('<') || currentLine === " ") {
+            const div = document.createElement('div');
+            div.innerHTML = currentLine === " " ? "&nbsp;" : currentLine;
+            history.appendChild(div);
+            this.lineIdx++;
+            setTimeout(() => this.typewriter(), 600);
+          } else {
+            let charIdx = 0;
+            const typeChar = () => {
+              if (charIdx < currentLine.length) {
+                slot.textContent += currentLine[charIdx];
+                charIdx++;
+                setTimeout(typeChar, CONFIG.typingSpeed);
+              } else {
+                const finishedLine = document.createElement('div');
+                finishedLine.textContent = currentLine;
+                history.appendChild(finishedLine);
+                slot.textContent = "";
+                this.lineIdx++;
+                setTimeout(() => this.typewriter(), 800);
+              }
+            };
+            typeChar();
+          }
+        } else {
+          this.finalize();
+        }
+      },
+
+      skipToFinal() {
+        const history = document.getElementById('text-history');
+        this.lines.forEach(l => {
+          const div = document.createElement('div');
+          div.innerHTML = l === " " ? "&nbsp;" : l;
+          history.appendChild(div);
+        });
+        this.finalize();
+      },
+
+      finalize() {
         document.getElementById('main-cursor').style.display = 'none';
         setTimeout(() => {
           document.getElementById('action-container').style.opacity = '1';
-          playSound(800, 'sine', 0.05, 0.6); // System alert "ping"
-        }, 2000);
-      }
-    }
+        }, CONFIG.postTypeDelay);
+      },
 
-    // STAR ENGINE
-    const canvas = document.getElementById('stars');
-    const ctx = canvas.getContext('2d');
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    resize();
-    let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2 }));
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
-      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.12; if (s.y < 0) s.y = canvas.height; });
-      requestAnimationFrame(animate);
+      nav(dest) {
+        window.location.href = dest;
+      }
+    };
+
+    // ✨ STAR ENGINE
+    if (CONFIG.enableStars) {
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+      resize();
+      window.addEventListener('resize', resize);
+      let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, s: Math.random() * 2 }));
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
+        stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.12; if (s.y < 0) s.y = canvas.height; });
+        requestAnimationFrame(animate);
+      };
+      animate();
     }
-    animate();
-    window.addEventListener('resize', resize);
   </script>
 </body>
 </html>
