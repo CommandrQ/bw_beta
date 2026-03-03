@@ -61,7 +61,7 @@
     }
 
     .menu-viewport {
-      height: 100px; width: 100%;
+      height: 180px; width: 100%;
       overflow: hidden; position: relative;
       display: flex; justify-content: center;
     }
@@ -72,16 +72,31 @@
     }
 
     .menu-item {
-      height: 100px; display: flex; flex-direction: column;
+      height: 180px; display: flex; flex-direction: column;
       justify-content: center; align-items: center;
       color: var(--starlight); font-family: 'Orbitron', sans-serif;
       text-align: center;
     }
 
     .menu-item h2 { font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 5px; color: var(--gold-armor); }
-    .menu-item p { font-size: 0.8rem; color: var(--active-green); opacity: 0.8; }
+    .menu-item p { font-size: 0.8rem; color: var(--active-green); opacity: 0.8; margin-bottom: 20px; }
 
-    /* CONTROLS */
+    /* ACTION BUTTON */
+    .intel-btn {
+      background: transparent; border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
+      padding: 8px 16px; font-size: 10px; letter-spacing: 2px;
+      cursor: pointer; transition: all 0.3s ease;
+      box-shadow: inset 0 0 5px rgba(201, 162, 62, 0.2);
+    }
+
+    .intel-btn:hover {
+      background: rgba(201, 162, 62, 0.1);
+      box-shadow: 0 0 15px var(--gold-armor);
+      transform: scale(1.05);
+    }
+
+    /* ROTATION CONTROLS */
     .nav-controls {
       display: flex; gap: 40px; margin-top: 30px;
     }
@@ -123,9 +138,21 @@
     <div class="terminal-body">
       <div class="menu-viewport">
         <div class="menu-container" id="menu-container">
-          <div class="menu-item"><h2>VCS SUPPORT CENTER</h2><p>(COMING SOON)</p></div>
-          <div class="menu-item"><h2>STORY MODE</h2><p>(COMING SOON)</p></div>
-          <div class="menu-item"><h2>PUBLIC ARCHIVES</h2><p>(COMING SOON)</p></div>
+          <div class="menu-item">
+            <h2>VCS SUPPORT CENTER</h2>
+            <p>(COMING SOON)</p>
+            <button class="intel-btn" onclick="alert('Access Denied: Sector Under Construction')">SYSTEM INTEL</button>
+          </div>
+          <div class="menu-item">
+            <h2>STORY MODE</h2>
+            <p>(COMING SOON)</p>
+            <button class="intel-btn" onclick="alert('Access Denied: Narrative Locked')">SYSTEM INTEL</button>
+          </div>
+          <div class="menu-item">
+            <h2>PUBLIC ARCHIVES</h2>
+            <p>(COMING SOON)</p>
+            <button class="intel-btn" onclick="alert('Access Denied: Database Encrypted')">SYSTEM INTEL</button>
+          </div>
         </div>
       </div>
 
@@ -149,11 +176,10 @@
 
     function rotateMenu(direction) {
       currentIndex += direction;
-      // Endlessly loop logic
       if (currentIndex < 0) currentIndex = totalItems - 1;
       if (currentIndex >= totalItems) currentIndex = 0;
       
-      const offset = currentIndex * -100;
+      const offset = currentIndex * -180; // Match the height of .menu-item
       menuContainer.style.transform = `translateY(${offset}px)`;
     }
 
