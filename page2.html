@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanguard Knetwerk | Silent Protocol</title>
+  <title>Vanguard Knetwerk | Void</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -30,60 +30,18 @@
     canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
     /* =============================================
-       BOOT OVERLAY
-    ============================================= */
-    #boot-overlay {
-      position: fixed; inset: 0; z-index: 100;
-      background: var(--bg-black);
-      display: flex; justify-content: center; align-items: center;
-      transition: opacity 0.5s ease;
-    }
-
-    .boot-btn {
-      padding: 15px 40px; background: transparent;
-      border: 2px solid var(--gold-armor); color: var(--gold-armor);
-      font-family: 'Cinzel Decorative', serif; font-size: 18px;
-      letter-spacing: 4px; text-transform: uppercase; cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .boot-btn:hover {
-      background: var(--gold-armor); color: var(--bg-black);
-      box-shadow: 0 0 30px var(--gold-armor);
-    }
-
-    /* =============================================
-       TERMINAL & CRT ANIMATION
+       TERMINAL WINDOW (STATIC & ACTIVE)
     ============================================= */
     .terminal-window {
       position: relative; z-index: 10;
-      width: min(900px, 94vw); height: 0px; 
+      width: min(900px, 94vw); 
+      height: min(600px, 80vh);
       background-color: rgba(10, 10, 10, 0.98);
-      border: 1px solid rgba(201, 162, 62, 0); 
+      border: 1px solid rgba(201, 162, 62, 0.4); 
       border-radius: 4px;
-      display: flex; flex-direction: column; overflow: hidden; opacity: 0;
-    }
-
-    .terminal-window.striking::before {
-      content: '';
-      position: absolute; top: 50%; left: 50%;
-      width: 100%; height: 2px;
-      background: white; box-shadow: 0 0 15px white;
-      transform: translate(-50%, -50%);
-      animation: crt-strike 0.4s ease-out forwards;
-    }
-
-    .terminal-window.expanding {
-      opacity: 1; height: min(600px, 80vh);
-      border: 1px solid rgba(201, 162, 62, 0.4);
-      transition: height 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.1s;
-      box-shadow: 0 0 40px rgba(192, 140, 207, 0.1), 0 40px 100px rgba(0,0,0,0.9);
-    }
-
-    @keyframes crt-strike {
-      0% { width: 0%; opacity: 0; }
-      50% { width: 100%; opacity: 1; }
-      100% { width: 100%; opacity: 0; }
+      display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 0 40px rgba(192, 140, 207, 0.15), 0 40px 100px rgba(0,0,0,0.9);
+      backdrop-filter: blur(4px);
     }
 
     .title-bar {
@@ -93,63 +51,56 @@
     }
 
     .title-text { flex: 1; display: flex; align-items: center; justify-content: center; gap: 15px; }
-    .led { width: 8px; height: 8px; background-color: var(--active-green); border-radius: 50%; box-shadow: 0 0 8px var(--active-green); }
-    .title-label { color: var(--gold-armor); font-family: 'Cinzel Decorative', serif; font-size: 12px; letter-spacing: 3px; }
+    
+    .led { 
+      width: 8px; height: 8px; 
+      background-color: var(--active-green); 
+      border-radius: 50%; 
+      box-shadow: 0 0 8px var(--active-green); 
+      animation: led-blink 2.5s ease-in-out infinite; 
+    }
+    
+    @keyframes led-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    
+    .title-label { 
+      color: var(--gold-armor); 
+      font-family: 'Cinzel Decorative', serif; 
+      font-size: 12px; 
+      letter-spacing: 4px; 
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(201, 162, 62, 0.5);
+    }
 
     /* =============================================
-       THE BODY (CURSOR ONLY)
+       BODY & CURSOR
     ============================================= */
     .terminal-body {
-      flex: 1; display: flex; flex-direction: column;
+      flex: 1; display: flex;
       justify-content: center; align-items: center;
-      padding: 40px; position: relative;
+      position: relative;
     }
 
     .cursor {
-      width: 12px; height: 1.5em;
+      width: 14px; height: 1.6em;
       background-color: var(--active-green);
-      box-shadow: 0 0 10px var(--active-green);
-      animation: blink 1s step-end infinite;
+      box-shadow: 0 0 12px var(--active-green);
+      animation: blink 1.1s step-end infinite;
     }
 
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* =============================================
-       ACTION BUTTONS
-    ============================================= */
-    #action-container {
-      margin-top: 50px;
-      opacity: 0;
-      transition: opacity 1s ease;
-      display: flex; gap: 24px;
+    .crt-overlay { 
+      position: absolute; inset: 0; pointer-events: none; z-index: 5; 
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px); 
+      opacity: 0.25; 
     }
-
-    .vanguard-btn {
-      background: var(--bg-black); border: 1px solid var(--gold-armor);
-      color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
-      padding: 12px 28px; font-size: 13px; letter-spacing: 2px;
-      text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
-    }
-
-    .vanguard-btn:hover {
-      border-color: var(--lilac-pulse); color: var(--starlight);
-      box-shadow: 0 0 20px var(--lilac-pulse); transform: translateY(-2px);
-    }
-
-    .vanguard-btn:active { background: var(--starlight); box-shadow: 0 0 40px var(--starlight); }
-
-    .crt-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 5; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px); opacity: 0.2; }
   </style>
 </head>
 <body>
 
-  <div id="boot-overlay">
-    <button class="boot-btn" onclick="bootSequence()">Initialize Vanguard</button>
-  </div>
-
   <canvas id="stars"></canvas>
 
-  <div class="terminal-window" id="window">
+  <div class="terminal-window">
     <div class="title-bar">
       <div class="title-text">
         <div class="led"></div>
@@ -157,73 +108,39 @@
       </div>
     </div>
 
-    <div class="terminal-body" id="console">
+    <div class="terminal-body">
       <div class="crt-overlay"></div>
       
       <div class="cursor"></div>
-      
-      <div id="action-container">
-        <button class="vanguard-btn" onclick="nav('intro.html')">Who?</button>
-        <button class="vanguard-btn" onclick="nav('directory.html')">Good to be back</button>
-      </div>
     </div>
   </div>
 
   <script>
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    function playSound(freq, type, volume, duration) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(); osc.stop(audioCtx.currentTime + duration);
-    }
-
-    function bootSequence() {
-      document.getElementById('boot-overlay').style.opacity = '0';
-      audioCtx.resume();
-      
-      setTimeout(() => {
-        document.getElementById('boot-overlay').style.display = 'none';
-        const win = document.getElementById('window');
-        playSound(800, 'sawtooth', 0.1, 0.1); // Electric strike sound
-        win.classList.add('striking');
-        
-        setTimeout(() => {
-          win.classList.remove('striking');
-          win.classList.add('expanding');
-          playSound(60, 'sine', 0.05, 2); // Start the hum
-          
-          // Show buttons after 2 seconds
-          setTimeout(() => {
-            document.getElementById('action-container').style.opacity = '1';
-            playSound(1000, 'sine', 0.02, 0.5); // Subtle system ping
-          }, 2000);
-        }, 400);
-      }, 600);
-    }
-
-    function nav(dest) {
-      playSound(500, 'sawtooth', 0.1, 0.2);
-      setTimeout(() => { window.location.href = dest; }, 250);
-    }
-
-    // STAR ENGINE
+    // COSMIC DRIFT ENGINE
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     resize();
-    let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2 }));
+
+    let stars = Array.from({ length: 50 }, () => ({ 
+      x: Math.random() * canvas.width, 
+      y: Math.random() * canvas.height, 
+      s: Math.random() * 1.8 + 0.2 
+    }));
+
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
-      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.1; if (s.y < 0) s.y = canvas.height; });
+      ctx.fillStyle = "rgba(242, 246, 255, 0.35)";
+      stars.forEach(s => { 
+        ctx.beginPath(); 
+        ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); 
+        ctx.fill(); 
+        s.y -= 0.15; 
+        if (s.y < 0) s.y = canvas.height; 
+      });
       requestAnimationFrame(animate);
     }
+    
     animate();
     window.addEventListener('resize', resize);
   </script>
