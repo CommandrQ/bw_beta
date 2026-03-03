@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Vanguard Tactical | Fort Toward</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Fort Toward | Tactical HUD</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -11,97 +11,89 @@
     :root {
       --bg-dark: #050505;
       --grid-green: #0a2f0a;
-      --map-blue: #2040c0;
-      --map-border: #ffffff;
-      --map-green: #30a060;
-      --text-main: #ffffff;
-      --highlight: #f03030;
+      --castle-blue: #2040c0;
+      --castle-border: #ffffff;
+      --hut-green: #30a060;
       --gold: #C9A23E;
+      --highlight: #f03030;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+    * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
 
     body {
       width: 100%; height: 100vh;
       background: var(--bg-dark);
       display: flex; justify-content: center; align-items: center;
       font-family: 'Press Start 2P', cursive;
-      overflow: hidden;
-      color: var(--text-main);
+      overflow: hidden; color: #fff;
+    }
+
+    /* SCANLINE EFFECT */
+    body::after {
+      content: " "; position: fixed; inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: 100;
     }
 
     .screen-container {
-      position: relative;
-      width: 100vw; height: 100vh;
-      max-width: 1200px; max-height: 800px;
-      background-image: 
-        linear-gradient(var(--grid-green) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-green) 1px, transparent 1px);
-      background-size: 30px 30px;
-      border: 4px solid #333;
-      display: flex; flex-direction: column;
-      overflow: hidden;
+      position: relative; width: 100vw; height: 100vh;
+      background-image: linear-gradient(var(--grid-green) 1px, transparent 1px), linear-gradient(90deg, var(--grid-green) 1px, transparent 1px);
+      background-size: 40px 40px; display: flex; flex-direction: column;
     }
-
-    /* LEVEL SELECTOR HUD */
-    .level-selector {
-      position: absolute; left: 10px; top: 60px;
-      display: flex; flex-direction: column; gap: 10px;
-      z-index: 30;
-    }
-
-    .lvl-btn {
-      background: rgba(0,0,0,0.8); border: 1px solid var(--gold);
-      color: var(--gold); font-family: 'Press Start 2P'; font-size: 6px;
-      padding: 8px; cursor: pointer; transition: all 0.2s;
-    }
-
-    .lvl-btn.active { background: var(--gold); color: black; }
 
     .header {
       padding: 10px; border-bottom: 2px solid var(--gold);
-      background: rgba(0,0,0,0.9);
-      display: flex; justify-content: space-between;
+      background: rgba(0,0,0,0.9); display: flex; justify-content: space-between;
       font-size: 8px; z-index: 20;
     }
 
-    .map-viewport {
-      flex: 1; perspective: 1500px;
+    /* 3D VIEWPORT */
+    .viewport {
+      flex: 1; perspective: 1200px;
       display: flex; justify-content: center; align-items: center;
-      overflow: hidden; cursor: grab;
     }
 
-    .map-container {
-      position: relative;
-      width: 800px; height: 800px;
+    .world {
+      position: relative; width: 400px; height: 400px;
       transform-style: preserve-3d;
-      transform: scale(2.2) rotateX(45deg) rotateZ(-10deg); 
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: scale(1.2) rotateX(60deg) rotateZ(-30deg);
+      transition: transform 0.1s ease-out;
     }
 
-    /* ROOMS */
-    .room {
-      position: absolute;
-      background: var(--map-blue);
-      border: 2px solid var(--map-border);
+    /* BOX MAKER HELPER */
+    .box {
+      position: absolute; transform-style: preserve-3d;
+      background: var(--castle-blue); border: 2px solid var(--castle-border);
       image-rendering: pixelated;
-      display: flex; justify-content: center; align-items: center;
-      text-align: center; font-size: 6px; padding: 4px;
-      transition: opacity 0.5s, transform 0.5s;
     }
 
-    /* ELEVATION STATES */
-    .above { transform: translateZ(60px); border-color: var(--highlight); }
-    .below { transform: translateZ(-60px); opacity: 0.6; border-style: dashed; }
+    /* CASTLE COMPONENTS */
+    .castle-wall { width: 200px; height: 200px; top: 100px; left: 100px; border: 4px solid #fff; }
     
-    /* FOCUS CLASSES */
-    .focus-surface .room:not(.above) { opacity: 0.1; }
-    .focus-main .room:not(:not(.above):not(.below)) { opacity: 0.1; }
-    .focus-sub .room:not(.below) { opacity: 0.1; }
+    .tower {
+      width: 60px; height: 60px; background: var(--castle-blue);
+      border: 3px solid #fff; position: absolute;
+      transform: translateZ(60px); display: flex; align-items: center; justify-content: center; font-size: 6px;
+    }
+
+    /* THE HUT (CITIZENS SUPPORT) */
+    .hut {
+      width: 50px; height: 40px; background: var(--hut-green);
+      border: 2px solid #fff; position: absolute;
+      top: 320px; left: 175px; /* Positioned outside the "castle" square */
+      transform: translateZ(10px);
+    }
 
     .tag {
-      position: absolute; top: -15px; background: var(--gold);
-      color: black; font-size: 5px; padding: 2px 4px; white-space: nowrap;
+      position: absolute; top: -15px; left: 0; background: var(--gold);
+      color: #000; font-size: 5px; padding: 2px; white-space: nowrap;
+    }
+
+    /* VANGUARD SERVICE (IN THE KEEP) */
+    .vanguard-keep {
+      width: 80px; height: 80px; top: 160px; left: 160px;
+      background: var(--castle-blue); border: 2px solid var(--gold);
+      transform: translateZ(30px); text-align: center; padding-top: 10px; font-size: 6px;
     }
 
     .info-overlay {
@@ -109,101 +101,90 @@
       background: rgba(0,0,0,0.9); border-top: 2px solid var(--gold);
       padding: 15px; font-size: 8px; z-index: 20;
     }
-
-    @media (max-width: 600px) {
-      .map-container { transform: scale(1.4) rotateX(45deg) rotateZ(-10deg); }
-    }
   </style>
 </head>
-<body class="focus-main">
+<body>
 
   <div class="screen-container">
     <div class="header">
-      <span>FORT TOWARD // TACTICAL</span>
-      <span id="coord-readout">X:00 Y:00</span>
+      <span>FORT TOWARD // CASTLE SECTOR</span>
+      <span id="coord">X:00 Y:00</span>
     </div>
 
-    <div class="level-selector">
-      <button class="lvl-btn" onclick="setLevel('surface', this)">SURFACE</button>
-      <button class="lvl-btn active" onclick="setLevel('main', this)">MAIN</button>
-      <button class="lvl-btn" onclick="setLevel('sub', this)">SUB-LVL</button>
-    </div>
-
-    <div class="map-viewport" id="viewport">
-      <div class="map-container" id="map">
+    <div class="viewport" id="v">
+      <div class="world" id="world">
         
-        <div class="room above" style="width: 100px; height: 40px; top: 300px; left: 350px;">
+        <div class="castle-wall"></div>
+
+        <div class="hut" onclick="update('CITIZENS SUPPORT', 'OUTSIDE WALLS. HUB FOR NEW ARRIVALS.')">
           <div class="tag">OPENING SOON</div>
-          CITIZENS SUPPORT
+          <span style="font-size: 5px;">HUT</span>
         </div>
 
-        <div class="room" style="width: 60px; height: 60px; top: 370px; left: 370px; background: var(--highlight);">
-          NATION A
+        <div class="vanguard-keep" onclick="update('VANGUARD SERVICES', 'MAIN KEEP. CENTRAL ADMINISTRATION.')">
+          VANGUARD<br>SERVICES
         </div>
-        
-        <div class="room below" style="width: 120px; height: 40px; top: 450px; left: 340px;">
-          VANGUARD CITIZEN SERVICES
-        </div>
+
+        <div class="tower" style="top: 80px; left: 80px;">T1</div>
+        <div class="tower" style="top: 80px; left: 260px;">T2</div>
+        <div class="tower" style="top: 260px; left: 80px;">T3</div>
+        <div class="tower" style="top: 260px; left: 260px;">T4</div>
 
       </div>
     </div>
 
     <div class="info-overlay">
-      <div id="info-title" style="color: var(--gold); margin-bottom: 8px;">LEVEL VIEW</div>
-      <div id="info-body">SELECT LEVEL ON LEFT TO FILTER SECTORS.</div>
+      <div id="t" style="color: var(--gold); margin-bottom: 5px;">TACTICAL SCAN</div>
+      <div id="d">SELECT LOCATION FOR DATA...</div>
     </div>
   </div>
 
   <script>
-    const map = document.getElementById('map');
-    const body = document.body;
+    const world = document.getElementById('world');
+    let zoom = 1.2;
+    let rX = 60;
+    let rZ = -30;
 
-    function setLevel(lvl, btn) {
-      // Toggle CSS class for filtering
-      body.className = `focus-${lvl}`;
-      
-      // Update Button UI
-      document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Update Info
-      const info = {
-        'surface': 'CITIZENS SUPPORT CENTER: ACCESS PENDING.',
-        'main': 'NATION A: CORE COMMAND & CONTROL.',
-        'sub': 'VANGUARD SERVICES: DEEP STORAGE & SUPPORT.'
-      };
-      document.getElementById('info-body').innerText = info[lvl];
+    function update(t, d) {
+      document.getElementById('t').innerText = t;
+      document.getElementById('d').innerText = d;
     }
 
-    // Touch/Mouse Zoom & Rotation
-    let zoom = 2.2;
-    let rotX = 45;
-    let rotZ = -10;
+    // Touch & Mouse Control
+    let dragging = false, sX, sY;
 
-    window.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      zoom = Math.min(Math.max(1, zoom + e.deltaY * -0.001), 5);
-      map.style.transform = `scale(${zoom}) rotateX(${rotX}deg) rotateZ(${rotZ}deg)`;
-    }, { passive: false });
-
-    // Drag Logic
-    let isDown = false; let startX, startY;
-    const start = (e) => { isDown = true; startX = e.pageX || e.touches[0].pageX; startY = e.pageY || e.touches[0].pageY; };
-    const end = () => isDown = false;
-    const move = (e) => {
-      if(!isDown) return;
-      const x = e.pageX || e.touches[0].pageX;
-      const y = e.pageY || e.touches[0].pageY;
-      rotZ += (x - startX) * 0.3;
-      rotX -= (y - startY) * 0.3;
-      startX = x; startY = y;
-      map.style.transform = `scale(${zoom}) rotateX(${rotX}deg) rotateZ(${rotZ}deg)`;
-      document.getElementById('coord-readout').innerText = `X:${Math.floor(x/10)} Y:${Math.floor(y/10)}`;
+    const start = (e) => {
+      dragging = true;
+      sX = e.pageX || e.touches[0].pageX;
+      sY = e.pageY || e.touches[0].pageY;
     };
 
-    window.addEventListener('mousedown', start); window.addEventListener('touchstart', start);
-    window.addEventListener('mousemove', move); window.addEventListener('touchmove', move);
-    window.addEventListener('mouseup', end); window.addEventListener('touchend', end);
+    const move = (e) => {
+      if (!dragging) return;
+      const x = e.pageX || e.touches[0].pageX;
+      const y = e.pageY || e.touches[0].pageY;
+      
+      rZ += (x - sX) * 0.5;
+      rX -= (y - sY) * 0.5;
+      
+      sX = x; sY = y;
+      world.style.transform = `scale(${zoom}) rotateX(${rX}deg) rotateZ(${rZ}deg)`;
+      document.getElementById('coord').innerText = `X:${Math.floor(x/10)} Y:${Math.floor(y/10)}`;
+    };
+
+    window.addEventListener('mousedown', start);
+    window.addEventListener('touchstart', start);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('touchmove', move);
+    window.addEventListener('mouseup', () => dragging = false);
+    window.addEventListener('touchend', () => dragging = false);
+
+    // Mouse Wheel Zoom
+    window.addEventListener('wheel', (e) => {
+      zoom += e.deltaY * -0.001;
+      zoom = Math.min(Math.max(0.5, zoom), 3);
+      world.style.transform = `scale(${zoom}) rotateX(${rX}deg) rotateZ(${rZ}deg)`;
+    });
   </script>
 </body>
 </html>
