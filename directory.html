@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Vanguard Tactical | Fort Toward</title>
+  <title>Vanguard Tactical | Nation A</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -11,7 +11,7 @@
       --map-green: #30a060; --map-border: #ffffff; --gold: #C9A23E;
       --highlight: #f03030; --shaft-color: #555;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       width: 100%; height: 100vh; background: var(--bg-dark);
       display: flex; justify-content: center; align-items: center;
@@ -20,35 +20,41 @@
     .screen-container {
       position: relative; width: 100vw; height: 100vh;
       background-image: linear-gradient(var(--grid-green) 1px, transparent 1px), linear-gradient(90deg, var(--grid-green) 1px, transparent 1px);
-      background-size: 24px 24px; display: flex; flex-direction: column; image-rendering: pixelated;
+      background-size: 20px 20px; display: flex; flex-direction: column; image-rendering: pixelated;
     }
     .header { padding: 12px; border-bottom: 2px solid var(--gold); background: rgba(0,0,0,0.9); display: flex; justify-content: space-between; font-size: 8px; z-index: 50; }
-    .viewport { flex: 1; position: relative; overflow: hidden; cursor: grab; display: flex; align-items: center; justify-content: center; }
-    .map-layer { position: absolute; width: 3000px; height: 3000px; transform-origin: center; }
-
-    /* ROOM & CONNECTORS */
-    .room { position: absolute; border: 2px solid var(--map-border); display: flex; align-items: center; justify-content: center; font-size: 6px; text-align: center; cursor: pointer; z-index: 10; }
-    .room:hover { filter: brightness(1.2); border-color: var(--gold); }
     
-    .connector { position: absolute; background: var(--shaft-color); z-index: 5; opacity: 0.6; }
-    .v-shaft { width: 6px; border-left: 1px solid #fff; border-right: 1px solid #fff; }
-    .h-shaft { height: 6px; border-top: 1px solid #fff; border-bottom: 1px solid #fff; }
+    /* CENTERED VIEWPORT (NO SCROLLING) */
+    .viewport { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+    .map-canvas { position: relative; width: 600px; height: 600px; }
 
-    .tag { position: absolute; top: -14px; background: var(--gold); color: #000; font-size: 5px; padding: 1px 4px; border: 1px solid #fff; }
+    /* SMALLER COMPACT SHAPES */
+    .room { position: absolute; border: 1px solid var(--map-border); display: flex; align-items: center; justify-content: center; font-size: 5px; text-align: center; cursor: pointer; z-index: 10; transform: translate(-50%, -50%); }
+    .room:hover { filter: brightness(1.2); border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
+    
+    .connector { position: absolute; background: var(--shaft-color); z-index: 5; opacity: 0.8; transform: translate(-50%, -50%); }
+    .v-line { width: 4px; border-left: 1px solid #fff; border-right: 1px solid #fff; }
+    .h-line { height: 4px; border-top: 1px solid #fff; border-bottom: 1px solid #fff; }
+
+    .tag { position: absolute; top: -10px; background: var(--gold); color: #000; font-size: 4px; padding: 1px 3px; border: 1px solid #fff; }
     .flash { animation: flash-anim 1s infinite; }
-    @keyframes flash-anim { 0%, 100% { border-color: var(--gold); } 50% { border-color: #fff; } }
+    @keyframes flash-anim { 0%, 100% { border-color: var(--gold); box-shadow: 0 0 5px var(--gold); } 50% { border-color: #fff; box-shadow: none; } }
 
-    /* HUD & ABOUT */
-    #about-screen { position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.95); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; border: 4px double var(--gold); margin: 20px; }
+    /* HUD & MODAL */
+    #about-screen { position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.98); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; border: 4px double var(--gold); margin: 20px; }
     .info-bar { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); border-top: 2px solid var(--gold); padding: 15px; font-size: 8px; z-index: 50; }
   </style>
 </head>
 <body>
 
 <div class="screen-container">
-  <div class="header"><span>FORT TOWARD // SECTOR: NATION A</span><span id="coord">X:00 Y:00</span></div>
-  <div class="viewport" id="v"><div class="map-layer" id="map-root"></div></div>
-  <div class="info-bar"><div id="t" style="color: var(--gold); margin-bottom: 5px;">VCS DATA TERMINAL</div><div id="d">SYSTEMS ONLINE. SELECT NODE.</div></div>
+  <div class="header"><span>FORT TOWARD // SECTOR: NATION A</span><span>VCS ONLINE</span></div>
+  <div class="viewport">
+    <div class="map-canvas" id="map-root">
+      <div style="position:absolute; top:50%; left:50%; width:200px; height:200px; border:1px dashed rgba(255,255,255,0.1); transform:translate(-50%,-50%); pointer-events:none;"></div>
+    </div>
+  </div>
+  <div class="info-bar"><div id="t" style="color: var(--gold); margin-bottom: 5px;">TACTICAL HUD</div><div id="d">SECURE CONNECTION ESTABLISHED.</div></div>
 </div>
 
 <div id="about-screen">
@@ -56,32 +62,31 @@
   <div style="font-size: 9px; line-height: 1.8; max-width: 700px; text-align: left; font-family: 'Inter', sans-serif;">
     <p><strong>The Humanitarian Anchor:</strong> Vanguard Citizen Services (VCS) acts as the administrative heart and humanitarian anchor for Nation A. We serve as the vital bridge between the strategic command of the Big Castle and the daily lives of the residents inhabiting the surface colonies.</p><br>
     <p><strong>Mission of Stability:</strong> Our primary goal is to achieve total sector stability by providing a safe harbor for all citizens. We are dedicated to transforming Fort Toward from a military stronghold into a thriving home where progress is protected and resources from **The Reserves** are shared equitably.</p><br>
-    <p><strong>Surface Security:</strong> By maintaining the secure link between the deep VCS Hub and the surface-level Hut, we ensure the safety of all new arrivals. We work tirelessly to move the nation forward, building a resilient future even in the shadow of **The Ruins**.</p>
+    <p><strong>Surface Security:</strong> By maintaining the secure link between the deep VCS Hub and the surface-level **Hut**, we ensure the safety of all new arrivals. We work tirelessly to move the nation forward, building a resilient future even in the shadow of **The Ruins**.</p>
   </div>
   <button onclick="closeAbout()" style="margin-top:30px; padding: 12px 24px; background: var(--highlight); color: white; border: none; font-family: 'Press Start 2P'; cursor: pointer;">RETURN</button>
 </div>
 
 <script>
-  // REGISTRY: Add locations here.
+  // REGISTRY: Coordinates are relative to the center (300, 300)
   const LOCATIONS = [
-    { id: 'vcs', name: 'VCS HUB', x: 1400, y: 1400, color: 'var(--map-blue)', isHub: true, desc: 'Primary Vanguard Administrative Keep.' },
-    { id: 'hut', name: 'HUT', x: 1400, y: 1100, color: 'var(--map-green)', tag: 'OPENING SOON', desc: 'Surface Access Point for Nation A.' },
-    { id: 'reserves', name: 'RESERVES', x: 1650, y: 1400, color: 'var(--map-blue)', desc: 'Strategic resource storage.' },
-    { id: 'ruins', name: 'RUINS', x: 1150, y: 1400, color: '#444', desc: 'The Ruins: Sector Reclaimed.' }
+    { id: 'vcs', name: 'VCS HUB', x: 300, y: 300, color: 'var(--map-blue)', isHub: true, desc: 'Central Admin for Nation A.' },
+    { id: 'hut', name: 'HUT', x: 300, y: 180, color: 'var(--map-green)', tag: 'OPENING SOON', desc: 'Surface Access Point.' },
+    { id: 'reserves', name: 'RESERVES', x: 450, y: 300, color: 'var(--map-blue)', desc: 'Strategic resource storage.' },
+    { id: 'ruins', name: 'RUINS', x: 150, y: 300, color: '#444', desc: 'The Ruins Sector.' }
   ];
 
   const root = document.getElementById('map-root');
 
   function buildMap() {
     LOCATIONS.forEach(loc => {
-      // 1. Assign Random Pixel Shape
+      // SMALLER RANDOM SHAPES
       const shapes = [
-        { w: 48, h: 48 }, // Small Square
-        { w: 96, h: 48 }, // Wide Rectangle
-        { w: 48, h: 96 }, // Tall Rectangle
-        { w: 72, h: 72 }  // Big Square
+        { w: 32, h: 32 }, // Small Square
+        { w: 48, h: 24 }, // Wide
+        { w: 24, h: 48 }, // Tall
       ];
-      const shape = loc.isHub ? { w: 80, h: 80 } : shapes[Math.floor(Math.random() * shapes.length)];
+      const shape = loc.isHub ? { w: 40, h: 40 } : shapes[Math.floor(Math.random() * shapes.length)];
       
       const el = document.createElement('div');
       el.className = `room ${loc.isHub ? 'flash' : ''}`;
@@ -96,47 +101,32 @@
         document.getElementById('t').innerText = loc.name; 
         document.getElementById('d').innerText = loc.desc; 
       };
-      
       root.appendChild(el);
 
-      // 2. Simple Non-Overlapping Connectors (To Hub)
+      // SIMPLE CONNECTORS
       if (!loc.isHub) {
         const hub = LOCATIONS.find(l => l.isHub);
         const shaft = document.createElement('div');
-        
         if (loc.x === hub.x) {
-          // Vertical Shaft
-          shaft.className = 'connector v-shaft';
-          const top = Math.min(loc.y, hub.y) + 40;
-          shaft.style.height = `${Math.abs(loc.y - hub.y) - 20}px`;
-          shaft.style.left = `${loc.x + (shape.w / 2) - 3}px`;
-          shaft.style.top = `${top}px`;
+          shaft.className = 'connector v-line';
+          shaft.style.height = `${Math.abs(loc.y - hub.y) - 30}px`;
+          shaft.style.left = `${loc.x}px`;
+          shaft.style.top = `${(loc.y + hub.y) / 2}px`;
         } else {
-          // Horizontal Shaft
-          shaft.className = 'connector h-shaft';
-          const left = Math.min(loc.x, hub.x) + 40;
-          shaft.style.width = `${Math.abs(loc.x - hub.x) - 20}px`;
-          shaft.style.top = `${loc.y + (shape.h / 2) - 3}px`;
-          shaft.style.left = `${left}px`;
+          shaft.className = 'connector h-line';
+          shaft.style.width = `${Math.abs(loc.x - hub.x) - 30}px`;
+          shaft.style.left = `${(loc.x + hub.x) / 2}px`;
+          shaft.style.top = `${loc.y}px`;
         }
         root.appendChild(shaft);
       }
     });
   }
 
-  // Camera & Interaction
-  let scale = 1.5, posX = -400, posY = -100, isDown = false, sX, sY;
   function openAbout() { document.getElementById('about-screen').style.display = 'flex'; }
   function closeAbout() { document.getElementById('about-screen').style.display = 'none'; }
-  const render = () => { root.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; };
-  
-  window.addEventListener('mousedown', (e) => { if(e.target.classList.contains('room')) return; isDown = true; sX = e.pageX - posX; sY = e.pageY - posY; });
-  window.addEventListener('mousemove', (e) => { if (!isDown) return; posX = e.pageX - sX; posY = e.pageY - sY; render(); });
-  window.addEventListener('mouseup', () => isDown = false);
-  window.addEventListener('wheel', (e) => { scale += e.deltaY * -0.0015; scale = Math.min(Math.max(0.4, scale), 4); render(); }, {passive: false});
 
   buildMap();
-  render();
 </script>
 </body>
 </html>
