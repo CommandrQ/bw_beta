@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanguard Knetwerk | The Mirrorgate</title>
+  <title>Vanguard Knetwerk | The Encounter</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -15,6 +15,7 @@
       --lilac-pulse: #C08CCF;
       --starlight: #F2F6FF;
       --active-green: #00ff41;
+      --alert-red: #ff3131;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -46,54 +47,45 @@
 
     .title-bar {
       background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
-      padding: 10px 16px; display: flex; align-items: center;
-      border-bottom: 2px solid var(--gold-armor); flex-shrink: 0;
+      padding: 10px 16px; border-bottom: 2px solid var(--gold-armor);
+      text-align: center;
     }
 
-    .title-text { flex: 1; display: flex; align-items: center; justify-content: center; gap: 15px; }
-    .led { width: 8px; height: 8px; background-color: var(--active-green); border-radius: 50%; box-shadow: 0 0 8px var(--active-green); }
     .title-label { color: var(--gold-armor); font-family: 'Cinzel Decorative', serif; font-size: 11px; letter-spacing: 3px; }
 
     /* =============================================
-       ADVENTURE LOG (BODY)
+       ADVENTURE LOG
     ============================================= */
     .terminal-body {
       flex: 1; display: flex; flex-direction: column;
-      justify-content: flex-start; 
       padding: 40px; overflow-y: auto;
       font-family: 'Orbitron', sans-serif; font-size: 14px;
-      line-height: 1.8; color: var(--starlight);
+      line-height: 2; color: var(--starlight);
       scrollbar-width: none;
     }
-    .terminal-body::-webkit-scrollbar { display: none; }
 
-    .crt-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 5; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px); opacity: 0.2; }
-
-    /* TEXT STYLES */
-    .narrative { margin-bottom: 20px; opacity: 0.8; }
-    .speaker-label { color: var(--gold-armor); font-family: 'Cinzel Decorative', serif; font-weight: 700; margin-right: 10px; }
-    .dialog { color: var(--lilac-pulse); text-shadow: 0 0 5px var(--lilac-pulse); margin-bottom: 20px; }
-    .system-msg { color: var(--active-green); margin-top: 30px; font-size: 12px; }
-
-    .cursor {
-      display: inline-block; width: 10px; height: 1.2em;
-      background-color: var(--active-green); vertical-align: middle;
-      box-shadow: 0 0 8px var(--active-green);
-      animation: blink 0.8s step-end infinite;
-    }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .narrative { margin-bottom: 20px; color: rgba(242, 246, 255, 0.85); }
+    .speaker-label { color: var(--gold-armor); font-family: 'Cinzel Decorative', serif; margin-right: 10px; font-weight: bold; }
+    .dialog { color: var(--lilac-pulse); text-shadow: 0 0 5px rgba(192, 140, 207, 0.5); margin-bottom: 20px; font-style: italic; }
+    .alert { color: var(--alert-red); text-shadow: 0 0 8px var(--alert-red); font-weight: bold; }
 
     /* CHOICE BUTTONS */
     #choices {
-      margin-top: auto; display: flex; gap: 20px; opacity: 0;
+      margin-top: auto; display: flex; justify-content: center; gap: 20px; opacity: 0;
       transition: opacity 1s ease;
     }
     .choice-btn {
-      background: transparent; border: 1px solid var(--gold-armor);
-      color: var(--gold-armor); padding: 10px 20px; font-family: 'Orbitron', sans-serif;
+      background: var(--bg-black); border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); padding: 12px 24px; font-family: 'Orbitron', sans-serif;
       font-size: 12px; text-transform: uppercase; cursor: pointer; transition: 0.3s;
+      letter-spacing: 2px;
     }
-    .choice-btn:hover { background: var(--gold-armor); color: var(--bg-black); box-shadow: 0 0 15px var(--gold-armor); }
+    .choice-btn:hover { 
+      border-color: var(--lilac-pulse); color: var(--starlight);
+      box-shadow: 0 0 20px var(--lilac-pulse);
+    }
+
+    .crt-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 5; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px); opacity: 0.2; }
   </style>
 </head>
 <body>
@@ -102,34 +94,31 @@
 
   <div class="terminal-window">
     <div class="title-bar">
-      <div class="title-text">
-        <div class="led"></div>
-        <span class="title-label">MIRRORGATE LOG // SECTOR 01</span>
-      </div>
+      <span class="title-label">MIRRORGATE LOG // ARRIVAL HUB</span>
     </div>
 
-    <div class="terminal-body" id="log">
+    <div class="terminal-body">
       <div class="crt-overlay"></div>
-      
-      <div id="typewriter-content"></div>
-      
+      <div id="story-log"></div>
       <div id="choices">
-        <button class="choice-btn" onclick="location.href='intro.html'">[ I am a Traveler ]</button>
-        <button class="choice-btn" onclick="location.href='directory.html'">[ I seek the Reserves ]</button>
+        <button class="choice-btn" onclick="takeWeapon('sword')">[ GRAB SWORD ]</button>
+        <button class="choice-btn" onclick="takeWeapon('shield')">[ GRAB SHIELD ]</button>
       </div>
     </div>
   </div>
 
   <script>
-    const log = document.getElementById('typewriter-content');
+    const log = document.getElementById('story-log');
     const choiceContainer = document.getElementById('choices');
 
     const storyLines = [
-      { type: 'narrative', text: "The Mirrorgate ripples behind you, a liquid pool of starlight that slowly solidifies back into cold stone." },
-      { type: 'narrative', text: "A heavy metallic CLANG echoes through the chamber. Out of the navy-depth shadows steps a figure in sunrise-gold armor." },
-      { type: 'dialog', speaker: "SERGEANT KAELEN", text: "\"Halt, Traveler. You've crossed the threshold with the momentum of a falling star.\"" },
-      { type: 'dialog', speaker: "SERGEANT KAELEN", text: "\"State your business. Are you a hero in a hurry, or a ghost running from The Ruins?\"" },
-      { type: 'system', text: "> SERGEANT KAELEN is gauging your intent. How do you respond?" }
+      { type: 'narrative', text: "You step through the Mirrorgate. The air is cool and smells of ozone. The hub looks familiar—the same obsidian floors, the same drifting stars—but something is... off. The lilac glows are too sharp. The shadows too long." },
+      { type: 'narrative', text: "A Guard in high-gloss armor slides into your path. He doesn't offer a hand. Instead, he raises a scanner that pulses with a cold light." },
+      { type: 'dialog', speaker: "GUARD", text: "\"Halt. Inso-Signature scan initiated...\"" },
+      { type: 'alert', text: ">> [ERROR] : INSO-SIGNATURE UNRECOGNIZED. UNKNOWN ENTITY DETECTED." },
+      { type: 'dialog', speaker: "GUARD", text: "\"You aren't in the archives, traveler. And the Vanguard has no room for ghosts.\"" },
+      { type: 'narrative', text: "The Guard's eyes turn cold. He levels his spear at your chest. Behind him, two more sentinels begin to draw their blades. They aren't talking anymore." },
+      { type: 'narrative', text: "You scan the floor for a defense. Two relics lie discarded on a nearby equipment rack..." }
     ];
 
     let currentLine = 0;
@@ -164,12 +153,13 @@
         }
         typeChar();
       } else {
-        // Show choices when story is done
         choiceContainer.style.opacity = '1';
-        const cursor = document.createElement('span');
-        cursor.className = 'cursor';
-        log.appendChild(cursor);
       }
+    }
+
+    function takeWeapon(type) {
+        // Star flare flash logic would go here
+        window.location.href = 'combat.html?weapon=' + type;
     }
 
     // STAR ENGINE
@@ -177,10 +167,10 @@
     const ctx = canvas.getContext('2d');
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     resize();
-    let stars = Array.from({ length: 40 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2 }));
+    let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2 }));
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
+      ctx.fillStyle = "rgba(192, 140, 207, 0.35)";
       stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.1; if (s.y < 0) s.y = canvas.height; });
       requestAnimationFrame(animate);
     }
@@ -189,3 +179,4 @@
   </script>
 </body>
 </html>
+
