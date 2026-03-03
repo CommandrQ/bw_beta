@@ -1,95 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Reserves - Menu</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #1a1a1a; /* Dark background for white text contrast */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VCS Central</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
-        .menu-container {
-            text-align: center;
-            background: #252525;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #444;
-        }
+  <style>
+    :root {
+      --bg-black: #0A0A0A;
+      --navy-depth: #0A2540;
+      --gold-armor: #C9A23E;
+      --starlight: #F2F6FF;
+      --active-green: #00ff41;
+      --white: #FFFFFF;
+      --terminal-glow: rgba(255, 255, 255, 0.1);
+    }
 
-        h1 {
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-size: 1.5rem;
-            color: #aaaaaa;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
 
-        .menu-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+    body {
+      width: 100%; height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
+      display: flex; justify-content: center; align-items: center;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+    }
 
-        .menu-item {
-            margin: 15px 0;
-        }
+    canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-        /* The requested white text styling */
-        .menu-link {
-            color: #FFFFFF !important;
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: 500;
-            display: inline-block;
-            padding: 10px 20px;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
+    /* SCANLINE TEXTURE */
+    .terminal-window::before {
+      content: " ";
+      position: absolute; inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+      background-size: 100% 4px;
+      z-index: 15; pointer-events: none;
+    }
 
-        .menu-link:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            border: 1px solid #ffffff;
-            transform: translateY(-2px);
-        }
+    .terminal-window {
+      position: relative; z-index: 10;
+      width: min(900px, 94vw); height: 0px; 
+      background-color: rgba(10, 10, 10, 0.98);
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 6px 6px 4px 4px;
+      display: flex; flex-direction: column; overflow: hidden; opacity: 0;
+      transition: height 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.2s;
+      box-shadow: 0 0 30px var(--terminal-glow);
+    }
 
-        .footer-note {
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #666;
-        }
-    </style>
+    .terminal-window.active { opacity: 1; height: min(600px, 80vh); }
+
+    .terminal-header {
+      height: 32px;
+      background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+      display: flex; align-items: center; padding: 0 15px; justify-content: space-between;
+      z-index: 20;
+    }
+
+    .header-title { 
+      color: var(--white); font-family: 'Orbitron', sans-serif; 
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    /* STATUS PULSE */
+    .status-pulse {
+      width: 6px; height: 6px;
+      background-color: var(--active-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--active-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .header-controls { display: flex; gap: 8px; }
+    .control-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--white); opacity: 0.6; }
+
+    /* MENU SYSTEM */
+    .terminal-body {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 20px; position: relative;
+      z-index: 10;
+    }
+
+    .menu-viewport {
+      height: 180px; width: 100%;
+      overflow: hidden; position: relative;
+      display: flex; justify-content: center;
+    }
+
+    #menu-container {
+      position: absolute; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .menu-item {
+      height: 180px; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      color: var(--starlight); font-family: 'Orbitron', sans-serif;
+      text-align: center;
+    }
+
+    .menu-item h2 { 
+      font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 5px; color: var(--white); 
+      text-shadow: 0 0 5px rgba(255,255,255,0.2);
+    }
+    
+    .menu-item p { font-size: 0.8rem; color: var(--active-green); opacity: 0.8; margin-bottom: 20px; }
+
+    .intel-btn {
+      background: transparent; border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
+      padding: 8px 16px; font-size: 10px; letter-spacing: 2px;
+      cursor: pointer; transition: all 0.3s ease;
+      text-decoration: none; display: inline-block;
+    }
+
+    .intel-btn:hover {
+      background: rgba(201, 162, 62, 0.1);
+      box-shadow: 0 0 15px var(--gold-armor);
+      transform: scale(1.05);
+    }
+
+    .nav-controls { display: flex; gap: 40px; margin-top: 30px; }
+
+    .nav-btn {
+      background: transparent; border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
+      padding: 10px 20px; font-size: 10px; letter-spacing: 2px;
+      cursor: pointer; transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover { background: var(--gold-armor); color: var(--bg-black); box-shadow: 0 0 15px var(--gold-armor); }
+
+    footer {
+      position: absolute; bottom: 20px; width: 100%;
+      text-align: center; color: var(--starlight);
+      font-family: 'Orbitron', sans-serif; font-size: 10px;
+      letter-spacing: 2px; text-transform: uppercase;
+      opacity: 0.6; text-shadow: 0 0 10px rgba(242, 246, 255, 0.8);
+      pointer-events: none; z-index: 10;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="menu-container">
-        <h1>Project Dashboard</h1>
-        <ul class="menu-list">
-            <li class="menu-item">
-                <a href="#" class="menu-link">Support Center</a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">Worldbuilding Project</a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">Story Mode</a>
-            </li>
-        </ul>
-        <div class="footer-note">
-            Managing The Reserves & The Ruins
-        </div>
+  <canvas id="stars"></canvas>
+
+  <div class="terminal-window" id="window">
+    <div class="terminal-header">
+      <div class="header-controls">
+        <div class="control-dot"></div>
+        <div class="control-dot"></div>
+        <div class="control-dot" style="background: var(--white); opacity: 0.8;"></div>
+      </div>
+      <div class="header-title">
+        <div class="status-pulse"></div>
+        VCS Central //
+      </div>
+      <div style="width: 46px;"></div>
     </div>
 
+    <div class="terminal-body">
+      <div class="menu-viewport">
+        <div id="menu-container"></div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="rotateMenu(-1)">▲ ROTATE UP</button>
+        <button class="nav-btn" onclick="rotateMenu(1)">▼ ROTATE DOWN</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Powered by Vanguard Citizen Services
+  </footer>
+
+  <script>
+    const MENU_ENTRIES = [
+      { title: "VCS SUPPORT CENTER", status: "(COMING SOON)", url: "#vcs-intel" },
+      { title: "STORY MODE", status: "(COMING SOON)", url: "#story-intel" },
+      { title: "PUBLIC ARCHIVES", status: "(COMING SOON)", url: "#archives-intel" }
+    ];
+
+    let currentIndex = 0;
+    const container = document.getElementById('menu-container');
+
+    function initMenu() {
+      MENU_ENTRIES.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        div.innerHTML = `
+          <h2>${entry.title}</h2>
+          <p>${entry.status}</p>
+          <a href="${entry.url}" class="intel-btn">SYSTEM INTEL</a>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function rotateMenu(direction) {
+      currentIndex += direction;
+      if (currentIndex < 0) currentIndex = MENU_ENTRIES.length - 1;
+      if (currentIndex >= MENU_ENTRIES.length) currentIndex = 0;
+      
+      const offset = currentIndex * -180;
+      container.style.transform = `translateY(${offset}px)`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initMenu();
+      setTimeout(() => {
+        document.getElementById('window').classList.add('active');
+      }, 500);
+    });
+
+    // STAR ENGINE
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+    
+    let stars = Array.from({ length: 45 }, () => ({ 
+      x: Math.random() * window.innerWidth, 
+      y: Math.random() * window.innerHeight, 
+      s: Math.random() * 2 
+    }));
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
+      stars.forEach(s => { 
+        ctx.beginPath(); 
+        ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); 
+        ctx.fill(); 
+        s.y -= 0.12; 
+        if (s.y < 0) s.y = canvas.height; 
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
 </body>
 </html>
