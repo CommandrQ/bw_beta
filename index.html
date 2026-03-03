@@ -3,115 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
-  <title>Vanguard Knetwerk</title>
+  <title>Vanguard Knetwerk | Star-Lit Terminal</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
     /* =============================================
-       RESET
+       BRAND PALETTE & RESET
     ============================================= */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-black: #0A0A0A;
+      --navy-depth: #0A2540;
+      --gold-armor: #C9A23E;
+      --lilac-pulse: #C08CCF;
+      --starlight: #F2F6FF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
 
     /* =============================================
-       BACKDROP
+       BACKDROP: COSMIC CATHEDRAL
     ============================================= */
-    html, body {
-      width: 100%; height: 100%;
+    body {
+      width: 100%; height: 100vh;
       overflow: hidden;
-      background-color: #080810;
+      background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
-      padding-top: 6vh;
-      font-family: 'Cinzel', serif;
+      font-family: 'Inter', sans-serif;
     }
 
     canvas {
       position: fixed;
       inset: 0;
       z-index: 0;
+      pointer-events: none;
     }
 
     /* =============================================
-       TERMINAL WINDOW
+       TERMINAL WINDOW (PS2-ERA STYLE)
     ============================================= */
     .terminal-window {
       position: relative;
-      z-index: 1;
-      width: min(860px, 92vw);
-      height: min(560px, 80vh);
-      background-color: #0d0d0d;
-      border-radius: 10px;
+      z-index: 10;
+      width: min(900px, 94vw);
+      height: min(600px, 80vh);
+      background-color: rgba(10, 10, 10, 0.92);
+      border: 1px solid rgba(201, 162, 62, 0.4); 
+      border-radius: 4px;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,0.08),
-        0 30px 80px rgba(0,0,0,0.8),
-        0 0 40px rgba(0,255,100,0.04);
+        0 0 40px rgba(192, 140, 207, 0.1), /* Soft Lilac Bloom */
+        0 40px 100px rgba(0,0,0,0.9);
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      backdrop-filter: blur(4px);
     }
 
-    /* =============================================
-       TITLE BAR
-    ============================================= */
+    /* TITLE BAR */
     .title-bar {
-      background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-      padding: 10px 14px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+      padding: 12px 16px;
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #111;
+      border-bottom: 2px solid var(--gold-armor);
       flex-shrink: 0;
-      user-select: none;
     }
 
-    .buttons {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .btn {
-      width: 13px; height: 13px;
-      border-radius: 50%;
+    .btn-close {
+      width: 14px; height: 14px;
+      background: var(--bg-black);
+      border: 1px solid var(--gold-armor);
+      transition: all 0.2s;
       position: relative;
     }
-
-    /* Red — clickable, navigates to directory.html */
-    .btn-close {
-      background: #ff5f57;
-      border: 1px solid #e0443e;
-      cursor: pointer;
-      transition: filter 0.15s;
-    }
-    .btn-close:hover { filter: brightness(1.2); }
-    .btn-close::before, .btn-close::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 7px; height: 1.5px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 1px;
-      transform-origin: center;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-    .btn-close::before { transform: translate(-50%, -50%) rotate(45deg); }
-    .btn-close::after  { transform: translate(-50%, -50%) rotate(-45deg); }
-    .btn-close:hover::before,
-    .btn-close:hover::after { opacity: 1; }
-
-    /* Yellow & Green — static, not clickable */
-    .btn-min {
-      background: #febc2e;
-      border: 1px solid #d6a21b;
-      cursor: default;
-      pointer-events: none;
-    }
-    .btn-max {
-      background: #28c840;
-      border: 1px solid #1aab2e;
-      cursor: default;
-      pointer-events: none;
+    .btn-close:hover { 
+      background: var(--gold-armor);
+      box-shadow: 0 0 10px var(--gold-armor);
     }
 
     .title-text {
@@ -119,367 +89,230 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-    }
-
-    .led {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #00ff41;
-      box-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41, 0 0 20px rgba(0,255,65,0.6);
-      animation: led-pulse 2s ease-in-out infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes led-pulse {
-      0%, 100% { opacity: 1;   box-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41, 0 0 20px rgba(0,255,65,0.6); }
-      50%       { opacity: 0.6; box-shadow: 0 0 2px #00ff41, 0 0 5px  #00ff41, 0 0 10px rgba(0,255,65,0.3); }
+      gap: 12px;
     }
 
     .title-label {
-      color: #00ff41;
-      font-size: 12px;
-      letter-spacing: 1.5px;
+      color: var(--gold-armor);
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 13px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      text-shadow: 0 0 8px rgba(0,255,65,0.7);
+      text-shadow: 0 0 10px rgba(201, 162, 62, 0.6);
     }
 
-    /* =============================================
-       TERMINAL BODY
-    ============================================= */
+    /* TERMINAL BODY */
     .terminal-body {
       flex: 1;
-      padding: 18px 20px;
+      padding: 30px;
       overflow-y: auto;
-      color: #00ff41;
+      color: var(--starlight);
+      font-family: 'Orbitron', sans-serif;
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 2;
       position: relative;
       scrollbar-width: none;
     }
     .terminal-body::-webkit-scrollbar { display: none; }
 
-    /* Static scanlines */
-    .scanlines {
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 3px,
-        rgba(0, 0, 0, 0.13) 3px,
-        rgba(0, 0, 0, 0.13) 4px
-      );
-      pointer-events: none;
-      z-index: 2;
-    }
+    /* Highlights */
+    .lilac-text { color: var(--lilac-pulse); text-shadow: 0 0 8px var(--lilac-pulse); }
+    .gold-text { color: var(--gold-armor); text-shadow: 0 0 8px var(--gold-armor); }
 
-    /* Scanline sweep */
+    /* Scanline Sweep */
     .terminal-body::after {
       content: '';
       position: absolute;
-      left: 0; right: 0;
-      top: -20%;
-      height: 20%;
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(0,255,65,0.03) 40%,
-        rgba(0,255,65,0.06) 50%,
-        rgba(0,255,65,0.03) 60%,
-        transparent 100%
-      );
-      pointer-events: none;
+      left: 0; right: 0; top: -20%; height: 25%;
+      background: linear-gradient(to bottom, transparent, rgba(192, 140, 207, 0.04), transparent);
       z-index: 3;
-      animation: scanline-sweep 6s linear infinite;
+      pointer-events: none;
+      animation: scanline-sweep 10s linear infinite;
     }
 
     @keyframes scanline-sweep {
-      0%   { top: -20%; }
-      100% { top: 110%; }
+      0% { top: -25%; }
+      100% { top: 120%; }
     }
 
-    /* =============================================
-       TYPED TEXT STYLES
-    ============================================= */
-    #transmission {
-      position: relative;
-      z-index: 4;
-    }
-
-    .line {
-      display: block;
-      min-height: 1.7em;
-      white-space: pre-wrap;
-    }
-
-    .line-dim    { color: #3a6644; font-size: 12px; letter-spacing: 1px; }
-    .line-normal { color: #00ff41; font-size: 13px; }
-    .line-bold   {
-      color: #00ff41;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(0,255,65,0.8), 0 0 20px rgba(0,255,65,0.4);
-    }
-    .line-gold   {
-      color: #f5c842;
-      font-size: 13px;
-      letter-spacing: 1px;
-      text-shadow: 0 0 8px rgba(245,200,66,0.7);
-    }
-    .line-white  {
-      color: rgba(255,255,255,0.75);
-      font-size: 13px;
-      letter-spacing: 1px;
-    }
-    .line-gap    { min-height: 0.8em; }
-
-    .cursor-inline {
-      display: inline-block;
-      width: 9px; height: 14px;
-      background: #00ff41;
-      vertical-align: middle;
-      margin-left: 2px;
-      animation: blink 1.1s step-end infinite;
-    }
-
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    /* =============================================
-       ENTER BUTTON
-    ============================================= */
-    #enter-btn {
-      display: none;
-      position: relative;
-      z-index: 4;
-      margin-top: 22px;
-      padding: 10px 32px;
-      background: transparent;
-      border: 1px solid #00ff41;
-      color: #00ff41;
-      font-family: 'Cinzel', serif;
-      font-size: 12px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-shadow: 0 0 8px rgba(0,255,65,0.7);
-      box-shadow: 0 0 10px rgba(0,255,65,0.15), inset 0 0 10px rgba(0,255,65,0.05);
-      transition: all 0.3s ease;
-      animation: fade-in 1s ease forwards;
-    }
-
-    #enter-btn:hover {
-      background: rgba(0,255,65,0.08);
-      box-shadow: 0 0 20px rgba(0,255,65,0.4), inset 0 0 20px rgba(0,255,65,0.1);
-      text-shadow: 0 0 14px rgba(0,255,65,1);
-    }
-
-    @keyframes fade-in {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* =============================================
-       COPYRIGHT
-    ============================================= */
+    /* COPYRIGHT */
     .copyright {
       position: relative;
       z-index: 1;
-      margin-top: 14px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-shadow:
-        0 0 6px rgba(255, 255, 255, 0.9),
-        0 0 14px rgba(255, 255, 255, 0.5),
-        0 0 30px rgba(255, 255, 255, 0.3);
+      margin-top: 20px;
+      color: var(--starlight);
+      opacity: 0.5;
+      font-size: 10px;
+      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
 
-  <!-- BACKDROP: animated star field -->
   <canvas id="stars"></canvas>
 
-  <!-- TERMINAL WINDOW -->
   <div class="terminal-window">
-
-    <!-- Title Bar -->
     <div class="title-bar">
-      <div class="buttons">
-        <div class="btn btn-close" onclick="window.location.href='directory.html'" title="Directory"></div>
-        <div class="btn btn-min"></div>
-        <div class="btn btn-max"></div>
-      </div>
+      <div class="btn-close" title="Close Session"></div>
       <div class="title-text">
-        <div class="led"></div>
-        <span class="title-label">Vanguard Knetwerk active</span>
+        <span class="title-label">Vanguard Knetwerk Active</span>
       </div>
     </div>
 
-    <!-- =============================================
-         PAGE CONTENT
-    ============================================= -->
-    <div class="terminal-body">
-      <div class="scanlines"></div>
-      <div id="transmission"></div>
-      <button id="enter-btn" onclick="window.location.href='directory.html'">Enter The Knetwerk</button>
+    <div class="terminal-body" id="console">
+      <div id="typewriter"></div>
     </div>
-    <!-- =========================================== -->
-
   </div>
 
-  <!-- COPYRIGHT -->
-  <p class="copyright">&copy; 2026 Vanguard Citizen Services</p>
+  <p class="copyright">AUTHENTICATED BY VANGUARD CITIZEN SERVICES &copy; 2026</p>
 
-  <!-- =============================================
-       STAR FIELD SCRIPT
-  ============================================= -->
   <script>
+    // =============================================
+    // STAR & CONSTELLATION ENGINE
+    // =============================================
     const canvas = document.getElementById('stars');
-    const ctx    = canvas.getContext('2d');
-    const STAR_COUNT = 200;
+    const ctx = canvas.getContext('2d');
     let stars = [];
-
-    function randomBetween(a, b) { return a + Math.random() * (b - a); }
+    let mouse = { x: null, y: null };
 
     function resize() {
-      canvas.width  = window.innerWidth;
+      canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
 
-    function createStar() {
-      return {
-        x:         randomBetween(0, canvas.width),
-        y:         randomBetween(0, canvas.height),
-        radius:    randomBetween(0.4, 1.6),
-        phase:     randomBetween(0, Math.PI * 2),
-        speed:     randomBetween(0.3, 1.2),
-        hue:       randomBetween(38, 52),
-        sat:       randomBetween(70, 100),
-        baseLight: randomBetween(55, 80),
-      };
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    class Star {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.rotation = Math.random() * Math.PI;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.01;
+        this.speed = Math.random() * 0.12 + 0.04; 
+        this.opacity = Math.random();
+        this.pulse = Math.random() * 0.01;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        
+        // Draw 4-pointed charm
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const r = (i % 2 === 0) ? this.size * 3.5 : this.size;
+          const angle = (Math.PI * i) / 4;
+          ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+        }
+        ctx.closePath();
+        
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#F2F6FF";
+        ctx.fillStyle = `rgba(242, 246, 255, ${this.opacity})`;
+        ctx.fill();
+        ctx.restore();
+
+        this.y -= this.speed;
+        this.rotation += this.rotationSpeed;
+        this.opacity += this.pulse;
+        if (this.opacity > 1 || this.opacity < 0.2) this.pulse *= -1;
+        if (this.y < -20) this.y = canvas.height + 20;
+      }
+    }
+
+    function drawConstellations() {
+      const maxDist = 160;
+      for (let a = 0; a < stars.length; a++) {
+        for (let b = a; b < stars.length; b++) {
+          const dx = stars[a].x - stars[b].x;
+          const dy = stars[a].y - stars[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < maxDist) {
+            const opacity = 1 - (distance / maxDist);
+            ctx.strokeStyle = `rgba(192, 140, 207, ${opacity * 0.12})`; // Lilac connections
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(stars[a].x, stars[a].y);
+            ctx.lineTo(stars[b].x, stars[b].y);
+            ctx.stroke();
+          }
+        }
+        
+        // Sync to Cursor (The Knight's presence)
+        if (mouse.x) {
+          const mdx = stars[a].x - mouse.x;
+          const mdy = stars[a].y - mouse.y;
+          const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+          if (mDist < 220) {
+            const mOpacity = 1 - (mDist / 220);
+            ctx.strokeStyle = `rgba(201, 162, 62, ${mOpacity * 0.22})`; // Gold cursor connections
+            ctx.beginPath();
+            ctx.moveTo(stars[a].x, stars[a].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
     }
 
     function init() {
       resize();
-      stars = Array.from({ length: STAR_COUNT }, createStar);
+      stars = Array.from({ length: 75 }, () => new Star());
+      animate();
     }
 
-    function draw(timestamp) {
+    function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const t = timestamp / 1000;
-      for (const s of stars) {
-        const twinkle = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
-        const alpha   = 0.15 + 0.85 * twinkle;
-        const light   = s.baseLight + 10 * twinkle;
-        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.radius * 4);
-        glow.addColorStop(0,   `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha})`);
-        glow.addColorStop(0.4, `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha * 0.4})`);
-        glow.addColorStop(1,   `hsla(${s.hue}, ${s.sat}%, ${light}%, 0)`);
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius * 4, 0, Math.PI * 2);
-        ctx.fillStyle = glow;
-        ctx.fill();
-        ctx.restore();
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${s.hue}, ${s.sat}%, ${light}%, ${alpha})`;
-        ctx.fill();
-      }
-      requestAnimationFrame(draw);
+      drawConstellations();
+      stars.forEach(s => s.draw());
+      requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', () => { resize(); stars = Array.from({ length: STAR_COUNT }, createStar); });
+    window.addEventListener('resize', resize);
     init();
-    requestAnimationFrame(draw);
-  </script>
 
-  <!-- =============================================
-       TRANSMISSION SCRIPT
-  ============================================= -->
-  <script>
-    // speed: ms per character. pause: ms to wait before this line starts.
+    // =============================================
+    // TYPEWRITER (VOICE & TONE)
+    // =============================================
     const lines = [
-      { text: '> Establishing connection to Vanguard Knetwerk...',  style: 'line-dim',    speed: 18,  pause: 200  },
-      { text: '> Signal acquired. Coordinates locked.',             style: 'line-dim',    speed: 18,  pause: 300  },
-      { text: '> Identity scan... complete. Access granted.',       style: 'line-dim',    speed: 18,  pause: 300  },
-      { text: '',                                                    style: 'line-gap',    speed: 0,   pause: 400  },
-      { text: 'You have been summoned.',                            style: 'line-bold',   speed: 80,  pause: 500  },
-      { text: '',                                                    style: 'line-gap',    speed: 0,   pause: 300  },
-      { text: 'Not by accident. Not by chance.',                    style: 'line-normal', speed: 55,  pause: 200  },
-      { text: 'The Knetwerk does not reach out to the unworthy.',   style: 'line-normal', speed: 40,  pause: 300  },
-      { text: '',                                                    style: 'line-gap',    speed: 0,   pause: 500  },
-      { text: 'Bravely World is not a game.',                       style: 'line-gold',   speed: 70,  pause: 400  },
-      { text: 'It is not a film. It is not a story.',               style: 'line-gold',   speed: 50,  pause: 200  },
-      { text: 'It is a living universe — spanning every platform,', style: 'line-gold',   speed: 35,  pause: 200  },
-      { text: 'every experience, every world we dare to build.',    style: 'line-gold',   speed: 35,  pause: 200  },
-      { text: '',                                                    style: 'line-gap',    speed: 0,   pause: 600  },
-      { text: 'Here, fiction is a blueprint.',                      style: 'line-bold',   speed: 75,  pause: 300  },
-      { text: 'The worlds we create reflect the world we want.',    style: 'line-white',  speed: 40,  pause: 300  },
-      { text: 'Justice. Equity. Power returned to the people.',     style: 'line-white',  speed: 40,  pause: 200  },
-      { text: 'Not as ideals — as architecture.',                   style: 'line-white',  speed: 55,  pause: 200  },
-      { text: '',                                                    style: 'line-gap',    speed: 0,   pause: 700  },
-      { text: 'This is Vanguard Citizen Services.',                 style: 'line-bold',   speed: 70,  pause: 400  },
-      { text: 'We build the metaverse. We build the future.',       style: 'line-normal', speed: 45,  pause: 300  },
-      { text: '',                                                    style: 'line-gap',    speed: 0,   pause: 800  },
-      { text: 'The Knetwerk is open.',                              style: 'line-gold',   speed: 90,  pause: 500  },
+      "<span class='gold-text'>[VANGUARD OS v3.2 ONLINE]</span>",
+      "Starlight relay synchronized. Armor diagnostics: <span class='gold-text'>OPTIMAL</span>.",
+      " ",
+      "> Accessing <span class='gold-text'>THE RESERVES</span>...",
+      "> 42 combat assets identified. All systems locked.",
+      " ",
+      "> Scanning <span class='lilac-text'>THE RUINS</span>...",
+      "> Status: Data decay halted. Ancient signatures detected.",
+      " ",
+      "> Welcome back, Knight. Your squad is standing by.",
+      "> Move your presence to align the stars."
     ];
 
-    const transmission = document.getElementById('transmission');
-    const enterBtn     = document.getElementById('enter-btn');
+    const container = document.getElementById('typewriter');
+    let lineIdx = 0;
 
-    function typeLine(lineObj) {
-      return new Promise(resolve => {
-        const span = document.createElement('span');
-        span.className = `line ${lineObj.style}`;
-        transmission.appendChild(span);
-
-        // Empty / gap lines resolve immediately
-        if (!lineObj.text || lineObj.speed === 0) {
-          setTimeout(resolve, lineObj.pause || 0);
-          return;
-        }
-
-        // Add inline cursor
-        const cursor = document.createElement('span');
-        cursor.className = 'cursor-inline';
-        span.appendChild(cursor);
-
-        let i = 0;
-        function typeChar() {
-          if (i < lineObj.text.length) {
-            span.insertBefore(document.createTextNode(lineObj.text[i]), cursor);
-            i++;
-            // Scroll terminal body to bottom as text grows
-            transmission.parentElement.scrollTop = transmission.parentElement.scrollHeight;
-            setTimeout(typeChar, lineObj.speed);
-          } else {
-            span.removeChild(cursor);
-            resolve();
-          }
-        }
-
-        setTimeout(typeChar, lineObj.pause || 0);
-      });
-    }
-
-    async function runTransmission() {
-      for (const line of lines) {
-        await typeLine(line);
+    function type() {
+      if (lineIdx < lines.length) {
+        let div = document.createElement('div');
+        div.style.marginBottom = "10px";
+        div.innerHTML = lines[lineIdx];
+        container.appendChild(div);
+        lineIdx++;
+        // Scroll to bottom as it types
+        const console = document.getElementById('console');
+        console.scrollTop = console.scrollHeight;
+        setTimeout(type, 700);
       }
-      // Show enter button after final pause
-      setTimeout(() => {
-        enterBtn.style.display = 'inline-block';
-        transmission.parentElement.scrollTop = transmission.parentElement.scrollHeight;
-      }, 900);
     }
-
-    runTransmission();
+    setTimeout(type, 1000);
   </script>
-
 </body>
 </html>
