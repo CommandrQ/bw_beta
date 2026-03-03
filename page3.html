@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard Knetwerk | DETENTION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-black: #0A0A0A;
+      --navy-depth: #0A2540;
+      --gold-armor: #C9A23E;
+      --lilac-pulse: #C08CCF;
+      --starlight: #F2F6FF;
+      --active-green: #00ff41;
+      --alert-red: #ff3131;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+    body {
+      width: 100%; height: 100vh; overflow: hidden;
+      background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
+      display: flex; justify-content: center; align-items: center;
+      font-family: 'Inter', sans-serif;
+    }
+    canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* =============================================
+       TERMINAL & ALARM EFFECT
+    ============================================= */
+    .terminal-window {
+      position: relative; z-index: 10;
+      width: min(900px, 94vw); height: min(600px, 80vh);
+      background-color: rgba(10, 10, 10, 0.98);
+      border: 1px solid var(--gold-armor); border-radius: 4px;
+      display: flex; flex-direction: column; overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Red Alert State */
+    .terminal-window.alarm {
+      border-color: var(--alert-red);
+      box-shadow: 0 0 50px var(--alert-red);
+      animation: shake 0.2s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px); }
+      20% { transform: translate(-3px, 0px); }
+      40% { transform: translate(3px, 2px); }
+      100% { transform: translate(1px, -1px); }
+    }
+
+    .title-bar {
+      background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+      padding: 10px 16px; border-bottom: 2px solid var(--gold-armor);
+    }
+    .alarm .title-bar { border-bottom-color: var(--alert-red); }
+
+    /* =============================================
+       ADVENTURE LOG
+    ============================================= */
+    .terminal-body {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 40px; font-family: 'Orbitron', sans-serif;
+      font-size: 16px; line-height: 2.2; color: var(--starlight);
+    }
+
+    .speaker-label { color: var(--gold-armor); font-family: 'Cinzel Decorative', serif; font-weight: bold; margin-right: 10px; }
+    .alert-text { color: var(--alert-red); text-shadow: 0 0 10px var(--alert-red); font-weight: bold; }
+    .dialog { color: var(--lilac-pulse); font-style: italic; }
+
+    /* CHOICE BUTTON */
+    #action-container { margin-top: 30px; display: none; }
+    .vanguard-btn {
+      background: var(--bg-black); border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); padding: 12px 30px; font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase; cursor: pointer; letter-spacing: 2px;
+    }
+    .vanguard-btn:hover { border-color: var(--lilac-pulse); box-shadow: 0 0 20px var(--lilac-pulse); }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars"></canvas>
+
+  <div class="terminal-window" id="window">
+    <div class="title-bar" style="text-align: center;">
+      <span id="title-label" style="color: var(--gold-armor); font-family: 'Cinzel Decorative'; font-size: 11px; letter-spacing: 3px;">MIRRORGATE HUB</span>
+    </div>
+
+    <div class="terminal-body" id="log">
+      <div id="text-output">
+        You reach into your pockets to find the credentials...
+      </div>
+      <div id="action-container">
+        <button class="vanguard-btn" id="fumble-btn" onclick="triggerArrest()">[ Fumble in pockets ]</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const output = document.getElementById('text-output');
+    const win = document.getElementById('window');
+    const action = document.getElementById('action-container');
+    const title = document.getElementById('title-label');
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Initial delay for button
+    setTimeout(() => { action.style.display = 'block'; }, 1000);
+
+    function playAlarm() {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.5);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    }
+
+    function triggerArrest() {
+      action.style.display = 'none';
+      audioCtx.resume();
+      
+      // 1. THE THREAT
+      output.innerHTML = `<span class="speaker-label">SERGEANT KAELEN:</span> <span class="dialog">"WRONG POCKET, TRAVELER!"</span>`;
+      win.classList.add('alarm');
+      playAlarm();
+
+      setTimeout(() => {
+        // 2. THE ALARM
+        output.innerHTML = `<span class="alert-text">!!! SECURITY BREACH IN SECTOR 01 !!!</span><br>You raise your hands comically fast as a spear-tip glows inches from your nose.`;
+        title.textContent = "DETENTION PROTOCOL ACTIVE";
+        title.style.color = "var(--alert-red)";
+      }, 1500);
+
+      setTimeout(() => {
+        // 3. GET ON THE GROUND
+        output.innerHTML = `<span class="speaker-label">GUARD 2:</span> <span class="dialog">"DOWN! FACE TO THE OBSIDIAN! NOW!"</span><br>You decide that arguing with magical gold shields is bad for your health.`;
+      }, 3500);
+
+      setTimeout(() => {
+        // 4. THE CUFFS & JAIL
+        win.classList.remove('alarm');
+        output.innerHTML = `*CLINK*<br>The cuffs are surprisingly cold. Heavy iron doors slam shut behind you.<br><br><span class="gold-text">LOCATION: VANGUARD HOLDING CELL 04</span>`;
+        title.textContent = "THE DUNGEONS";
+        title.style.color = "var(--gold-armor)";
+        
+        // Final Button
+        setTimeout(() => {
+          action.innerHTML = `<button class="vanguard-btn" onclick="location.href='page3.html'">Now what?</button>`;
+          action.style.display = 'block';
+        }, 1500);
+      }, 5500);
+    }
+
+    // STAR ENGINE
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    let stars = Array.from({ length: 40 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2 }));
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(192, 140, 207, 0.3)";
+      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.1; if (s.y < 0) s.y = canvas.height; });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
