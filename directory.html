@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Vanguard Tactical | Fort Toward</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -16,9 +16,10 @@
       --map-green: #30a060;
       --text-main: #ffffff;
       --highlight: #f03030;
+      --gold: #C9A23E;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+    * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
 
     body {
       width: 100%; height: 100vh;
@@ -26,146 +27,183 @@
       display: flex; justify-content: center; align-items: center;
       font-family: 'Press Start 2P', cursive;
       overflow: hidden;
+      color: var(--text-main);
     }
 
-    /* THE PIXEL GRID BACKGROUND */
     .screen-container {
       position: relative;
-      width: 900px; height: 600px;
-      background-color: var(--bg-dark);
+      width: 100vw; height: 100vh;
+      max-width: 1200px; max-height: 800px;
       background-image: 
         linear-gradient(var(--grid-green) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-green) 1px, transparent 1px);
-      background-size: 20px 20px;
+      background-size: 30px 30px;
       border: 4px solid #333;
       display: flex; flex-direction: column;
-      image-rendering: pixelated; /* Keeps things crunchy */
-    }
-
-    /* HEADER */
-    .header {
-      padding: 15px; border-bottom: 4px solid #333;
-      display: flex; justify-content: space-between;
-      color: var(--text-main); font-size: 10px; letter-spacing: 2px;
-    }
-
-    /* 3D PERSPECTIVE WRAPPER */
-    .map-viewport {
-      flex: 1; perspective: 1000px;
-      display: flex; justify-content: center; align-items: center;
       overflow: hidden;
+    }
+
+    /* LEVEL SELECTOR HUD */
+    .level-selector {
+      position: absolute; left: 10px; top: 60px;
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 30;
+    }
+
+    .lvl-btn {
+      background: rgba(0,0,0,0.8); border: 1px solid var(--gold);
+      color: var(--gold); font-family: 'Press Start 2P'; font-size: 6px;
+      padding: 8px; cursor: pointer; transition: all 0.2s;
+    }
+
+    .lvl-btn.active { background: var(--gold); color: black; }
+
+    .header {
+      padding: 10px; border-bottom: 2px solid var(--gold);
+      background: rgba(0,0,0,0.9);
+      display: flex; justify-content: space-between;
+      font-size: 8px; z-index: 20;
+    }
+
+    .map-viewport {
+      flex: 1; perspective: 1500px;
+      display: flex; justify-content: center; align-items: center;
+      overflow: hidden; cursor: grab;
     }
 
     .map-container {
       position: relative;
-      width: 600px; height: 400px;
-      transform: rotateX(45deg) rotateZ(-10deg);
+      width: 800px; height: 800px;
       transform-style: preserve-3d;
-      transition: transform 0.2s ease-out;
+      transform: scale(2.2) rotateX(45deg) rotateZ(-10deg); 
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* PIXEL ROOM BLOCKS */
+    /* ROOMS */
     .room {
       position: absolute;
       background: var(--map-blue);
       border: 2px solid var(--map-border);
-      box-shadow: inset -4px -4px 0px rgba(0,0,0,0.3);
-      cursor: pointer;
-      transition: background 0.2s;
+      image-rendering: pixelated;
+      display: flex; justify-content: center; align-items: center;
+      text-align: center; font-size: 6px; padding: 4px;
+      transition: opacity 0.5s, transform 0.5s;
     }
 
-    .room:hover { background: var(--map-green); }
+    /* ELEVATION STATES */
+    .above { transform: translateZ(60px); border-color: var(--highlight); }
+    .below { transform: translateZ(-60px); opacity: 0.6; border-style: dashed; }
+    
+    /* FOCUS CLASSES */
+    .focus-surface .room:not(.above) { opacity: 0.1; }
+    .focus-main .room:not(:not(.above):not(.below)) { opacity: 0.1; }
+    .focus-sub .room:not(.below) { opacity: 0.1; }
 
-    .room.active {
-      background: var(--highlight);
-      animation: flash 0.5s infinite;
+    .tag {
+      position: absolute; top: -15px; background: var(--gold);
+      color: black; font-size: 5px; padding: 2px 4px; white-space: nowrap;
     }
 
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+    .info-overlay {
+      position: absolute; bottom: 0; width: 100%;
+      background: rgba(0,0,0,0.9); border-top: 2px solid var(--gold);
+      padding: 15px; font-size: 8px; z-index: 20;
     }
 
-    /* UI OVERLAYS */
-    .labels {
-      position: absolute; left: 20px; bottom: 20px;
-      color: var(--text-main); font-size: 8px; line-height: 2;
-    }
-
-    .info-box {
-      position: absolute; right: 20px; bottom: 20px;
-      width: 250px; background: rgba(0,0,0,0.8);
-      border: 2px solid var(--map-border); padding: 10px;
-      color: var(--text-main); font-size: 8px;
-    }
-
-    footer {
-      position: absolute; bottom: -30px; width: 100%; text-align: center;
-      color: #555; font-size: 8px; font-family: sans-serif;
+    @media (max-width: 600px) {
+      .map-container { transform: scale(1.4) rotateX(45deg) rotateZ(-10deg); }
     }
   </style>
 </head>
-<body>
+<body class="focus-main">
 
   <div class="screen-container">
     <div class="header">
-      <span>FORT TOWARD MAP</span>
+      <span>FORT TOWARD // TACTICAL</span>
       <span id="coord-readout">X:00 Y:00</span>
+    </div>
+
+    <div class="level-selector">
+      <button class="lvl-btn" onclick="setLevel('surface', this)">SURFACE</button>
+      <button class="lvl-btn active" onclick="setLevel('main', this)">MAIN</button>
+      <button class="lvl-btn" onclick="setLevel('sub', this)">SUB-LVL</button>
     </div>
 
     <div class="map-viewport" id="viewport">
       <div class="map-container" id="map">
         
-        <div class="room active" style="width: 80px; height: 40px; top: 180px; left: 240px;" 
-             onclick="showInfo('NATION A', 'VANGUARD HUB. STATUS: SECURE.')"></div>
-        
-        <div class="room" style="width: 120px; height: 20px; top: 190px; left: 320px;"
-             onclick="showInfo('EAST WING', 'RESIDENTIAL QUARTERS.')"></div>
-        
-        <div class="room" style="width: 20px; height: 100px; top: 80px; left: 270px;"
-             onclick="showInfo('NORTH PASS', 'UNCHARTERED SECTOR.')"></div>
+        <div class="room above" style="width: 100px; height: 40px; top: 300px; left: 350px;">
+          <div class="tag">OPENING SOON</div>
+          CITIZENS SUPPORT
+        </div>
 
-        <div class="room" style="width: 60px; height: 60px; top: 20px; left: 250px;"
-             onclick="showInfo('FORT TOP', 'COMMUNICATIONS ARRAY.')"></div>
+        <div class="room" style="width: 60px; height: 60px; top: 370px; left: 370px; background: var(--highlight);">
+          NATION A
+        </div>
+        
+        <div class="room below" style="width: 120px; height: 40px; top: 450px; left: 340px;">
+          VANGUARD CITIZEN SERVICES
+        </div>
 
-        <div class="room" style="width: 40px; height: 40px; top: 250px; left: 260px; background: #6a329f;"
-             onclick="showInfo('THE RUINS', 'RECLAIMED GRAVEYARD SECTOR.')"></div>
       </div>
     </div>
 
-    <div class="labels">
-      <div>> DATA LOADED</div>
-      <div>> TARGET: NATION A</div>
-    </div>
-
-    <div class="info-box">
-      <div id="info-title" style="color: var(--highlight); margin-bottom: 5px;">SELECT SECTOR</div>
-      <div id="info-body">AWAITING INPUT...</div>
+    <div class="info-overlay">
+      <div id="info-title" style="color: var(--gold); margin-bottom: 8px;">LEVEL VIEW</div>
+      <div id="info-body">SELECT LEVEL ON LEFT TO FILTER SECTORS.</div>
     </div>
   </div>
 
-  <footer>&copy; 2026 Powered by Vanguard Citizen Services</footer>
-
   <script>
     const map = document.getElementById('map');
-    const coordReadout = document.getElementById('coord-readout');
+    const body = document.body;
 
-    function showInfo(title, text) {
-      document.getElementById('info-title').innerText = title;
-      document.getElementById('info-body').innerText = text;
+    function setLevel(lvl, btn) {
+      // Toggle CSS class for filtering
+      body.className = `focus-${lvl}`;
+      
+      // Update Button UI
+      document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update Info
+      const info = {
+        'surface': 'CITIZENS SUPPORT CENTER: ACCESS PENDING.',
+        'main': 'NATION A: CORE COMMAND & CONTROL.',
+        'sub': 'VANGUARD SERVICES: DEEP STORAGE & SUPPORT.'
+      };
+      document.getElementById('info-body').innerText = info[lvl];
     }
 
-    // Dynamic 3D tilt
-    window.addEventListener('mousemove', (e) => {
-      const xRotate = (e.clientY / window.innerHeight - 0.5) * 30 + 45;
-      const zRotate = (e.clientX / window.innerWidth - 0.5) * 30 - 10;
-      map.style.transform = `rotateX(${xRotate}deg) rotateZ(${zRotate}deg)`;
+    // Touch/Mouse Zoom & Rotation
+    let zoom = 2.2;
+    let rotX = 45;
+    let rotZ = -10;
 
-      // Update pixel coords
-      const pxX = Math.floor(e.clientX / 20);
-      const pxY = Math.floor(e.clientY / 20);
-      coordReadout.innerText = `X:${pxX} Y:${pxY}`;
-    });
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      zoom = Math.min(Math.max(1, zoom + e.deltaY * -0.001), 5);
+      map.style.transform = `scale(${zoom}) rotateX(${rotX}deg) rotateZ(${rotZ}deg)`;
+    }, { passive: false });
+
+    // Drag Logic
+    let isDown = false; let startX, startY;
+    const start = (e) => { isDown = true; startX = e.pageX || e.touches[0].pageX; startY = e.pageY || e.touches[0].pageY; };
+    const end = () => isDown = false;
+    const move = (e) => {
+      if(!isDown) return;
+      const x = e.pageX || e.touches[0].pageX;
+      const y = e.pageY || e.touches[0].pageY;
+      rotZ += (x - startX) * 0.3;
+      rotX -= (y - startY) * 0.3;
+      startX = x; startY = y;
+      map.style.transform = `scale(${zoom}) rotateX(${rotX}deg) rotateZ(${rotZ}deg)`;
+      document.getElementById('coord-readout').innerText = `X:${Math.floor(x/10)} Y:${Math.floor(y/10)}`;
+    };
+
+    window.addEventListener('mousedown', start); window.addEventListener('touchstart', start);
+    window.addEventListener('mousemove', move); window.addEventListener('touchmove', move);
+    window.addEventListener('mouseup', end); window.addEventListener('touchend', end);
   </script>
 </body>
 </html>
