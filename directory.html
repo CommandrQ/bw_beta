@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Vanguard Tactical | Flat Map</title>
+  <title>Vanguard Tactical | Nation A Layout</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -16,6 +16,7 @@
       --map-border: #ffffff;
       --gold: #C9A23E;
       --highlight: #f03030;
+      --shaft-color: #666;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
@@ -28,7 +29,6 @@
       overflow: hidden; color: #fff;
     }
 
-    /* THE PIXEL SCREEN */
     .screen-container {
       position: relative; width: 100vw; height: 100vh;
       background-image: 
@@ -45,7 +45,6 @@
       font-size: 8px; z-index: 50;
     }
 
-    /* PAN & ZOOM VIEWPORT */
     .viewport {
       flex: 1; position: relative; overflow: hidden;
       cursor: grab; display: flex; align-items: center; justify-content: center;
@@ -64,40 +63,50 @@
       font-size: 6px; text-align: center;
     }
 
-    /* THE BIG CASTLE */
-    .castle-outer { width: 144px; height: 144px; top: 928px; left: 928px; background: transparent; border: 4px solid var(--map-border); pointer-events: none; }
-    .castle-keep { width: 48px; height: 48px; top: 976px; left: 976px; border: 2px solid var(--gold); cursor: pointer; pointer-events: auto; }
+    /* THE BIG CASTLE STRUCTURE */
+    .castle-outer { width: 144px; height: 144px; top: 928px; left: 928px; border: 4px solid var(--map-border); pointer-events: none; }
     
-    /* THE HUT (Outside Castle) */
-    .hut { width: 24px; height: 24px; background: var(--map-green); top: 1096px; left: 988px; cursor: pointer; }
+    /* VCS HUB (The Keep) */
+    .castle-keep { width: 48px; height: 48px; top: 976px; left: 976px; border: 2px solid var(--gold); cursor: pointer; z-index: 5; }
+    
+    /* THE HUT (Above Ground) */
+    .hut { 
+      width: 32px; height: 32px; background: var(--map-green); 
+      top: 800px; left: 984px; /* Moved way up to represent 'Above Ground' */
+      cursor: pointer; z-index: 5;
+      box-shadow: 0 0 15px rgba(48, 160, 96, 0.4);
+    }
+
+    /* THE VERTICAL CONNECTOR (Shaft) */
+    .connector-shaft {
+      position: absolute;
+      width: 8px; height: 176px;
+      top: 832px; left: 996px;
+      background: repeating-linear-gradient(
+        0deg,
+        var(--shaft-color),
+        var(--shaft-color) 4px,
+        transparent 4px,
+        transparent 8px
+      );
+      border-left: 1px solid #fff;
+      border-right: 1px solid #fff;
+      z-index: 2;
+    }
 
     .tag {
       position: absolute; top: -12px; background: var(--gold);
       color: #000; font-size: 4px; padding: 1px 3px; white-space: nowrap;
     }
 
-    /* ABOUT SCREEN (MODAL) */
     #about-screen {
       position: fixed; inset: 0; z-index: 1000;
       background: rgba(5, 5, 5, 0.95);
       display: none; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 20px; text-align: center;
-      border: 4px double var(--gold);
-      margin: 20px;
+      padding: 20px; border: 4px double var(--gold); margin: 20px;
     }
 
-    .about-content { max-width: 600px; line-height: 1.8; }
-    .about-title { color: var(--gold); font-size: 16px; margin-bottom: 20px; }
-    .about-text { font-size: 10px; margin-bottom: 30px; }
-
-    .close-btn {
-      padding: 10px 20px; background: var(--highlight);
-      color: white; border: none; font-family: 'Press Start 2P';
-      font-size: 8px; cursor: pointer;
-    }
-
-    /* INDICATORS */
     .flash { animation: flash-anim 0.8s infinite; }
     @keyframes flash-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
@@ -119,14 +128,16 @@
     <div class="viewport" id="v">
       <div class="map-layer" id="map">
         
+        <div class="connector-shaft"></div>
+
         <div class="castle-outer"></div>
         
         <div class="room castle-keep flash" onclick="openAbout()">
           VCS
         </div>
 
-        <div class="room hut" onclick="ui('CITIZENS SUPPORT', 'ACCESS POINT FOR NEW CITIZENS.')">
-          <div class="tag">COMING SOON</div>
+        <div class="room hut" onclick="ui('CITIZENS SUPPORT', 'SURFACE ACCESS POINT. OPENING SOON.')">
+          <div class="tag">OPENING SOON</div>
           HUT
         </div>
 
@@ -135,71 +146,50 @@
 
     <div class="info-bar">
       <div id="t" style="color: var(--gold); margin-bottom: 5px;">DATA TERMINAL</div>
-      <div id="d">VCS HUB CLICKABLE FOR SYSTEM INTEL...</div>
+      <div id="d">VCS HUB LINKED TO SURFACE HUT...</div>
     </div>
   </div>
 
   <div id="about-screen">
-    <div class="about-content">
-      <h1 class="about-title">VANGUARD CITIZEN SERVICES</h1>
-      <p class="about-text">
-        VCS is the administrative heart of the Vanguard network. 
-        Dedicated to supporting the residents of Nation A and beyond, 
-        we provide the infrastructure for growth, security, and 
-        collaborative development within Fort Toward.
-      </p>
-      <button class="close-btn" onclick="closeAbout()">CLOSE TERMINAL</button>
-    </div>
+    <h1 style="color: var(--gold); font-size: 16px; margin-bottom: 20px;">VANGUARD SERVICES</h1>
+    <p style="font-size: 10px; margin-bottom: 30px; line-height: 1.8; max-width: 600px; text-align: center;">
+      VCS provides the administrative backbone for Nation A. 
+      Click the Hut above to monitor surface-level arrival status.
+    </p>
+    <button onclick="closeAbout()" style="padding: 10px; background: var(--highlight); color: white; border: none; font-family: 'Press Start 2P'; cursor: pointer;">CLOSE</button>
   </div>
 
   <script>
     const map = document.getElementById('map');
     const about = document.getElementById('about-screen');
-    let scale = 2.5, posX = 0, posY = 0;
+    let scale = 2.0, posX = 0, posY = 80; // Adjusted starting Y to show the connection
 
     function openAbout() { about.style.display = 'flex'; }
     function closeAbout() { about.style.display = 'none'; }
+    function ui(t, d) { document.getElementById('t').innerText = t; document.getElementById('d').innerText = d; }
 
-    function ui(t, d) {
-      document.getElementById('t').innerText = t;
-      document.getElementById('d').innerText = d;
-    }
-
-    // PAN & ZOOM LOGIC
     let isDown = false, startX, startY;
-
     const onStart = (e) => {
-      if(e.target.classList.contains('castle-keep')) return; // Allow clicking VCS
+      if(e.target.classList.contains('room')) return;
       isDown = true;
       startX = (e.pageX || e.touches[0].pageX) - posX;
       startY = (e.pageY || e.touches[0].pageY) - posY;
-      document.getElementById('v').style.cursor = 'grabbing';
     };
-
     const onMove = (e) => {
       if (!isDown) return;
       posX = (e.pageX || e.touches[0].pageX) - startX;
       posY = (e.pageY || e.touches[0].pageY) - startY;
       render();
-      document.getElementById('coord').innerText = `X:${Math.floor(Math.abs(posX/10))} Y:${Math.floor(Math.abs(posY/10))}`;
     };
-
-    const onEnd = () => { isDown = false; document.getElementById('v').style.cursor = 'grab'; };
-
+    const render = () => { map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; };
+    
     window.addEventListener('mousedown', onStart);
     window.addEventListener('touchstart', onStart);
     window.addEventListener('mousemove', onMove);
     window.addEventListener('touchmove', onMove);
-    window.addEventListener('mouseup', onEnd);
-    window.addEventListener('touchend', onEnd);
-
-    window.addEventListener('wheel', (e) => {
-      scale += e.deltaY * -0.002;
-      scale = Math.min(Math.max(0.5, scale), 6);
-      render();
-    });
-
-    function render() { map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
+    window.addEventListener('mouseup', () => isDown = false);
+    window.addEventListener('touchend', () => isDown = false);
+    window.addEventListener('wheel', (e) => { scale += e.deltaY * -0.002; scale = Math.min(Math.max(0.5, scale), 6); render(); });
     render();
   </script>
 </body>
