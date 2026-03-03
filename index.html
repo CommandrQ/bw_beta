@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanguard Knetwerk | Star-Lit Terminal</title>
+  <title>Vanguard Knetwerk | Cold Boot</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -14,7 +14,7 @@
       --gold-armor: #C9A23E;
       --lilac-pulse: #C08CCF;
       --starlight: #F2F6FF;
-      --active-green: #00ff41; /* Vanguard Active Green */
+      --active-green: #00ff41;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -24,7 +24,6 @@
       overflow: hidden;
       background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       font-family: 'Inter', sans-serif;
@@ -33,23 +32,90 @@
     canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
     /* =============================================
-       TERMINAL WINDOW
+       BOOT OVERLAY
+    ============================================= */
+    #boot-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--bg-black);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .boot-btn {
+      padding: 15px 40px;
+      background: transparent;
+      border: 2px solid var(--gold-armor);
+      color: var(--gold-armor);
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 18px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .boot-btn:hover {
+      background: var(--gold-armor);
+      color: var(--bg-black);
+      box-shadow: 0 0 30px var(--gold-armor);
+    }
+
+    /* =============================================
+       CRT BOOT ANIMATION (THE STRIKE)
     ============================================= */
     .terminal-window {
       position: relative;
       z-index: 10;
       width: min(900px, 94vw);
-      height: min(600px, 80vh);
-      background-color: rgba(10, 10, 10, 0.92);
-      border: 1px solid rgba(201, 162, 62, 0.4); 
+      height: 0px; /* Start closed */
+      background-color: rgba(10, 10, 10, 0.98);
+      border: 1px solid rgba(201, 162, 62, 0); 
       border-radius: 4px;
-      box-shadow: 0 0 40px rgba(192, 140, 207, 0.1), 0 40px 100px rgba(0,0,0,0.9);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      backdrop-filter: blur(4px);
+      opacity: 0;
     }
 
+    /* The Flash Line */
+    .terminal-window::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0%; height: 2px;
+      background: white;
+      box-shadow: 0 0 15px white;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      opacity: 0;
+    }
+
+    /* Booting states */
+    .terminal-window.striking::before {
+      animation: crt-strike 0.4s ease-out forwards;
+    }
+
+    .terminal-window.expanding {
+      opacity: 1;
+      height: min(600px, 80vh);
+      border: 1px solid rgba(201, 162, 62, 0.4);
+      transition: height 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.1s;
+      box-shadow: 0 0 40px rgba(192, 140, 207, 0.1), 0 40px 100px rgba(0,0,0,0.9);
+    }
+
+    @keyframes crt-strike {
+      0% { width: 0%; opacity: 0; }
+      50% { width: 100%; opacity: 1; }
+      100% { width: 100%; opacity: 0; transform: translate(-50%, -50%) scaleY(0); }
+    }
+
+    /* =============================================
+       TERMINAL CONTENT
+    ============================================= */
     .title-bar {
       background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
       padding: 12px 16px;
@@ -57,231 +123,192 @@
       align-items: center;
       border-bottom: 2px solid var(--gold-armor);
       flex-shrink: 0;
+      opacity: 0;
     }
+    .expanding .title-bar { opacity: 1; transition: opacity 0.5s 0.3s; }
 
-    .btn-close {
-      width: 14px; height: 14px;
-      background: var(--bg-black);
-      border: 1px solid var(--gold-armor);
-      transition: all 0.2s;
-    }
-    .btn-close:hover { background: var(--gold-armor); box-shadow: 0 0 10px var(--gold-armor); }
-
-    .title-text {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px; /* Spacing for the LED */
-    }
-
-    /* THE GREEN LED */
     .led {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       background-color: var(--active-green);
       border-radius: 50%;
-      box-shadow: 
-        0 0 5px var(--active-green),
-        0 0 12px var(--active-green),
-        0 0 20px rgba(0, 255, 65, 0.4);
-      animation: led-blink 2s ease-in-out infinite;
-    }
-
-    @keyframes led-blink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.95); }
+      box-shadow: 0 0 8px var(--active-green);
+      margin-right: 15px;
     }
 
     .title-label {
       color: var(--gold-armor);
       font-family: 'Cinzel Decorative', serif;
-      font-size: 13px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(201, 162, 62, 0.6);
+      font-size: 12px;
+      letter-spacing: 3px;
     }
 
     .terminal-body {
       flex: 1;
-      padding: 30px;
-      overflow-y: auto;
+      padding: 35px;
       color: var(--starlight);
       font-family: 'Orbitron', sans-serif;
       font-size: 14px;
-      line-height: 2;
+      line-height: 2.2;
       position: relative;
-      scrollbar-width: none;
+    }
+
+    .crt-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
     }
 
     .gold-text { color: var(--gold-armor); text-shadow: 0 0 8px var(--gold-armor); }
-    .lilac-text { color: var(--lilac-pulse); text-shadow: 0 0 8px var(--lilac-pulse); }
-
-    .copyright {
-      position: relative;
-      z-index: 1;
-      margin-top: 20px;
-      color: var(--starlight);
-      opacity: 0.5;
-      font-size: 10px;
-      letter-spacing: 2px;
-    }
   </style>
 </head>
 <body>
 
+  <div id="boot-overlay">
+    <button class="boot-btn" onclick="bootSequence()">Initialize Vanguard</button>
+  </div>
+
   <canvas id="stars"></canvas>
 
-  <div class="terminal-window">
+  <div class="terminal-window" id="window">
     <div class="title-bar">
-      <div class="btn-close" title="Close Session"></div>
-      <div class="title-text">
-        <div class="led"></div> <span class="title-label">Vanguard Knetwerk Active</span>
-      </div>
+      <div class="led"></div>
+      <span class="title-label">Vanguard Knetwerk Active</span>
     </div>
 
     <div class="terminal-body" id="console">
+      <div class="crt-overlay"></div>
       <div id="typewriter"></div>
     </div>
   </div>
 
-  <p class="copyright">AUTHENTICATED BY VANGUARD CITIZEN SERVICES &copy; 2026</p>
-
   <script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(freq, type, volume, duration, ramp = true) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+      if(ramp) gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function bootSequence() {
+      // 1. Fade Button
+      document.getElementById('boot-overlay').style.opacity = '0';
+      audioCtx.resume();
+      
+      setTimeout(() => {
+        document.getElementById('boot-overlay').style.display = 'none';
+        const win = document.getElementById('window');
+        
+        // 2. The Strike Sound & Visual
+        playSound(800, 'sawtooth', 0.1, 0.1); // High electric snap
+        win.classList.add('striking');
+        
+        // 3. The Expansion
+        setTimeout(() => {
+          win.classList.remove('striking');
+          win.classList.add('expanding');
+          playSound(60, 'sine', 0.2, 2, false); // Low hum starts
+          playSound(12000, 'sine', 0.02, 1.5); // High pitched CRT whine
+          startTypewriter();
+        }, 400);
+      }, 600);
+    }
+
     // =============================================
-    // STAR & CONSTELLATION ENGINE
+    // TYPEWRITER (SYMBOLS & LINES)
+    // =============================================
+    const lines = [
+      "<span class='gold-text'>[VANGUARD COLD-BOOT SUCCESSFUL]</span>",
+      "> Relay: STARLIGHT-7",
+      " ",
+      "> Syncing with THE RESERVES...",
+      "> Accessing THE RUINS...",
+      " ",
+      "> Knight, the squad is ready. Command?"
+    ];
+
+    let lineIdx = 0;
+    const container = document.getElementById('typewriter');
+
+    function startTypewriter() {
+      if (lineIdx < lines.length) {
+        let div = document.createElement('div');
+        div.style.marginBottom = "8px";
+        container.appendChild(div);
+        
+        let currentLine = lines[lineIdx];
+        if (currentLine.includes('<')) {
+          div.innerHTML = currentLine;
+          lineIdx++;
+          setTimeout(startTypewriter, 400);
+        } else {
+          let charIdx = 0;
+          function typeChar() {
+            if (charIdx < currentLine.length) {
+              div.textContent += currentLine[charIdx];
+              playSound(Math.random() * 50 + 150, 'square', 0.03, 0.05);
+              charIdx++;
+              setTimeout(typeChar, 30);
+            } else {
+              lineIdx++;
+              setTimeout(startTypewriter, 500);
+            }
+          }
+          typeChar();
+        }
+      }
+    }
+
+    // =============================================
+    // STAR ENGINE
     // =============================================
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     let stars = [];
-    let mouse = { x: null, y: null };
 
     function resize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
 
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-
     class Star {
-      constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 1;
-        this.rotation = Math.random() * Math.PI;
-        this.rotationSpeed = (Math.random() - 0.5) * 0.01;
-        this.speed = Math.random() * 0.12 + 0.04; 
-        this.opacity = Math.random();
-        this.pulse = Math.random() * 0.01;
+      constructor() {
+        this.x = Math.random() * window.innerWidth;
+        this.y = Math.random() * window.innerHeight;
+        this.size = Math.random() * 1.5 + 0.5;
       }
       draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.rotation);
+        ctx.fillStyle = "rgba(192, 140, 207, 0.4)";
         ctx.beginPath();
-        for (let i = 0; i < 8; i++) {
-          const r = (i % 2 === 0) ? this.size * 3.5 : this.size;
-          const angle = (Math.PI * i) / 4;
-          ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
-        }
-        ctx.closePath();
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "#F2F6FF";
-        ctx.fillStyle = `rgba(242, 246, 255, ${this.opacity})`;
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
-
-        this.y -= this.speed;
-        this.rotation += this.rotationSpeed;
-        this.opacity += this.pulse;
-        if (this.opacity > 1 || this.opacity < 0.2) this.pulse *= -1;
-        if (this.y < -20) this.y = canvas.height + 20;
-      }
-    }
-
-    function drawConstellations() {
-      const maxDist = 160;
-      for (let a = 0; a < stars.length; a++) {
-        for (let b = a; b < stars.length; b++) {
-          const dx = stars[a].x - stars[b].x;
-          const dy = stars[a].y - stars[b].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < maxDist) {
-            const opacity = 1 - (distance / maxDist);
-            ctx.strokeStyle = `rgba(192, 140, 207, ${opacity * 0.12})`; 
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(stars[a].x, stars[a].y);
-            ctx.lineTo(stars[b].x, stars[b].y);
-            ctx.stroke();
-          }
-        }
-        if (mouse.x) {
-          const mdx = stars[a].x - mouse.x;
-          const mdy = stars[a].y - mouse.y;
-          const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-          if (mDist < 220) {
-            const mOpacity = 1 - (mDist / 220);
-            ctx.strokeStyle = `rgba(201, 162, 62, ${mOpacity * 0.22})`;
-            ctx.beginPath();
-            ctx.moveTo(stars[a].x, stars[a].y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.stroke();
-          }
-        }
+        this.y -= 0.15;
+        if (this.y < 0) this.y = canvas.height;
       }
     }
 
     function init() {
       resize();
-      stars = Array.from({ length: 75 }, () => new Star());
+      stars = Array.from({ length: 60 }, () => new Star());
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(s => s.draw());
+        requestAnimationFrame(animate);
+      }
       animate();
     }
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawConstellations();
-      stars.forEach(s => s.draw());
-      requestAnimationFrame(animate);
-    }
-
-    window.addEventListener('resize', resize);
     init();
-
-    // =============================================
-    // TYPEWRITER
-    // =============================================
-    const lines = [
-      "<span class='gold-text'>[VANGUARD OS v3.2 ONLINE]</span>",
-      "Starlight relay synchronized. Armor diagnostics: <span class='gold-text'>OPTIMAL</span>.",
-      " ",
-      "> Accessing <span class='gold-text'>THE RESERVES</span>...",
-      "> 42 combat assets identified. All systems locked.",
-      " ",
-      "> Scanning <span class='lilac-text'>THE RUINS</span>...",
-      "> Status: Data decay halted. Ancient signatures detected.",
-      " ",
-      "> Welcome back, Knight. LED indicates secure uplink."
-    ];
-
-    const container = document.getElementById('typewriter');
-    let lineIdx = 0;
-
-    function type() {
-      if (lineIdx < lines.length) {
-        let div = document.createElement('div');
-        div.style.marginBottom = "10px";
-        div.innerHTML = lines[lineIdx];
-        container.appendChild(div);
-        lineIdx++;
-        setTimeout(type, 700);
-      }
-    }
-    setTimeout(type, 1000);
+    window.addEventListener('resize', resize);
   </script>
 </body>
 </html>
