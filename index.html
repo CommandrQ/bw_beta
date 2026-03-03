@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
   <title>Vanguard Knetwerk</title>
   <style>
     /* =============================================
@@ -22,7 +23,7 @@
       justify-content: flex-start;
       align-items: center;
       padding-top: 6vh;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Cinzel', serif;
     }
 
     canvas {
@@ -159,7 +160,7 @@
     }
     .terminal-body::-webkit-scrollbar { display: none; }
 
-    /* Static scanlines — fixed horizontal lines */
+    /* Static scanlines */
     .scanlines {
       position: absolute;
       inset: 0;
@@ -174,7 +175,7 @@
       z-index: 2;
     }
 
-    /* Scanline sweep — glowing band drifting top to bottom */
+    /* Scanline sweep */
     .terminal-body::after {
       content: '';
       position: absolute;
@@ -247,11 +248,14 @@
       </div>
     </div>
 
-    <!-- Body: put your content here -->
+    <!-- =============================================
+         PAGE CONTENT GOES HERE
+    ============================================= -->
     <div class="terminal-body">
       <div class="scanlines"></div>
       <span class="cursor"></span>
     </div>
+    <!-- =========================================== -->
 
   </div>
 
