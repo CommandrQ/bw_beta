@@ -2,191 +2,182 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Vanguard Tactical | Nation A</title>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard Knetwerk | Command Decision</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Orbitron:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      /* Retro Green HUD Palette */
-      --bg-crt: #020802;
-      --off-green: #0a2f0a;
-      --active-green: #00ff41;
-      --bright-green: #adffad;
-      --text-glow: 0 0 10px rgba(0, 255, 65, 0.7);
+      --bg-black: #0A0A0A;
+      --navy-depth: #0A2540;
       --gold-armor: #C9A23E;
-      --highlight: #f03030;
+      --starlight: #F2F6FF;
+      --active-green: #00ff41;
     }
-    
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
     body {
       width: 100%; height: 100vh;
-      background: #111;
+      overflow: hidden;
+      background: radial-gradient(circle at center, var(--navy-depth) 0%, var(--bg-black) 100%);
       display: flex; justify-content: center; align-items: center;
-      /* Main pixelated font for hud */
-      font-family: 'VT323', monospace; 
-      overflow: hidden;
-    }
-
-    /* THE PHYSICAL MONITOR FRAME */
-    .crt-bezel {
+      font-family: 'Inter', sans-serif;
       position: relative;
-      width: min(1200px, 95vw); height: min(900px, 90vh);
-      background: #2a2a2a; border-radius: 40px;
-      border: 10px solid #1a1a1a;
-      box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 100px #000;
-      padding: 40px; display: flex; flex-direction: column;
-      overflow: hidden;
-      /* The classic screen bulge */
-      transform: perspective(1000px) rotateX(1deg);
     }
 
-    /* THE ACTUAL GLOWING SCREEN */
-    .screen-container {
-      position: relative; flex: 1;
-      background-color: var(--bg-crt);
-      border-radius: 20px; border: 5px solid #000;
-      display: flex; flex-direction: column;
-      image-rendering: pixelated; overflow: hidden;
-      
-      /* Pure phosphorescent bloom */
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+    canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .terminal-window {
+      position: relative; z-index: 10;
+      width: min(900px, 94vw); height: 0px; 
+      background-color: rgba(10, 10, 10, 0.98);
+      border: 2px solid rgba(201, 162, 62, 0.6);
+      border-radius: 6px 6px 4px 4px;
+      display: flex; flex-direction: column; overflow: hidden; opacity: 0;
+      transition: height 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67), opacity 0.2s;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     }
 
-    /* GLOBAL CRT SCREEN EFFECTS */
-    .screen-container::before {
-      content: " "; position: absolute; inset: 0; z-index: 100;
-      /* Fixed heavy scanlines */
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-      background-size: 100% 3px; pointer-events: none;
+    .terminal-window.active { opacity: 1; height: min(600px, 80vh); }
+
+    .terminal-header {
+      height: 32px;
+      background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+      border-bottom: 2px solid rgba(201, 162, 62, 0.6);
+      display: flex; align-items: center; padding: 0 15px; justify-content: space-between;
     }
 
-    .screen-container::after {
-      content: " "; position: absolute; inset: 0; z-index: 101;
-      /* Screen curvature / Vignet */
-      background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.6) 100%);
-      pointer-events: none;
+    .header-title { color: var(--gold-armor); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+    .header-controls { display: flex; gap: 8px; }
+    .control-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--gold-armor); opacity: 0.6; }
+
+    /* MENU SYSTEM */
+    .terminal-body {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 20px; position: relative;
     }
 
-    /* HUD ELEMENTS */
-    .header {
-      padding: 10px; border-bottom: 1px solid var(--active-green);
-      color: var(--active-green); text-shadow: var(--text-glow);
-      display: flex; justify-content: space-between; font-size: 16px;
-      text-transform: uppercase; letter-spacing: 1px; z-index: 50;
+    .menu-viewport {
+      height: 100px; width: 100%;
+      overflow: hidden; position: relative;
+      display: flex; justify-content: center;
     }
-    
-    .viewport { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
-    .map-canvas { position: relative; width: 600px; height: 600px; }
 
-    /* COMPACT NODES & CONNECTORS */
-    .room {
-      position: absolute; border: 1px solid var(--active-green);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; color: var(--bright-green);
-      cursor: pointer; z-index: 10; transform: translate(-50%, -50%);
-      box-shadow: var(--text-glow); text-transform: uppercase;
+    .menu-container {
+      position: absolute; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; align-items: center;
     }
-    .room:hover { filter: brightness(1.2); border-color: var(--bright-green); }
-    
-    .connector { position: absolute; background: var(--off-green); z-index: 5; transform: translate(-50%, -50%); }
-    .v-line { width: 3px; border-left: 1px solid var(--active-green); border-right: 1px solid var(--active-green); }
-    .h-line { height: 3px; border-top: 1px solid var(--active-green); border-bottom: 1px solid var(--active-green); }
 
-    .tag { position: absolute; top: -14px; background: var(--active-green); color: #000; font-size: 8px; padding: 1px 3px; }
-    .flash { animation: flash-anim 1.2s infinite; }
-    @keyframes flash-anim { 0%, 100% { border-color: var(--highlight); box-shadow: 0 0 10px var(--highlight); } 50% { border-color: var(--active-green); box-shadow: var(--text-glow); } }
+    .menu-item {
+      height: 100px; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      color: var(--starlight); font-family: 'Orbitron', sans-serif;
+      text-align: center;
+    }
 
-    /* HUD BOTTOM BAR */
-    .info-bar {
-      position: absolute; bottom: 0; width: 100%;
-      background: rgba(0,10,0,0.9); border-top: 1px solid var(--active-green);
-      padding: 10px; color: var(--active-green); text-shadow: var(--text-glow);
-      font-size: 14px; z-index: 50;
+    .menu-item h2 { font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 5px; color: var(--gold-armor); }
+    .menu-item p { font-size: 0.8rem; color: var(--active-green); opacity: 0.8; }
+
+    /* CONTROLS */
+    .nav-controls {
+      display: flex; gap: 40px; margin-top: 30px;
+    }
+
+    .nav-btn {
+      background: transparent; border: 1px solid var(--gold-armor);
+      color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
+      padding: 10px 20px; font-size: 10px; letter-spacing: 2px;
+      cursor: pointer; transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover { background: var(--gold-armor); color: var(--bg-black); box-shadow: 0 0 15px var(--gold-armor); }
+
+    footer {
+      position: absolute; bottom: 20px; width: 100%;
+      text-align: center; color: var(--starlight);
+      font-family: 'Orbitron', sans-serif; font-size: 10px;
+      letter-spacing: 2px; text-transform: uppercase;
+      opacity: 0.6; text-shadow: 0 0 10px rgba(242, 246, 255, 0.8);
+      pointer-events: none; z-index: 10;
     }
   </style>
 </head>
 <body>
 
-  <div class="crt-bezel">
-    <div class="screen-container">
-      
-      <div class="header">
-        <span>FORT TOWARD // TACTICAL VIEWPORT</span>
-        <span>VANGUARD NET ONLINE</span>
-      </div>
+  <canvas id="stars"></canvas>
 
-      <div class="viewport">
-        <div class="map-canvas" id="map-root">
-          <div style="position:absolute; top:50%; left:50%; width:200px; height:200px; border:1px dashed rgba(0,255,65,0.2); transform:translate(-50%,-50%); pointer-events:none;"></div>
+  <div class="terminal-window" id="window">
+    <div class="terminal-header">
+      <div class="header-controls">
+        <div class="control-dot"></div>
+        <div class="control-dot"></div>
+        <div class="control-dot" style="background: var(--gold-armor); opacity: 0.8;"></div>
+      </div>
+      <div class="header-title">Fort Toward Terminal //</div>
+      <div style="width: 46px;"></div>
+    </div>
+
+    <div class="terminal-body">
+      <div class="menu-viewport">
+        <div class="menu-container" id="menu-container">
+          <div class="menu-item"><h2>VCS SUPPORT CENTER</h2><p>(COMING SOON)</p></div>
+          <div class="menu-item"><h2>STORY MODE</h2><p>(COMING SOON)</p></div>
+          <div class="menu-item"><h2>PUBLIC ARCHIVES</h2><p>(COMING SOON)</p></div>
         </div>
       </div>
 
-      <div class="info-bar">
-        <div id="t" style="margin-bottom: 3px;">SYSTEM INTEL</div>
-        <div id="d">SECURE CONNECTION ESTABLISHED. MONITORING NATION A.</div>
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="rotateMenu(-1)">▲ ROTATE UP</button>
+        <button class="nav-btn" onclick="rotateMenu(1)">▼ ROTATE DOWN</button>
       </div>
-
     </div>
   </div>
 
-<script>
-  // REGISTRY: Small pixel shapes
-  const LOCATIONS = [
-    { id: 'vcs', name: 'VCS HUB', x: 300, y: 300, color: 'var(--off-green)', isHub: true, desc: 'Central Admin for Nation A.' },
-    { id: 'hut', name: 'HUT', x: 300, y: 180, color: 'var(--off-green)', tag: 'SURFACE ACCESS', desc: 'Opening soon...' },
-    { id: 'reserves', name: 'RESERVES', x: 450, y: 300, color: 'var(--off-green)', desc: 'Strategic resource storage.' },
-    { id: 'ruins', name: 'RUINS', x: 150, y: 300, color: '#111', desc: 'Sector reclaimed.' }
-  ];
+  <footer>
+    &copy; 2026 Powered by Vanguard Citizen Services
+  </footer>
 
-  const root = document.getElementById('map-root');
+  <script>
+    const CONFIG = { enableStars: true, autoBootDelay: 500 };
+    let currentIndex = 0;
+    const menuContainer = document.getElementById('menu-container');
+    const items = document.querySelectorAll('.menu-item');
+    const totalItems = items.length;
 
-  function buildMap() {
-    LOCATIONS.forEach(loc => {
-      // SMALL TAC NODES
-      const shapes = [
-        { w: 32, h: 32 },
-        { w: 48, h: 24 },
-        { w: 24, h: 48 },
-      ];
-      const shape = loc.isHub ? { w: 40, h: 40 } : shapes[Math.floor(Math.random() * shapes.length)];
+    function rotateMenu(direction) {
+      currentIndex += direction;
+      // Endlessly loop logic
+      if (currentIndex < 0) currentIndex = totalItems - 1;
+      if (currentIndex >= totalItems) currentIndex = 0;
       
-      const el = document.createElement('div');
-      el.className = `room ${loc.isHub ? 'flash' : ''}`;
-      el.style.width = `${shape.w}px`;
-      el.style.height = `${shape.h}px`;
-      el.style.left = `${loc.x}px`;
-      el.style.top = `${loc.y}px`;
-      el.style.backgroundColor = loc.color;
-      el.innerHTML = loc.tag ? `<div class="tag">${loc.tag}</div>${loc.name}` : loc.name;
-      
-      el.onclick = () => { 
-        document.getElementById('t').innerText = loc.name; 
-        document.getElementById('d').innerText = loc.desc; 
-      };
-      root.appendChild(el);
+      const offset = currentIndex * -100;
+      menuContainer.style.transform = `translateY(${offset}px)`;
+    }
 
-      // SIMPLE TAC CONNECTORS
-      if (!loc.isHub) {
-        const hub = LOCATIONS.find(l => l.isHub);
-        const shaft = document.createElement('div');
-        if (loc.x === hub.x) {
-          shaft.className = 'connector v-line';
-          shaft.style.height = `${Math.abs(loc.y - hub.y) - 30}px`;
-          shaft.style.left = `${loc.x}px`;
-          shaft.style.top = `${(loc.y + hub.y) / 2}px`;
-        } else {
-          shaft.className = 'connector h-line';
-          shaft.style.width = `${Math.abs(loc.x - hub.x) - 30}px`;
-          shaft.style.left = `${(loc.x + hub.x) / 2}px`;
-          shaft.style.top = `${loc.y}px`;
-        }
-        root.appendChild(shaft);
-      }
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('window').classList.add('active');
+      }, CONFIG.autoBootDelay);
     });
-  }
 
-  buildMap();
-</script>
+    if (CONFIG.enableStars) {
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+      resize();
+      window.addEventListener('resize', resize);
+      let stars = Array.from({ length: 45 }, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, s: Math.random() * 2 }));
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(242, 246, 255, 0.3)";
+        stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2); ctx.fill(); s.y -= 0.12; if (s.y < 0) s.y = canvas.height; });
+        requestAnimationFrame(animate);
+      };
+      animate();
+    }
+  </script>
 </body>
 </html>
