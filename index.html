@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VCS Central</title>
+  <title>Vanguard Knetwerk</title>
   <style>
     /* =============================================
        RESET
@@ -159,7 +159,22 @@
     }
     .terminal-body::-webkit-scrollbar { display: none; }
 
-    /* Scanline sweep */
+    /* Static scanlines — fixed horizontal lines */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0, 0, 0, 0.13) 3px,
+        rgba(0, 0, 0, 0.13) 4px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Scanline sweep — glowing band drifting top to bottom */
     .terminal-body::after {
       content: '';
       position: absolute;
@@ -175,6 +190,7 @@
         transparent 100%
       );
       pointer-events: none;
+      z-index: 3;
       animation: scanline-sweep 6s linear infinite;
     }
 
@@ -199,14 +215,14 @@
       position: relative;
       z-index: 1;
       margin-top: 14px;
-      color: rgba(255, 255, 255, 1);
+      color: rgba(255, 255, 255, 0.9);
       font-size: 11px;
       letter-spacing: 1px;
       text-transform: uppercase;
       text-shadow:
-        0 0 6px rgba(255, 255, 255, 1),
-        0 0 14px rgba(255, 255, 255, 1),
-        0 0 30px rgba(255, 255, 255, 1);
+        0 0 6px rgba(255, 255, 255, 0.9),
+        0 0 14px rgba(255, 255, 255, 0.5),
+        0 0 30px rgba(255, 255, 255, 0.3);
     }
   </style>
 </head>
@@ -233,6 +249,7 @@
 
     <!-- Body: put your content here -->
     <div class="terminal-body">
+      <div class="scanlines"></div>
       <span class="cursor"></span>
     </div>
 
