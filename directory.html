@@ -14,8 +14,6 @@
       --gold-armor: #C9A23E;
       --lilac-pulse: #C08CCF;
       --starlight: #F2F6FF;
-      --active-green: #00ff41;
-      --header-grey: #1a1a1a;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -90,24 +88,22 @@
       opacity: 0.6;
     }
 
-    /* TERMINAL CONTENT */
+    /* TERMINAL CONTENT (CLEAR OF TEXT) */
     .terminal-body {
       flex: 1; display: flex; flex-direction: column;
-      justify-content: center; align-items: center; text-align: center;
-      padding: 60px 40px; color: var(--starlight);
-      font-family: 'Orbitron', sans-serif; font-size: 16px;
-      line-height: 2.5;
+      justify-content: center; align-items: center;
+      padding: 60px 40px;
     }
 
     #action-container {
-      margin-top: 40px; opacity: 0; transition: opacity 1s ease;
-      display: flex; justify-content: center; gap: 20px;
+      opacity: 0; transition: opacity 1s ease;
+      display: flex; justify-content: center;
     }
 
     .vanguard-btn {
       background: var(--bg-black); border: 1px solid var(--gold-armor);
       color: var(--gold-armor); font-family: 'Orbitron', sans-serif;
-      padding: 12px 24px; font-size: 13px; letter-spacing: 2px;
+      padding: 14px 30px; font-size: 13px; letter-spacing: 2px;
       text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
     }
 
@@ -142,7 +138,8 @@
         <div class="control-dot" style="background: var(--gold-armor); opacity: 0.8;"></div>
       </div>
       <div class="header-title">Vanguard Station 01 // Command Decision</div>
-      <div style="width: 46px;"></div> </div>
+      <div style="width: 46px;"></div>
+    </div>
 
     <div class="terminal-body">
       <div id="action-container">
@@ -156,10 +153,9 @@
   </footer>
 
   <script>
-    /** * CONFIGURATION SWITCHES */
     const CONFIG = {
       enableStars: true,
-      postBootDelay: 1000
+      fadeDelay: 800
     };
 
     const Vanguard = {
@@ -167,10 +163,10 @@
         document.getElementById('boot-overlay').style.display = 'none';
         document.getElementById('window').classList.add('active');
         
-        // Show buttons immediately after the window opens
+        // Wait for window to expand, then show button
         setTimeout(() => {
           document.getElementById('action-container').style.opacity = '1';
-        }, CONFIG.postBootDelay);
+        }, CONFIG.fadeDelay);
       },
 
       nav(dest) {
@@ -178,7 +174,6 @@
       }
     };
 
-    // ✨ STAR ENGINE
     if (CONFIG.enableStars) {
       const canvas = document.getElementById('stars');
       const ctx = canvas.getContext('2d');
