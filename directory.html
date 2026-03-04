@@ -6,104 +6,165 @@
     <title>VCS Central</title>
     <style>
         :root {
+            /* Color Palette */
             --gold: #c5a059;
             --gold-glow: rgba(197, 160, 89, 0.6);
             --neon-blue: #00f2ff;
             --dark-bg: #030408; 
-            --solid-menu: #0d0f14;
+            --solid-menu: #0d0f14; /* Solid backing color */
+            
+            /* Typography */
+            --font-family: 'Georgia', serif;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             background-color: var(--dark-bg);
             color: white;
-            font-family: 'Georgia', serif;
+            font-family: var(--font-family);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            
-            /* Background starfield - visible only outside the menu */
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px),
-                radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 3px);
-            background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
-            background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+            min-height: 100vh;
+            overflow: hidden; /* Keeps stars contained */
+            position: relative;
         }
 
+        /* --- Twinkling Stars Background --- */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2; /* Deepest layer */
+            
+            /* Larger, defined stars using gradients */
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.3) 3px, transparent 4px),
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+                radial-gradient(rgba(200,220,255,.5), rgba(200,220,255,.1) 3px, transparent 4px);
+            background-size: 600px 600px, 400px 400px, 300px 300px;
+            background-position: 0 0, 50px 70px, 150px 250px;
+            
+            /* Apply the twinkling animation */
+            animation: twinkle 8s infinite linear;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            25% { opacity: 0.6; }
+            50% { opacity: 0.8; }
+            75% { opacity: 0.5; }
+        }
+
+        /* --- Main Menu Interface --- */
         .main-menu {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            width: 320px;
-            padding: 40px;
+            gap: 20px;
+            
+            /* --- RESPONSIVE SIZE SOLUTION --- */
+            /* clamp(MIN, VAL, MAX) - Scales between 320px and 600px based on screen width */
+            width: clamp(320px, 40vw, 600px); 
+            
+            /* Padding scales slightly with the menu size */
+            padding: clamp(25px, 3vh, 50px);
+            
             border-left: 3px solid var(--gold);
             position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            z-index: 1; /* Sits above the stars */
+            
+            /* Add shadow to lift it off the background void */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
 
-        /* Solid backing to hide stars behind the menu */
+        /* Solid background "plate" to block stars behind the menu */
         .main-menu::before {
             content: "";
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            border: 1px solid rgba(197, 160, 89, 0.3);
             background: var(--solid-menu); 
-            clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 85% 100%, 0% 100%);
-            z-index: -1;
+            
+            /* Futuristic clipped-corner 'shield' shape */
+            clip-path: polygon(0% 0%, 100% 0%, 100% 88%, 88% 100%, 0% 100%);
+            
+            /* Subtle internal border glow */
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            z-index: -1; /* Sits behind the menu content */
         }
 
-        /* Pulsing Title */
+        /* --- Pulsing Title --- */
         .menu-title {
-            font-size: 1rem;
-            letter-spacing: 5px;
+            font-size: clamp(0.9rem, 1.2vw, 1.3rem); /* Responsive font size */
+            letter-spacing: 0.4em; /* Spaced out letters */
             color: var(--gold);
             text-transform: uppercase;
-            margin-bottom: 25px;
-            border-bottom: 1px solid rgba(197, 160, 89, 0.4);
-            padding-bottom: 12px;
+            margin-bottom: clamp(15px, 2vh, 30px);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+            padding-bottom: 15px;
             font-weight: bold;
-            animation: pulse-glow 3s infinite ease-in-out;
+            text-align: center;
+            
+            /* Breathe animation */
+            animation: pulse-glow 4s infinite ease-in-out;
         }
 
         @keyframes pulse-glow {
-            0% {
+            0%, 100% {
                 text-shadow: 0 0 5px var(--gold-glow);
-                border-bottom-color: rgba(197, 160, 89, 0.4);
+                border-bottom-color: rgba(197, 160, 89, 0.3);
             }
             50% {
                 text-shadow: 0 0 20px var(--gold), 0 0 30px var(--gold-glow);
                 border-bottom-color: var(--gold);
-                transform: scale(1.02);
+                transform: scale(1.01); /* Very subtle scaling */
             }
-            100% {
-                text-shadow: 0 0 5px var(--gold-glow);
-                border-bottom-color: rgba(197, 160, 89, 0.4);
-            }
+        }
+
+        /* --- Menu Buttons --- */
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .menu-option {
             text-decoration: none;
-            color: #b0b0b0;
-            font-size: 1.4rem;
-            padding: 12px 20px;
-            transition: all 0.25s ease-out;
+            color: #d0d0d0; /* Off-white for contrast */
+            
+            /* Responsive font size */
+            font-size: clamp(1.2rem, 1.8vw, 1.9rem); 
+            
+            padding: clamp(10px, 1.5vh, 18px) 20px;
+            transition: all 0.3s ease-out;
             display: block;
-            border-left: 3px solid transparent;
+            border-left: 4px solid transparent;
             cursor: pointer;
+            position: relative;
         }
 
+        /* Hover Interaction */
         .menu-option:hover {
             color: var(--neon-blue);
-            background: rgba(0, 242, 255, 0.05);
-            border-left: 3px solid var(--neon-blue);
-            transform: translateX(8px);
-            text-shadow: 0 0 8px rgba(0, 242, 255, 0.6);
+            background: rgba(0, 242, 255, 0.04); /* Subtle blue tint */
+            border-left: 4px solid var(--neon-blue);
+            transform: translateX(10px); /* Shift right on hover */
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.7);
         }
+
+        /* Active state for instant feedback */
+        .menu-option:active {
+            transform: translateX(5px) scale(0.98);
+            background: rgba(0, 242, 255, 0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -112,9 +173,13 @@
         <div class="menu-title">Interface Linked</div>
         
         <div class="menu-options">
-
-            <a href="https://support.vcscentral.com/" class="menu-option">Help</a>
+            <a href="#" class="menu-option">Enter the Realm</a>
+            <a href="#" class="menu-option">The Reserves</a>
+            <a href="#" class="menu-option">The Ruins</a>
             
+            <a href="https://support.vcscentral.com/" class="menu-option" target="_blank">Help Center</a>
+            
+            <a href="#" class="menu-option">Exit System</a>
         </div>
     </div>
 
