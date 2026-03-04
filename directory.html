@@ -7,17 +7,16 @@
     <style>
         :root {
             --gold: #c5a059;
-            --firefly-yellow: #ffdf5d;
-            --firefly-glow: rgba(255, 223, 93, 0.6);
+            --firefly: #ffdf5d;
             --neon-blue: #00f2ff;
             --dark-bg: #05070a; 
             --solid-menu: #0d1117;
         }
 
-        /* --- Strict Layout Control --- */
+        /* --- Full-Screen Lockdown --- */
         html, body {
-            height: 100%;
-            width: 100%;
+            height: 100vh;
+            width: 100vw;
             margin: 0;
             padding: 0;
             overflow: hidden; 
@@ -27,70 +26,58 @@
             justify-content: center;
             align-items: center;
             font-family: 'Georgia', serif;
-            position: relative;
         }
 
-        /* --- Firefly Background Container --- */
-        .firefly-container {
+        /* --- The Firefly Layer --- */
+        /* We use 'before' on the body to ensure it is always the bottom-most layer */
+        body::before {
+            content: "";
             position: fixed;
-            top: 0;
+            top: -100px;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
+            right: 0;
+            bottom: -100px;
+            z-index: 0;
             pointer-events: none;
-        }
-
-        /* Generating Fireflies with CSS Gradients */
-        .firefly-field {
-            position: absolute;
-            bottom: -500px;
-            left: 0;
-            width: 100%;
-            height: calc(100% + 1000px);
+            
+            /* Creating yellow dots of different sizes */
             background-image: 
-                radial-gradient(4px 4px at 10% 10%, var(--firefly-yellow), transparent),
-                radial-gradient(6px 6px at 30% 50%, var(--firefly-yellow), transparent),
-                radial-gradient(3px 3px at 50% 20%, var(--firefly-yellow), transparent),
-                radial-gradient(5px 5px at 70% 80%, var(--firefly-yellow), transparent),
-                radial-gradient(4px 4px at 90% 40%, var(--firefly-yellow), transparent),
-                radial-gradient(7px 7px at 15% 75%, var(--firefly-yellow), transparent);
-            background-size: 800px 800px;
-            animation: fireflyRise 25s linear infinite, fireflyFlicker 3s ease-in-out infinite alternate;
+                radial-gradient(4px 4px at 10% 20%, var(--firefly), transparent),
+                radial-gradient(6px 6px at 40% 50%, var(--firefly), transparent),
+                radial-gradient(3px 3px at 80% 30%, var(--firefly), transparent),
+                radial-gradient(5px 5px at 20% 80%, var(--firefly), transparent),
+                radial-gradient(4px 4px at 60% 90%, var(--firefly), transparent),
+                radial-gradient(7px 7px at 90% 10%, var(--firefly), transparent);
+            background-size: 600px 600px; /* This repeats the pattern */
+            
+            /* Two animations: One to move them up, one to flicker */
+            animation: rise 30s linear infinite, flicker 4s ease-in-out infinite alternate;
         }
 
-        /* --- Animations --- */
-        @keyframes fireflyRise {
+        @keyframes rise {
             from { transform: translateY(0); }
-            to { transform: translateY(-800px); } /* Rise upward */
+            to { transform: translateY(-600px); }
         }
 
-        @keyframes fireflyFlicker {
-            0% { 
-                opacity: 0.2; 
-                filter: blur(1px) drop-shadow(0 0 5px var(--firefly-yellow));
-            }
-            100% { 
-                opacity: 0.9; 
-                filter: blur(2px) drop-shadow(0 0 15px var(--firefly-yellow));
-            }
+        @keyframes flicker {
+            0% { opacity: 0.2; filter: blur(1px) brightness(0.5); }
+            100% { opacity: 1; filter: blur(2px) brightness(1.5) drop-shadow(0 0 10px var(--firefly)); }
         }
 
-        /* --- Main Menu Interface --- */
+        /* --- The Menu Interface --- */
         .main-menu {
+            position: relative;
+            z-index: 10; /* Ensures menu is ABOVE the fireflies */
             display: flex;
             flex-direction: column;
             gap: 15px;
             width: clamp(320px, 42vw, 550px); 
-            max-height: 80vh;
             padding: clamp(25px, 4vh, 50px);
             border-left: 3px solid var(--gold);
-            position: relative;
-            z-index: 10;
             box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
+        /* Solid Shield Plate */
         .main-menu::before {
             content: "";
             position: absolute;
@@ -116,8 +103,8 @@
         }
 
         @keyframes pulse-glow {
-            0%, 100% { text-shadow: 0 0 5px rgba(197, 160, 89, 0.6); opacity: 0.8; }
-            50% { text-shadow: 0 0 15px var(--gold), 0 0 25px rgba(197, 160, 89, 0.6); transform: scale(1.02); opacity: 1; }
+            0%, 100% { text-shadow: 0 0 5px var(--gold); opacity: 0.8; }
+            50% { text-shadow: 0 0 20px var(--gold); transform: scale(1.02); opacity: 1; }
         }
 
         .menu-option {
@@ -139,8 +126,9 @@
             text-shadow: 0 0 10px var(--neon-blue);
         }
 
-        /* --- Footer --- */
         .vanguard-footer {
+            position: relative;
+            z-index: 10;
             margin-top: 30px;
             color: white;
             font-size: 0.75rem;
@@ -153,10 +141,6 @@
     </style>
 </head>
 <body>
-
-    <div class="firefly-container">
-        <div class="firefly-field"></div>
-    </div>
 
     <div class="main-menu">
         <div class="menu-title">Main Menu</div>
