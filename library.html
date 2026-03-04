@@ -2,166 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The World Deck</title>
+    <title>The Sun King</title>
     <style>
-        /* The Atmosphere */
+        /* The Reading Room Vibe */
         body {
-            background-color: #121212;
+            background-color: #1a1817; 
             color: #e8dcc7;
             font-family: 'Georgia', serif;
+            line-height: 1.8; /* Makes long text easy to read */
             padding: 40px;
-            text-align: center;
         }
 
-        h2 {
-            border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        /* The "Paper" the text sits on */
+        .page-content {
+            max-width: 700px; /* Keeps lines of text from getting too wide */
+            margin: 0 auto; /* Centers the page on the screen */
+            background-color: #2b1f18;
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border: 1px solid #4a3324;
         }
 
-        /* The Grid that holds the cards */
-        .card-table {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-bottom: 60px;
-        }
-
-        /* --- THE FLIP CARD MECHANICS --- */
-        /* 1. The Container sets the 3D perspective */
-        .card-container {
-            width: 220px;
-            height: 320px;
-            perspective: 1000px; /* Gives the flip a 3D depth effect */
-        }
-
-        /* 2. The Card itself (holds front and back) */
-        .card-inner {
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d; /* Keeps children in 3D space */
-            position: relative;
-        }
-
-        /* 3. The Hover Trigger (No JavaScript needed!) */
-        .card-container:hover .card-inner {
-            transform: rotateY(180deg);
-        }
-
-        /* 4. Front and Back default states */
-        .card-front, .card-back {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            backface-visibility: hidden; /* Hides the back of the element when flipped */
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            border: 2px solid #333;
-        }
-
-        /* --- THE DECK (The Reserves) STYLING --- */
-        .card-front.reserves {
-            background: linear-gradient(135deg, #2b1010, #5c1a1a);
+        /* The Back Button */
+        .back-btn {
             color: gold;
-        }
-
-        /* --- THE GRAVEYARD (The Ruins) STYLING --- */
-        .card-front.ruins {
-            background: linear-gradient(135deg, #1a1c1d, #2d3338);
-            color: #8c979d;
-            border-style: dashed;
-        }
-
-        /* The Back of the Cards */
-        .card-back {
-            background-color: #e8dcc7; /* Parchment look */
-            color: #121212;
-            transform: rotateY(180deg); /* Starts flipped around */
-        }
-
-        .card-back p {
-            font-size: 14px;
-            font-style: italic;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
             margin-bottom: 20px;
         }
+        .back-btn:hover { color: #fff; }
 
-        /* The Button to open the PDF */
-        .read-btn {
-            background-color: #5c1a1a;
-            color: #fff;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .read-btn:hover {
-            background-color: #8a2727;
-        }
-        
-        .ruins-btn { background-color: #2d3338; }
-        .ruins-btn:hover { background-color: #4a5359; }
-
+        h1 { border-bottom: 2px solid #5c1a1a; padding-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <h2>The Reserves</h2>
-    <div class="card-table">
+    <div class="page-content">
+        <a href="index.html" class="back-btn">← Back to The Reserves</a>
+
+        <h1>The Sun King</h1>
         
-        <div class="card-container">
-            <div class="card-inner">
-                <div class="card-front reserves">
-                    <h3>The Sun King</h3>
-                </div>
-                <div class="card-back">
-                    <p>"The ruler of the dawn era, before the great fracture..."</p>
-                    <a href="The_Reserves/Sun_King.pdf" target="_blank" class="read-btn">Read Codex</a>
-                </div>
-            </div>
-        </div>
+        <p>The great sun king ruled for four centuries before the great fracture. During his reign, the northern mists receded, and the trade routes flourished.</p>
 
-        <div class="card-container">
-            <div class="card-inner">
-                <div class="card-front reserves">
-                    <h3>Bestiary: Vol 1</h3>
-                </div>
-                <div class="card-back">
-                    <p>"A guide to the creatures lurking in the northern mist."</p>
-                    <a href="The_Reserves/Bestiary.pdf" target="_blank" class="read-btn">Read Codex</a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <h2>The Ruins</h2>
-    <div class="card-table">
+        <p>However, in the final days of the third era, a betrayal from within the high council led to his downfall. Here is a few hundred more words about how that happened...</p>
         
-        <div class="card-container">
-            <div class="card-inner">
-                <div class="card-front ruins">
-                    <h3>Old Magic System</h3>
-                </div>
-                <div class="card-back">
-                    <p>"Discarded rules of arcane casting. Replaced in timeline 2.0."</p>
-                    <a href="The_Ruins/Old_Magic.pdf" target="_blank" class="read-btn ruins-btn">View Relic</a>
-                </div>
-            </div>
-        </div>
-
+        <p>You can just keep adding paragraphs like this. It will automatically scroll beautifully.</p>
     </div>
 
 </body>
