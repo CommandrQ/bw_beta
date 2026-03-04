@@ -6,18 +6,13 @@
     <title>VCS Central</title>
     <style>
         :root {
-            /* Color Palette */
             --gold: #c5a059;
             --gold-glow: rgba(197, 160, 89, 0.6);
             --neon-blue: #00f2ff;
             --dark-bg: #030408; 
-            --solid-menu: #0d0f14; /* Solid backing color */
-            
-            /* Typography */
-            --font-family: 'Georgia', serif;
+            --solid-menu: #0d0f14;
         }
 
-        /* --- Global Reset & Layout --- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -27,147 +22,126 @@
         body {
             background-color: var(--dark-bg);
             color: white;
-            font-family: var(--font-family);
+            font-family: 'Georgia', serif;
             display: flex;
+            flex-direction: column; /* Stack menu and footer vertically */
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden; /* Keeps stars contained */
+            height: 100vh;
+            overflow: hidden;
             position: relative;
         }
 
-        /* --- Twinkling Stars Background --- */
-        body::before {
-            content: "";
+        /* --- Traveling Stars Animation --- */
+        .star-field {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -2; /* Deepest layer */
-            
-            /* Larger, defined stars using gradients */
+            top: -100%; /* Start above the view */
+            left: 0;
+            width: 100%;
+            height: 200%; /* Double height for seamless loop */
+            z-index: -2;
             background-image: 
-                radial-gradient(white, rgba(255,255,255,.3) 3px, transparent 4px),
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-                radial-gradient(rgba(200,220,255,.5), rgba(200,220,255,.1) 3px, transparent 4px);
-            background-size: 600px 600px, 400px 400px, 300px 300px;
-            background-position: 0 0, 50px 70px, 150px 250px;
-            
-            /* Apply the twinkling animation */
-            animation: twinkle 8s infinite linear;
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 160px 120px, #fff, rgba(0,0,0,0));
+            background-size: 300px 300px; /* Adjust for star density */
+            animation: starTravel 20s linear infinite;
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 1; }
-            25% { opacity: 0.6; }
-            50% { opacity: 0.8; }
-            75% { opacity: 0.5; }
+        @keyframes starTravel {
+            from { transform: translateY(0); }
+            to { transform: translateY(50%); }
         }
 
-        /* --- Main Menu Interface --- */
+        /* --- Main Menu --- */
         .main-menu {
             display: flex;
             flex-direction: column;
             gap: 20px;
-            
-            /* --- RESPONSIVE SIZE SOLUTION --- */
-            /* clamp(MIN, VAL, MAX) - Scales between 320px and 600px based on screen width */
-            width: clamp(320px, 40vw, 600px); 
-            
-            /* Padding scales slightly with the menu size */
-            padding: clamp(25px, 3vh, 50px);
-            
+            width: clamp(320px, 45vw, 600px); 
+            padding: clamp(30px, 4vh, 60px);
             border-left: 3px solid var(--gold);
             position: relative;
-            z-index: 1; /* Sits above the stars */
-            
-            /* Add shadow to lift it off the background void */
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 1;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            margin-bottom: 40px; /* Space for the footer */
         }
 
-        /* Solid background "plate" to block stars behind the menu */
         .main-menu::before {
             content: "";
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: var(--solid-menu); 
-            
-            /* Futuristic clipped-corner 'shield' shape */
             clip-path: polygon(0% 0%, 100% 0%, 100% 88%, 88% 100%, 0% 100%);
-            
-            /* Subtle internal border glow */
             border: 1px solid rgba(197, 160, 89, 0.2);
-            z-index: -1; /* Sits behind the menu content */
+            z-index: -1;
         }
 
         /* --- Pulsing Title --- */
         .menu-title {
-            font-size: clamp(0.9rem, 1.2vw, 1.3rem); /* Responsive font size */
-            letter-spacing: 0.4em; /* Spaced out letters */
+            font-size: clamp(1rem, 1.2vw, 1.4rem);
+            letter-spacing: 0.5em;
             color: var(--gold);
             text-transform: uppercase;
-            margin-bottom: clamp(15px, 2vh, 30px);
+            margin-bottom: 25px;
             border-bottom: 1px solid rgba(197, 160, 89, 0.3);
             padding-bottom: 15px;
             font-weight: bold;
             text-align: center;
-            
-            /* Breathe animation */
             animation: pulse-glow 4s infinite ease-in-out;
         }
 
         @keyframes pulse-glow {
-            0%, 100% {
-                text-shadow: 0 0 5px var(--gold-glow);
-                border-bottom-color: rgba(197, 160, 89, 0.3);
-            }
-            50% {
-                text-shadow: 0 0 20px var(--gold), 0 0 30px var(--gold-glow);
-                border-bottom-color: var(--gold);
-                transform: scale(1.01); /* Very subtle scaling */
-            }
+            0%, 100% { text-shadow: 0 0 5px var(--gold-glow); }
+            50% { text-shadow: 0 0 20px var(--gold), 0 0 30px var(--gold-glow); transform: scale(1.02); }
         }
 
         /* --- Menu Buttons --- */
-        .menu-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
         .menu-option {
             text-decoration: none;
-            color: #d0d0d0; /* Off-white for contrast */
-            
-            /* Responsive font size */
-            font-size: clamp(1.2rem, 1.8vw, 1.9rem); 
-            
-            padding: clamp(10px, 1.5vh, 18px) 20px;
+            color: #d0d0d0;
+            font-size: clamp(1.3rem, 2vw, 2.2rem); 
+            padding: 15px 25px;
             transition: all 0.3s ease-out;
             display: block;
             border-left: 4px solid transparent;
             cursor: pointer;
-            position: relative;
         }
 
-        /* Hover Interaction */
         .menu-option:hover {
             color: var(--neon-blue);
-            background: rgba(0, 242, 255, 0.04); /* Subtle blue tint */
+            background: rgba(0, 242, 255, 0.05);
             border-left: 4px solid var(--neon-blue);
-            transform: translateX(10px); /* Shift right on hover */
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.7);
+            transform: translateX(12px);
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8);
         }
 
-        /* Active state for instant feedback */
-        .menu-option:active {
-            transform: translateX(5px) scale(0.98);
-            background: rgba(0, 242, 255, 0.1);
+        /* --- New Glowing Footer --- */
+        .vanguard-footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            /* Glowing white effect */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+            opacity: 0.7;
+            position: absolute;
+            bottom: 30px;
+        }
+
+        .vanguard-footer b {
+            color: #fff;
+            font-weight: normal;
         }
 
     </style>
 </head>
 <body>
+
+    <div class="star-field"></div>
 
     <div class="main-menu">
         <div class="menu-title">Interface Linked</div>
@@ -176,12 +150,14 @@
             <a href="#" class="menu-option">Enter the Realm</a>
             <a href="#" class="menu-option">The Reserves</a>
             <a href="#" class="menu-option">The Ruins</a>
-            
             <a href="https://support.vcscentral.com/" class="menu-option" target="_blank">Help Center</a>
-            
             <a href="#" class="menu-option">Exit System</a>
         </div>
     </div>
+
+    <footer class="vanguard-footer">
+        © 2026 <b>Vanguard Citizen Services</b> | Secure Terminal Access
+    </footer>
 
 </body>
 </html>
