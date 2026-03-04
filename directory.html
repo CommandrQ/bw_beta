@@ -2,70 +2,93 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VCS Central</title>
     <style>
         :root {
             --gold: #c5a059;
             --gold-glow: rgba(197, 160, 89, 0.6);
             --neon-blue: #00f2ff;
-            --dark-bg: #030408; 
+            --dark-bg: #020305; 
             --solid-menu: #0d0f14;
         }
 
-        * {
-            box-sizing: border-box;
+        html, body {
+            height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
-        }
-
-        body {
+            overflow: hidden;
             background-color: var(--dark-bg);
-            color: white;
-            font-family: 'Georgia', serif;
             display: flex;
-            flex-direction: column; /* Stack menu and footer vertically */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Georgia', serif;
             position: relative;
         }
 
-        /* --- Traveling Stars Animation --- */
+        /* --- Traveling & Twinkling Background Stars --- */
         .star-field {
             position: absolute;
-            top: -100%; /* Start above the view */
+            top: 0;
             left: 0;
             width: 100%;
-            height: 200%; /* Double height for seamless loop */
+            height: 200%;
             z-index: -2;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
-                radial-gradient(3px 3px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 90px 40px, #ddd, rgba(0,0,0,0)),
-                radial-gradient(3px 3px at 160px 120px, #fff, rgba(0,0,0,0));
-            background-size: 300px 300px; /* Adjust for star density */
-            animation: starTravel 20s linear infinite;
+            background: 
+                radial-gradient(3px 3px at 15% 15%, #fff, transparent),
+                radial-gradient(5px 5px at 45% 65%, #fff, transparent),
+                radial-gradient(2px 2px at 75% 25%, #fff, transparent),
+                radial-gradient(6px 6px at 85% 85%, rgba(255,255,255,0.9), transparent);
+            background-size: 800px 800px;
+            animation: starTravel 70s linear infinite, twinkle 6s ease-in-out infinite alternate;
+        }
+
+        /* --- Shooting Star (Comet) --- */
+        .shooting-star {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            z-index: -1;
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 15px 2px #fff, 0 0 30px 5px var(--neon-blue);
+            animation: comet 10s linear infinite;
+        }
+
+        @keyframes comet {
+            0% { transform: translate(50vw, 0) rotate(-45deg) scale(0); opacity: 0; }
+            5% { opacity: 1; transform: translate(40vw, 10vh) rotate(-45deg) scale(1); }
+            15% { opacity: 0; transform: translate(-10vw, 60vh) rotate(-45deg) scale(0); }
+            100% { opacity: 0; }
         }
 
         @keyframes starTravel {
-            from { transform: translateY(0); }
-            to { transform: translateY(50%); }
+            from { transform: translateY(-50%); }
+            to { transform: translateY(0%); }
         }
 
-        /* --- Main Menu --- */
+        @keyframes twinkle {
+            0% { opacity: 0.3; filter: drop-shadow(0 0 2px #fff); }
+            100% { opacity: 1; filter: drop-shadow(0 0 15px #fff); }
+        }
+
+        /* --- Main Menu Interface --- */
         .main-menu {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            width: clamp(320px, 45vw, 600px); 
-            padding: clamp(30px, 4vh, 60px);
+            gap: 15px;
+            width: clamp(300px, 40vw, 550px); 
+            max-height: 80vh;
+            padding: clamp(20px, 4vh, 50px);
             border-left: 3px solid var(--gold);
             position: relative;
             z-index: 1;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-            margin-bottom: 40px; /* Space for the footer */
+            box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
         .main-menu::before {
@@ -79,82 +102,70 @@
             z-index: -1;
         }
 
-        /* --- Pulsing Title --- */
         .menu-title {
-            font-size: clamp(1rem, 1.2vw, 1.4rem);
+            font-size: clamp(0.9rem, 1.1vw, 1.2rem);
             letter-spacing: 0.5em;
             color: var(--gold);
             text-transform: uppercase;
-            margin-bottom: 25px;
             border-bottom: 1px solid rgba(197, 160, 89, 0.3);
             padding-bottom: 15px;
+            margin-bottom: 10px;
             font-weight: bold;
             text-align: center;
             animation: pulse-glow 4s infinite ease-in-out;
         }
 
         @keyframes pulse-glow {
-            0%, 100% { text-shadow: 0 0 5px var(--gold-glow); }
-            50% { text-shadow: 0 0 20px var(--gold), 0 0 30px var(--gold-glow); transform: scale(1.02); }
+            0%, 100% { text-shadow: 0 0 5px var(--gold-glow); opacity: 0.8; }
+            50% { text-shadow: 0 0 15px var(--gold), 0 0 25px var(--gold-glow); transform: scale(1.02); opacity: 1; }
         }
 
-        /* --- Menu Buttons --- */
         .menu-option {
             text-decoration: none;
-            color: #d0d0d0;
-            font-size: clamp(1.3rem, 2vw, 2.2rem); 
-            padding: 15px 25px;
+            color: #ccc;
+            font-size: clamp(1.1rem, 1.7vw, 1.8rem); 
+            padding: 12px 20px;
             transition: all 0.3s ease-out;
             display: block;
-            border-left: 4px solid transparent;
+            border-left: 3px solid transparent;
             cursor: pointer;
         }
 
         .menu-option:hover {
             color: var(--neon-blue);
             background: rgba(0, 242, 255, 0.05);
-            border-left: 4px solid var(--neon-blue);
-            transform: translateX(12px);
-            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8);
+            border-left: 3px solid var(--neon-blue);
+            transform: translateX(10px);
+            text-shadow: 0 0 10px var(--neon-blue);
         }
 
-        /* --- New Glowing Footer --- */
+        /* --- Footer --- */
         .vanguard-footer {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
+            margin-top: 30px;
+            color: white;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            /* Glowing white effect */
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
-            opacity: 0.7;
-            position: absolute;
-            bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            opacity: 0.6;
+            text-align: center;
         }
-
-        .vanguard-footer b {
-            color: #fff;
-            font-weight: normal;
-        }
-
     </style>
 </head>
 <body>
 
     <div class="star-field"></div>
+    <div class="shooting-star"></div>
 
     <div class="main-menu">
-        <div class="menu-title">Interface Linked</div>
-        
+        <div class="menu-title">Main Menu</div>
         <div class="menu-options">
-            
-            <a href="https://support.vcscentral.com/" class="menu-option" >Help Center</a>
-          
+            <a href="https://support.vcscentral.com/" class="menu-option">Help Center</a>
         </div>
     </div>
 
     <footer class="vanguard-footer">
-        © 2026 <b>Vanguard Citizen Services</b> | Secure Terminal Access
+        © 2026 VANGUARD CITIZEN SERVICES
     </footer>
 
 </body>
