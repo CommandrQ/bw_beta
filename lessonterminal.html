@@ -1,0 +1,160 @@
+<div class="quest-log-viewport">
+  <div class="quest-window">
+    <div class="quest-header">
+      <h2 class="title">INSO FUNDAMENTALS</h2>
+      <div class="progress-bar-container">
+        <div class="progress-fill" style="width: 33%;"></div>
+        <span class="progress-text">SYNCHRONIZATION: 33%</span>
+      </div>
+    </div>
+
+    <div class="module-list">
+      <div class="module-card active">
+        <div class="module-status">AVAILABLE</div>
+        <div class="module-info">
+          <h3>SUBCHAPTER 01: THE ESSENCE OF INSO</h3>
+          <p>Master the stabilizing current of Solaryn and define the disciplined practice of internal balance.</p>
+        </div>
+        <a href="subchapter-1.html" class="module-btn">ENTER MODULE</a>
+      </div>
+
+      <div class="module-card locked">
+        <div class="module-status">LOCKED</div>
+        <div class="module-info">
+          <h3>SUBCHAPTER 02: THE TRIAD OF ENERGIES</h3>
+          <p>Requires alignment of Vi (Mind), Ki (Body), and Chi (Soul) to proceed.</p>
+        </div>
+        <div class="lock-icon">🔒</div>
+      </div>
+
+      <div class="module-card locked">
+        <div class="module-status">LOCKED</div>
+        <div class="module-info">
+          <h3>SUBCHAPTER 03: THREADART APPLICATION</h3>
+          <p>Master the categorized functions: Offensive, Defensive, and Utility Threadarts.</p>
+        </div>
+        <div class="lock-icon">🔒</div>
+      </div>
+    </div>
+
+    <div class="footer-metadata">
+      <p>SOURCE_DATA: THE DOCTRINE OF INSO [CITIZEN SERVICES]</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Quicksand:wght@400;700&display=swap');
+
+  .quest-log-viewport {
+    background: #0d1117;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  .quest-window {
+    background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%);
+    border: 1px solid #4c1d95;
+    width: 100%;
+    max-width: 650px;
+    padding: 30px;
+    box-shadow: 0 0 40px rgba(107, 33, 168, 0.4);
+  }
+
+  .quest-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .title {
+    font-family: 'Orbitron', sans-serif;
+    color: #fff;
+    letter-spacing: 5px;
+    margin-bottom: 15px;
+  }
+
+  .progress-bar-container {
+    background: rgba(255, 255, 255, 0.1);
+    height: 12px;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    background: linear-gradient(90deg, #a855f7, #58a6ff);
+    height: 100%;
+    box-shadow: 0 0 10px #a855f7;
+  }
+
+  .progress-text {
+    font-size: 0.65rem;
+    font-family: 'Orbitron', sans-serif;
+    color: #a855f7;
+    position: absolute;
+    top: 15px;
+    right: 0;
+  }
+
+  .module-list { display: flex; flex-direction: column; gap: 20px; }
+
+  .module-card {
+    background: rgba(48, 54, 61, 0.3);
+    border: 1px solid #30363d;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+    position: relative;
+  }
+
+  .module-card.active { border-left: 4px solid #58a6ff; }
+  .module-card.locked { opacity: 0.5; border-left: 4px solid #30363d; cursor: not-allowed; }
+
+  .module-status {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    letter-spacing: 2px;
+  }
+
+  .active .module-status { color: #58a6ff; }
+  .locked .module-status { color: #8b949e; }
+
+  .module-info h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    margin: 15px 0 5px 0;
+    color: #fff;
+  }
+
+  .module-info p { font-size: 0.85rem; color: #8b949e; margin: 0; }
+
+  .module-btn {
+    background: #58a6ff;
+    color: #0d1117;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    font-size: 0.7rem;
+    border-radius: 4px;
+  }
+
+  .lock-icon { font-size: 1.5rem; color: #4c1d95; }
+
+  .footer-metadata {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.6rem;
+    color: #4c1d95;
+    letter-spacing: 2px;
+  }
+</style>
