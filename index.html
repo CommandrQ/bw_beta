@@ -1,9 +1,9 @@
 <div class="academy-viewport">
-  <div class="firefly" style="left: 12%; top: 15%; animation-delay: 0s;"></div>
-  <div class="firefly" style="left: 85%; top: 25%; animation-delay: 1.2s;"></div>
-  <div class="firefly" style="left: 20%; top: 75%; animation-delay: 2.5s;"></div>
-  <div class="firefly" style="left: 70%; top: 85%; animation-delay: 0.5s;"></div>
-  <div class="firefly" style="left: 45%; top: 40%; animation-delay: 3s;"></div>
+  <div class="firefly" style="left: 15%; top: 20%; animation-delay: 0s;"></div>
+  <div class="firefly" style="left: 80%; top: 15%; animation-delay: 1.2s;"></div>
+  <div class="firefly" style="left: 25%; top: 70%; animation-delay: 2.5s;"></div>
+  <div class="firefly" style="left: 75%; top: 80%; animation-delay: 0.5s;"></div>
+  <div class="firefly" style="left: 50%; top: 45%; animation-delay: 3s;"></div>
 
   <div class="university-portal">
     <div class="arched-window">
@@ -28,7 +28,7 @@
         <p class="course-desc">Master the energies of <b>Vi, Ki, and Chi</b> to stabilize your presence within the worldline.</p>
       </div>
 
-      <a href="introduction.html" class="enroll-link">BEGIN INITIAL ALIGNMENT</a>
+      <a href="./introduction.html" class="enroll-link">BEGIN INITIAL ALIGNMENT</a>
     </div>
   </div>
 </div>
@@ -36,15 +36,24 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Quicksand:wght@400;700&display=swap');
 
+  /* CRITICAL: DISABLE SCROLLING AND REMOVE WHITE EDGES */
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Disables scrolling completely */
+    background-color: #0d1117; /* Solid dark base */
+  }
+
   .academy-viewport {
     background: #0d1117; 
-    min-height: 80vh;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
-    padding: 40px;
     font-family: 'Quicksand', sans-serif;
   }
 
@@ -53,7 +62,7 @@
     border: 1px solid #30363d;
     border-radius: 16px;
     max-width: 500px;
-    width: 100%;
+    width: 90%;
     text-align: center;
     color: #c9d1d9;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
@@ -89,7 +98,7 @@
 
   @keyframes firefly-glide {
     0%, 100% { opacity: 0; transform: translate(0, 0) scale(0.5); }
-    50% { opacity: 1; transform: translate(20px, -40px) scale(1.2); }
+    50% { opacity: 1; transform: translate(25px, -45px) scale(1.2); }
   }
 
   .academy-crest { width: 70px; height: 70px; animation: crest-float 5s infinite ease-in-out; }
