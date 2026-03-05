@@ -1,216 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Link | Initialize</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<div class="university-portal">
+  <div class="academy-crest">
+    <svg viewBox="0 0 100 100" class="crest-svg">
+      <circle cx="50" cy="50" r="45" fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.5"/>
+      <polygon points="50,15 85,50 50,85 15,50" fill="none" stroke="#ffd700" stroke-width="3"/>
+      <circle cx="50" cy="35" r="5" fill="#00d4ff"/>
+      <circle cx="35" cy="60" r="5" fill="#00d4ff"/>
+      <circle cx="65" cy="60" r="5" fill="#00d4ff"/>
+    </svg>
+  </div>
+  
+  <div class="portal-content">
+    <h2 class="academy-title">VANGUARD UNIVERSITY</h2>
+    <p class="academy-subtitle">DEPARTMENT OF THREADARTS & WORLD ALIGNMENT</p>
     
-    <style>
-        /* CSS Variables for our sci-fantasy cel-shaded palette */
-        :root {
-            --bg-color: #161620;
-            --neon-cyan: #00f3ff;
-            --neon-magenta: #ff00ea;
-            --neon-yellow: #fffb00;
-            --cel-border: 4px solid #000;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at center, #242435 0%, var(--bg-color) 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Share Tech Mono', monospace;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        /* The main holographic dialogue box */
-        .dialogue-box {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: var(--cel-border);
-            padding: 50px 40px;
-            /* Hard drop shadow for cel-shaded anime feel */
-            box-shadow: 12px 12px 0 var(--neon-magenta);
-            text-align: center;
-            max-width: 650px;
-            width: 90%;
-            position: relative;
-            /* Scanline effect for futurism */
-            background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 100% 4px;
-        }
-
-        /* The Headline */
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-style: italic;
-            font-size: 3.5rem;
-            margin: 0 0 15px 0;
-            text-transform: uppercase;
-            color: var(--neon-cyan);
-            /* Hard text shadow acting as a stroke */
-            text-shadow: 3px 3px 0 #000;
-            letter-spacing: 2px;
-        }
-
-        /* The pulse animation triggered when sync hits 100% */
-        .pulse {
-            animation: pulse-glow 0.4s ease-out forwards;
-        }
-
-        @keyframes pulse-glow {
-            0% { text-shadow: 3px 3px 0 #000, 0 0 10px var(--neon-cyan); }
-            50% { text-shadow: 3px 3px 0 #000, 0 0 40px var(--neon-cyan), 0 0 80px var(--neon-cyan); }
-            100% { text-shadow: 3px 3px 0 #000, 0 0 20px var(--neon-cyan); }
-        }
-
-        /* The Subtext */
-        p {
-            font-size: 1.3rem;
-            height: 3rem; /* Fixed height so the layout doesn't jump while typing */
-            margin-bottom: 40px;
-            color: #d4d4d4;
-            text-shadow: 1px 1px 0 #000;
-        }
-
-        /* The Blinking Cursor */
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 1.2rem;
-            background-color: var(--neon-cyan);
-            vertical-align: middle;
-            animation: blink 0.8s infinite;
-        }
-
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-
-        /* The CTA Button */
-        .cta-button {
-            display: inline-block;
-            opacity: 0; 
-            pointer-events: none; 
-            text-decoration: none;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: #000;
-            background-color: #fff;
-            padding: 15px 50px;
-            border: var(--cel-border);
-            /* Hard drop shadow */
-            box-shadow: 8px 8px 0 #000;
-            /* Creates the angled parallelogram shape */
-            transform: skewX(-15deg);
-            transition: all 0.1s ease-in-out;
-            cursor: pointer;
-        }
-
-        /* Un-skewing the text so it remains readable inside the angled button */
-        .cta-button span {
-            display: inline-block;
-            transform: skewX(15deg);
-        }
-
-        /* Animates the button into existence */
-        .cta-button.visible {
-            opacity: 1;
-            pointer-events: auto;
-            animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes pop-in {
-            0% { transform: skewX(-15deg) scale(0.8); opacity: 0; }
-            100% { transform: skewX(-15deg) scale(1); opacity: 1; }
-        }
-
-        /* The Tactical Hover/Click States */
-        .cta-button:hover {
-            background-color: var(--neon-yellow);
-            box-shadow: 4px 4px 0 #000;
-            transform: skewX(-15deg) translate(4px, 4px);
-        }
-        
-        .cta-button:active {
-            box-shadow: 0px 0px 0 #000;
-            transform: skewX(-15deg) translate(8px, 8px);
-        }
-    </style>
-</head>
-<body>
-
-    <div class="dialogue-box">
-        <h1 id="sync-headline">SYNC RATE: <span id="counter">0</span>%</h1>
-        <p><span id="subtext"></span><span class="cursor" id="cursor"></span></p>
-        
-        <a href="directory.html" class="cta-button" id="ignite-btn">
-            <span>[ IGNITE ]</span>
-        </a>
+    <div class="course-brief">
+      <span class="status-tag">ACTIVE COURSE</span>
+      <h3 class="course-name">INSO FUNDAMENTALS</h3>
+      <p class="course-desc">Master the stabilizing currents of Solaryn. Align your Mind (Vi), Body (Ki), and Soul (Chi) to shape the reality around you.</p>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const counterElement = document.getElementById("counter");
-            const headlineElement = document.getElementById("sync-headline");
-            const subtextElement = document.getElementById("subtext");
-            const cursorElement = document.getElementById("cursor");
-            const buttonElement = document.getElementById("ignite-btn");
-            
-            const subtextContent = "Reality parameters locked. Let's rewrite the stars. Are you ready?";
-            
-            let count = 0;
-            const targetCount = 100;
-            const countSpeed = 20; // milliseconds per count cycle
-            
-            // 1. The Fast-Counting Animation
-            const countInterval = setInterval(() => {
-                // Count up in varied chunks to make it look like computing
-                count += Math.floor(Math.random() * 7) + 2; 
-                
-                if (count >= targetCount) {
-                    count = targetCount;
-                    clearInterval(countInterval);
-                    counterElement.innerText = count;
-                    
-                    // Trigger the neon pulse effect
-                    headlineElement.classList.add("pulse");
-                    
-                    // Wait half a second, then start typing the text
-                    setTimeout(typeWriter, 500); 
-                } else {
-                    counterElement.innerText = count;
-                }
-            }, countSpeed);
-            
-            // 2. The Typewriter Effect
-            let i = 0;
-            const typeSpeed = 40; // milliseconds per letter
-            
-            function typeWriter() {
-                if (i < subtextContent.length) {
-                    subtextElement.innerHTML += subtextContent.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, typeSpeed);
-                } else {
-                    // Once typing is done, hide the cursor and pop the button in
-                    cursorElement.style.display = "none";
-                    setTimeout(() => {
-                        buttonElement.classList.add("visible");
-                    }, 300);
-                }
-            }
-        });
-    </script>
+    <a href="#course-start" class="enroll-btn">
+      <span class="btn-text">BEGIN TRAINING</span>
+    </a>
+  </div>
+</div>
 
-</body>
-</html>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Quicksand:wght@400;600&display=swap');
+
+  .university-portal {
+    background: #0d1117; /* GitHub Dark Mode match */
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 600px;
+    margin: 40px auto;
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    color: #c9d1d9;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Magical background glow */
+  .university-portal::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.05) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .academy-crest {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px auto;
+    position: relative;
+    z-index: 1;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .crest-svg {
+    filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.4));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .portal-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .academy-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    color: #fff;
+    letter-spacing: 4px;
+    margin: 0 0 5px 0;
+  }
+
+  .academy-subtitle {
+    font-size: 0.8rem;
+    color: #8b949e;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+  }
+
+  .course-brief {
+    background: rgba(48, 54, 61, 0.3);
+    border-left: 4px solid #ffd700;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: left;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .status-tag {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  .course-name {
+    color: #58a6ff;
+    font-family: 'Orbitron', sans-serif;
+    margin: 10px 0;
+    font-size: 1.2rem;
+  }
+
+  .course-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .enroll-btn {
+    display: inline-block;
+    background: transparent;
+    border: 2px solid #58a6ff;
+    color: #58a6ff;
+    padding: 12px 30px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .enroll-btn:hover {
+    background: #58a6ff;
+    color: #0d1117;
+    box-shadow: 0 0 20px rgba(88, 166, 255, 0.4);
+  }
+</style>
