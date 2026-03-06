@@ -168,7 +168,7 @@
 
         <div class="action-footer">
             <button class="complete-btn" onclick="finishLesson()">COMPLETE SYNCHRONIZATION</button>
-            <a href="../../hub.html" class="back-link">Return to Quest Hub</a>
+            <a href="hub.html" class="back-link">Return to Quest Hub</a>
         </div>
     </div>
 </div>
@@ -179,7 +179,7 @@
         if (typeof ProgressManager !== 'undefined') {
             ProgressManager.saveProgress('chapter_1_complete');
             alert("Subchapter 1 Synchronized. Returning to Quest Hub.");
-            window.location.href = "../../hub.html";
+            window.location.href = "hub.html";
         } else {
             alert("Error: Progress Protocol not found.");
         }
