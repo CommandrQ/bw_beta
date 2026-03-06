@@ -1,146 +1,136 @@
-<div class="academy-viewport">
-  <div class="firefly" style="left: 15%; top: 20%; animation-delay: 0s;"></div>
-  <div class="firefly" style="left: 80%; top: 15%; animation-delay: 1.2s;"></div>
-  <div class="firefly" style="left: 25%; top: 70%; animation-delay: 2.5s;"></div>
-  <div class="firefly" style="left: 75%; top: 80%; animation-delay: 0.5s;"></div>
-  <div class="firefly" style="left: 50%; top: 45%; animation-delay: 3s;"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard University | Entry Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Quicksand:wght@400;700&display=swap');
 
-  <div class="university-portal">
-    <div class="arched-window">
-      <div class="academy-crest">
-        <svg viewBox="0 0 100 100" class="crest-svg">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.4"/>
-          <polygon points="50,15 85,50 50,85 15,50" fill="none" stroke="#ffd700" stroke-width="2"/>
-          <circle cx="50" cy="35" r="4" fill="#00d4ff"/>
-          <circle cx="35" cy="60" r="4" fill="#00d4ff"/>
-          <circle cx="65" cy="60" r="4" fill="#00d4ff"/>
-        </svg>
-      </div>
+        :root {
+            --primary-glow: #7c3aed;
+            --accent-gold: #ffd700;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            font-family: 'Quicksand', sans-serif;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Ambient Background Pulse */
+        .portal-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #000 100%);
+            z-index: -1;
+        }
+
+        /* The Main Entry Window */
+        .entry-window {
+            width: 90%;
+            max-width: 900px; /* Increased desktop width */
+            background: rgba(10, 5, 20, 0.85);
+            border: 2px solid var(--primary-glow);
+            padding: 3rem; /* Dynamic padding */
+            text-align: center;
+            box-shadow: 0 0 60px rgba(124, 58, 237, 0.2);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .university-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 5vw, 3rem); /* Scales between mobile and desktop sizes */
+            letter-spacing: 0.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            color: var(--primary-glow);
+            letter-spacing: 0.3rem;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+        }
+
+        .welcome-text {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            color: #c9d1d9;
+        }
+
+        /* The Big "Initialize" Button */
+        .enter-btn {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 1.2rem 3.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+
+        .enter-btn:hover {
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 0 30px var(--accent-gold);
+            transform: translateY(-3px);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .entry-window {
+                padding: 2rem 1.5rem;
+                width: 85%;
+            }
+            .welcome-text {
+                margin-bottom: 2rem;
+            }
+            .enter-btn {
+                padding: 1rem 2rem;
+                width: 100%; /* Button stretches on small phones */
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-bg"></div>
+
+    <div class="entry-window">
+        <div class="university-logo">VANGUARD</div>
+        <div class="subtitle">University of Threadarts</div>
+
+        <div class="welcome-text">
+            Step into the legacy of the <strong>Knights of Locamet</strong>. Rediscover the simple triad of your nature and stabilize your place in the worldline.
+        </div>
+
+        <a href="hub.html" class="enter-btn">INITIALIZE ALIGNMENT</a>
     </div>
-    
-    <div class="portal-content">
-      <h2 class="academy-title">VANGUARD UNIVERSITY</h2>
-      <p class="academy-subtitle">EST. BY CITIZEN SERVICES</p>
-      
-      <div class="course-brief">
-        <span class="status-tag">COURSE 01</span>
-        <h3 class="course-name">INSO FUNDAMENTALS</h3>
-        <p class="course-desc">Master the energies of <b>Vi, Ki, and Chi</b> to stabilize your presence within the worldline.</p>
-      </div>
 
-      <a href="./introduction.html" class="enroll-link">Enter The Academy</a>
-    </div>
-  </div>
-</div>
-
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Quicksand:wght@400;700&display=swap');
-
-  /* CRITICAL: DISABLE SCROLLING AND REMOVE WHITE EDGES */
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden; /* Disables scrolling completely */
-    background-color: #0d1117; /* Solid dark base */
-  }
-
-  .academy-viewport {
-    background: #0d1117; 
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    font-family: 'Quicksand', sans-serif;
-  }
-
-  .university-portal {
-    background: #161b22; 
-    border: 1px solid #30363d;
-    border-radius: 16px;
-    max-width: 500px;
-    width: 90%;
-    text-align: center;
-    color: #c9d1d9;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-    position: relative;
-    z-index: 10;
-  }
-
-  .arched-window {
-    width: 100%;
-    height: 180px;
-    background-image: 
-      linear-gradient(to bottom, transparent 0%, #161b22 100%), 
-      url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 16px 16px 0 0;
-  }
-
-  /* Firefly Particle System */
-  .firefly {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #ffd700;
-    border-radius: 50%;
-    box-shadow: 0 0 12px 3px rgba(255, 215, 0, 0.6);
-    opacity: 0;
-    animation: firefly-glide 6s infinite ease-in-out;
-  }
-
-  @keyframes firefly-glide {
-    0%, 100% { opacity: 0; transform: translate(0, 0) scale(0.5); }
-    50% { opacity: 1; transform: translate(25px, -45px) scale(1.2); }
-  }
-
-  .academy-crest { width: 70px; height: 70px; animation: crest-float 5s infinite ease-in-out; }
-  @keyframes crest-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-
-  .portal-content { padding: 35px; }
-  .academy-title { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: #fff; letter-spacing: 4px; margin: 0; }
-  .academy-subtitle { font-size: 0.7rem; color: #8b949e; letter-spacing: 2px; margin: 8px 0 25px 0; text-transform: uppercase; }
-
-  .course-brief {
-    background: rgba(48, 54, 61, 0.5);
-    border-left: 3px solid #ffd700;
-    padding: 20px;
-    margin-bottom: 30px;
-    text-align: left;
-    border-radius: 0 8px 8px 0;
-  }
-
-  .status-tag { font-family: 'Orbitron', sans-serif; font-size: 0.6rem; color: #ffd700; font-weight: 800; }
-  .course-name { color: #58a6ff; font-family: 'Orbitron', sans-serif; margin: 8px 0; font-size: 1.1rem; }
-  .course-desc { font-size: 0.9rem; line-height: 1.5; color: #8b949e; margin: 0; }
-
-  .enroll-link {
-    display: inline-block;
-    background: #58a6ff;
-    color: #0d1117;
-    padding: 14px 28px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 800;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: 0.3s;
-    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
-  }
-
-  .enroll-link:hover { 
-    background: #fff; 
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
-    transform: translateY(-2px);
-  }
-</style>
+</body>
+</html>
