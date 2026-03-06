@@ -44,77 +44,52 @@
         }
 
         .chapter-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.7rem;
-            color: #a855f7;
-            letter-spacing: 3px;
+            font-family: 'Orbitron', sans-serif; font-size: 0.7rem;
+            color: #a855f7; letter-spacing: 3px;
         }
 
         h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.6rem;
-            color: #fff;
-            margin: 10px 0;
-            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif; font-size: 1.6rem;
+            color: #fff; margin: 10px 0; letter-spacing: 2px;
         }
 
         .lore-body { line-height: 1.7; font-size: 0.95rem; }
 
         .energy-block {
-            margin: 25px 0;
-            padding: 15px;
+            margin: 25px 0; padding: 15px;
             background: rgba(168, 85, 247, 0.05);
             border-left: 3px solid #fbbf24;
         }
 
         .energy-block h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            color: #fbbf24;
-            margin: 0 0 10px 0;
+            font-family: 'Orbitron', sans-serif; font-size: 0.9rem;
+            color: #fbbf24; margin: 0 0 10px 0;
         }
 
-        .training-list {
-            margin: 0; padding-left: 20px; font-size: 0.85rem; color: #cbd5e1;
-        }
+        .training-list { margin: 0; padding-left: 20px; font-size: 0.85rem; color: #cbd5e1; }
 
         .action-footer {
-            margin-top: 40px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            margin-top: 40px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
         }
 
         .next-btn {
-            background: #7c3aed;
-            color: #fff;
-            border: none;
-            padding: 14px 40px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 800;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
+            background: #7c3aed; color: #fff; border: none;
+            padding: 14px 40px; font-family: 'Orbitron', sans-serif;
+            font-weight: 800; font-size: 0.9rem; cursor: pointer;
+            transition: 0.3s; text-decoration: none;
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
         }
 
         .next-btn:hover {
             background: #fff; color: #7c3aed;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5); transform: translateY(-2px);
         }
 
         .hub-link {
-            color: #8b949e;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            cursor: pointer;
+            color: #8b949e; text-decoration: none; font-size: 0.75rem;
+            font-family: 'Orbitron', sans-serif; letter-spacing: 1px;
+            transition: 0.3s; cursor: pointer;
         }
 
         .hub-link:hover { color: #fbbf24; }
@@ -132,36 +107,37 @@
             </div>
 
             <div class="lore-body">
-                <p>To master Inso, a recruit must understand the three internal pillars. Alignment occurs when these energies work as one.</p>
+                <p>To master Inso, you must refine the three internal pillars. Alignment occurs when these energies work as one.</p>
+
+                
 
                 <div class="energy-block">
                     <h3>✦ VI (MIND)</h3>
                     <ul class="training-list">
-                        <li>Strengthened through upright posture and controlled focus.</li>
-                        <li>Reduces mental confusion to allow for upright judgment.</li>
+                        <li>Maintain upright posture and anchor your focus.</li>
+                        <li>Reduce mental static to allow for upright judgment.</li>
                     </ul>
                 </div>
 
                 <div class="energy-block">
                     <h3>✦ KI (BODY)</h3>
                     <ul class="training-list">
-                        <li>Governs physical control, strength, and endurance.</li>
-                        <li>Translates internal intention into outward physical action.</li>
+                        <li>Translate intention into physical presence and movement.</li>
+                        <li>Synchronize physical action with the cadence of breath.</li>
                     </ul>
                 </div>
 
                 <div class="energy-block">
                     <h3>✦ CHI (SOUL)</h3>
                     <ul class="training-list">
-                        <li>Governs emotional balance and personal identity.</li>
-                        <li>Maintains direction under pressure through deep breathing.</li>
+                        <li>Preserve identity and emotional balance under pressure.</li>
+                        <li>Reflect without judgment to solidify your core direction.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="action-footer">
                 <a href="./subchapter-3.html" class="next-btn" onclick="saveStep()">FINAL LESSON</a>
-                
                 <a href="../hub.html" class="hub-link" onclick="saveStep()">RETURN TO QUEST HUB</a>
             </div>
 
@@ -171,10 +147,11 @@
 
 <script>
     function saveStep() {
-        // This ensures the progress is saved to cookies before navigating
+        // Log both to Cookies (for older compatibility) and Local Storage (for reliability)
         if (typeof ProgressManager !== 'undefined') {
             ProgressManager.saveProgress('chapter_2_complete');
-            console.log("Progress saved: Chapter 2 alignment recorded.");
+            localStorage.setItem('chapter_2_complete', 'synchronized');
+            console.log("Dual-Sync Complete: Progress backed up to Local Storage.");
         }
     }
 </script>
