@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subchapter 1 | The Essence of Inso</title>
-    <script src="../../js/progress.js"></script>
+    <script src="./js/progress.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Quicksand:wght@400;700&display=swap');
 
@@ -141,9 +141,7 @@
             </div>
 
             <h2>The Internal Source</h2>
-            <p>Unlike common sorceries that pull from the air or the earth, Inso is strictly an <strong>internal development</strong>. It cannot be granted by another, nor can it be found in a relic. It is the result of your own measured implementation of focus.</p>
-
-            
+            <p>Unlike common sorceries, Inso is strictly an <strong>internal development</strong>. It cannot be granted by another, nor can it be found in a relic. It is the result of your own measured implementation of focus.</p>
 
             <h2>The Triad Alignment</h2>
             <p>Inso forms specifically when three distinct energies of your being align under a <strong>unified intention</strong>. If one is out of balance, the current flickers and fails.</p>
@@ -168,24 +166,23 @@
 
         <div class="action-footer">
             <button class="complete-btn" onclick="finishLesson()">COMPLETE SYNCHRONIZATION</button>
-            <a href="bw_beta/hub.html" class="back-link">Return to Quest Hub</a>
+            <a href="./hub.html" class="back-link">Return to Quest Hub</a>
         </div>
     </div>
 </div>
 
 <script>
     function finishLesson() {
-        // Save progress using the key defined in hub.html
         if (typeof ProgressManager !== 'undefined') {
             ProgressManager.saveProgress('chapter_1_complete');
             alert("Subchapter 1 Synchronized. Returning to Quest Hub.");
-            window.location.href = "bw_beta/hub.html";
+            // Redirection updated for flat directory
+            window.location.href = "./hub.html";
         } else {
-            alert("Error: Progress Protocol not found.");
+            alert("Error: Progress Protocol not found. Check your file paths.");
         }
     }
 </script>
 
 </body>
 </html>
-
