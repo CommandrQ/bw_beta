@@ -3,195 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard University | Quest Hub</title>
+    <title>Vanguard University | Initialization</title>
     <script src="./js/progress.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Quicksand:wght@400;700&display=swap');
 
+        /* Global Reset to prevent white edges */
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background: #0d1117;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden; 
             font-family: 'Quicksand', sans-serif;
+        }
+
+        #intro-window-overlay {
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #e2e8f0;
-            overflow-x: hidden;
         }
 
-        .viewport {
-            min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at center, #1a0b2e 0%, #0d1117 100%);
-            padding: 20px;
-        }
-
-        .quest-window {
-            width: 100%; max-width: 650px;
-            background: rgba(0, 0, 0, 0.85);
+        .rpg-window {
+            width: 90%;
+            max-width: 550px;
+            background: rgba(10, 5, 20, 0.95);
             border: 1px solid #4c1d95;
-            padding: 35px;
-            box-shadow: 0 0 50px rgba(107, 33, 168, 0.4);
+            box-shadow: 0 0 30px rgba(107, 33, 168, 0.4), inset 0 0 15px rgba(168, 85, 247, 0.1);
+            padding: 4px;
+        }
+
+        .window-border {
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            padding: 25px;
         }
 
         .window-header {
-            text-align: center;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        .title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 5px;
-            color: #fff;
-            margin: 0;
-        }
-
-        .status-bar {
-            margin-top: 15px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.7rem;
-            color: #a855f7;
             display: flex;
-            justify-content: space-between;
-        }
-
-        .module-container { display: flex; flex-direction: column; gap: 15px; }
-
-        .module-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid #30363d;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            transition: 0.3s ease;
-            text-decoration: none;
-            color: inherit;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+            padding-bottom: 15px;
         }
 
-        /* Unlocked State */
-        .module-card.unlocked {
-            border-left: 4px solid #58a6ff;
-            cursor: pointer;
-        }
-
-        .module-card.unlocked:hover {
-            background: rgba(88, 166, 255, 0.1);
-            transform: translateX(10px);
-        }
-
-        /* Locked State */
-        .module-card.locked {
-            opacity: 0.4;
-            border-left: 4px solid #30363d;
-            cursor: not-allowed;
-        }
-
-        .module-info h3 {
+        .protocol-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.9rem;
-            margin: 0 0 5px 0;
-            color: #fff;
+            letter-spacing: 3px;
+            color: #a855f7;
+            margin: 0 0 0 10px;
+            text-transform: uppercase;
         }
 
-        .module-info p { font-size: 0.8rem; color: #8b949e; margin: 0; }
+        .pulse-dot {
+            height: 8px; width: 8px;
+            background: #a855f7;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #a855f7;
+            animation: pulse 1.5s infinite;
+        }
 
-        .tag {
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
+        .alert-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid #6b21a8;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .info-section h3 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.6rem;
-            padding: 4px 8px;
-            border-radius: 3px;
-            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #fff;
+            margin: 0 0 10px 0;
+        }
+
+        .info-section p { font-size: 0.9rem; color: #94a3b8; margin-bottom: 15px; }
+
+        .protocol-list {
+            list-style: none; padding: 0; margin: 0;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+
+        .protocol-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .protocol-list li::before {
+            content: ">>";
+            position: absolute; left: 0; color: #a855f7; font-weight: bold;
+        }
+
+        .action-footer { margin-top: 30px; text-align: center; }
+
+        .accept-btn {
+            background: transparent;
+            border: 1px solid #a855f7;
+            color: #fff;
+            padding: 15px 35px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
             font-weight: 900;
-        }
-
-        .tag-available { background: rgba(88, 166, 255, 0.2); color: #58a6ff; }
-        .tag-locked { background: rgba(48, 54, 61, 0.5); color: #8b949e; }
-
-        .footer-note {
-            margin-top: 30px;
-            font-size: 0.65rem;
-            text-align: center;
-            color: #4c1d95;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
             text-transform: uppercase;
         }
+
+        .accept-btn:hover {
+            background: #a855f7;
+            color: #000;
+            box-shadow: 0 0 25px #a855f7;
+        }
+
+        .fade-out { opacity: 0; pointer-events: none; transition: 0.8s; }
     </style>
 </head>
 <body>
 
-<div class="viewport">
-    <div class="quest-window">
-        <div class="window-header">
-            <h1 class="title">INSO FUNDAMENTALS</h1>
-            <div class="status-bar">
-                <span id="sync-id">SYNC_ID: PENDING</span>
-                <span id="sync-percent">SYNC_PROGRESS: 0%</span>
-            </div>
+<div id="intro-window-overlay">
+  <div class="rpg-window">
+    <div class="window-border">
+      <div class="window-header">
+        <span class="pulse-dot"></span>
+        <h2 class="protocol-title">ACADEMY_PROTOCOL.init</h2>
+      </div>
+
+      <div class="window-body">
+        <div class="alert-box">
+          <p><strong>NON-CLINICAL DISCLOSURE:</strong> This course and its teachings are strictly for worldbuilding. They are not intended as medical or psychological therapy.</p>
         </div>
 
-        <div class="module-container">
-            <a href="./courses/inso-fundamentals/subchapter-1.html" class="module-card unlocked">
-                <div class="module-info">
-                    <span class="tag tag-available">Available</span>
-                    <h3>I. THE ESSENCE OF INSO</h3>
-                    [span_1](start_span)<p>Master the stabilizing current of Solaryn[span_1](end_span).</p>
-                </div>
-                <div class="action-icon">➜</div>
-            </a>
-
-            <div id="module-2" class="module-card locked">
-                <div class="module-info">
-                    <span class="tag tag-locked">Locked</span>
-                    <h3>II. THE TRIAD OF ENERGIES</h3>
-                    [span_2](start_span)<p>Requires alignment of Vi, Ki, and Chi[span_2](end_span).</p>
-                </div>
-                <div class="lock-icon">🔒</div>
-            </div>
-
-            <div id="module-3" class="module-card locked">
-                <div class="module-info">
-                    <span class="tag tag-locked">Locked</span>
-                    <h3>III. THREADART CATEGORIES</h3>
-                    [span_3](start_span)<p>Shape unified intention into techniques[span_3](end_span).</p>
-                </div>
-                <div class="lock-icon">🔒</div>
-            </div>
+        <div class="info-section">
+          <h3>BETA_STATE_v0.1</h3>
+          <p>By proceeding, you acknowledge the following:</p>
+          <ul class="protocol-list">
+            <li><strong>EPHEMERAL DATA:</strong> Progress is saved via browser cookies.</li>
+            <li><strong>RESET CONDITIONS:</strong> Clearing cookies deletes all progress.</li>
+            <li><strong>LOCAL SYNC:</strong> Data is unique to this device.</li>
+          </ul>
         </div>
 
-        <div class="footer-note">
-            VANGUARD CITIZEN SERVICES // DOCTRINE_OF_INSO
+        <div class="action-footer">
+          <button class="accept-btn" onclick="initializeCourse()">
+            INITIALIZE ALIGNMENT
+          </button>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        [span_4](start_span)// Validation: Redirect if not initialized[span_4](end_span)
-        if (!ProgressManager.isUnlocked('initial_sync')) {
-            window.location.href = "introduction.html";
-            return;
-        }
+  function initializeCourse() {
+    // Attempt to save progress if the file exists
+    if (typeof ProgressManager !== 'undefined') {
+        ProgressManager.saveProgress('initial_sync');
+    }
 
-        // Update UI for Sync Status
-        document.getElementById('sync-id').innerText = "SYNC_ID: ACTIVE_RECRUIT";
-        
-        // Logic to unlock Chapter 2 if Chapter 1 is finished
-        if (ProgressManager.isUnlocked('chapter_1_complete')) {
-            const m2 = document.getElementById('module-2');
-            m2.classList.replace('locked', 'unlocked');
-            m2.innerHTML = `
-                <a href="./courses/inso-fundamentals/subchapter-2.html" style="text-decoration:none; color:inherit; display:flex; width:100%; justify-content:space-between; align-items:center;">
-                    <div class="module-info">
-                        <span class="tag tag-available">Available</span>
-                        <h3>II. THE TRIAD OF ENERGIES</h3>
-                        [span_5](start_span)<p>Master the internal currents of Vi, Ki, and Chi[span_5](end_span).</p>
-                    </div>
-                    <div class="action-icon">➜</div>
-                </a>`;
-            document.getElementById('sync-percent').innerText = "SYNC_PROGRESS: 33%";
-        }
-    });
+    document.getElementById('intro-window-overlay').classList.add('fade-out');
+    
+    setTimeout(() => {
+      window.location.href = "hub.html";
+    }, 650);
+  }
 </script>
 
 </body>
