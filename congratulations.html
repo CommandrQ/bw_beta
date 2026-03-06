@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard Graduation Ceremony</title>
+    <script src="./js/progress.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Quicksand:wght@400;700&display=swap');
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: #000; font-family: 'Quicksand', sans-serif;
+            color: #fff; overflow-x: hidden;
+        }
+
+        /* Access Locked State */
+        #ceremony-viewport {
+            display: none; /* Hidden until JS validates progress */
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #000 100%);
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px;
+            animation: background-pulse 10s infinite alternate;
+        }
+
+        @keyframes background-pulse {
+            0% { background-color: #000; }
+            100% { background-color: #1a0b2e; }
+        }
+
+        /* Animated Entrance */
+        .reveal-box {
+            text-align: center;
+            animation: slide-up 1.5s ease-out;
+        }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            margin-bottom: 10px;
+            letter-spacing: 10px;
+        }
+
+        /* Certificate Layout */
+        .certificate-container {
+            background: #161b22;
+            border: 10px double #ffd700;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 0 100px rgba(255, 215, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .cert-header {
+            font-family: 'Orbitron', sans-serif;
+            color: #ffd700;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .user-name-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px dashed #58a6ff;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            text-align: center;
+            width: 80%;
+            padding: 10px;
+            margin: 20px 0;
+            outline: none;
+        }
+
+        .user-name-input::placeholder { color: rgba(88, 166, 255, 0.4); }
+
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            font-size: 0.7rem;
+            font-family: 'Orbitron', sans-serif;
+            color: #8b949e;
+        }
+
+        /* Control Buttons */
+        .btn-group {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .print-btn { background: #ffd700; color: #000; border: none; }
+        .print-btn:hover { box-shadow: 0 0 20px #ffd700; transform: scale(1.05); }
+
+        .hub-btn { background: transparent; border: 1px solid #58a6ff; color: #58a6ff; }
+        .hub-btn:hover { background: #58a6ff; color: #000; }
+
+        /* Print Mode Override */
+        @media print {
+            body { background: white !important; color: black !important; }
+            #ceremony-viewport { background: white !important; padding: 0; }
+            .btn-group, .reveal-box > p, h1 { display: none !important; }
+            .certificate-container { 
+                border-color: black !important; 
+                box-shadow: none !important;
+                width: 100%;
+                margin: 0;
+            }
+            .user-name-input { border: none !important; color: black !important; }
+            .cert-header { color: black !important; border-color: black !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="ceremony-viewport">
+    <div class="reveal-box">
+        <h1>GRADUATED</h1>
+        <p>Your thread has successfully aligned with the currents of Solaryn.</p>
+
+        <div class="certificate-container" id="certificate">
+            <div class="cert-header">CERTIFICATE OF ALIGNMENT</div>
+            <p style="font-size: 0.8rem; letter-spacing: 2px;">VANGUARD UNIVERSITY // DEPT. OF THREADARTS</p>
+            
+            <p style="margin-top: 30px;">This serves as official verification that</p>
+            
+            <input type="text" class="user-name-input" placeholder="[INPUT YOUR NAME]" id="userName">
+            
+            <p>has demonstrated internal mastery over the Triad of Energies:</p>
+            <p style="font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 5px;">VI // KI // CHI</p>
+            
+            <p style="font-size: 0.9rem; margin-top: 20px;">The user is hereby recognized as a <strong>Certified Initiate</strong> of the Vanguard Knights.</p>
+
+            <div class="cert-footer">
+                <span>DATE: <span id="currentDate"></span></span>
+                <span>ID: VCS-PROTO-99</span>
+                <span>SIGNED: CITIZEN SERVICES</span>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="action-btn print-btn" onclick="window.print()">PRINT CERTIFICATE</button>
+            <a href="hub.html" class="action-btn hub-btn">RETURN TO HUB</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Validation Logic
+        const isGraduated = ProgressManager.isUnlocked('chapter_3_complete') || localStorage.getItem('chapter_3_complete') === 'completed';
+
+        if (isGraduated) {
+            document.getElementById('ceremony-viewport').style.display = 'flex';
+            
+            // Set the current date automatically
+            const d = new Date();
+            document.getElementById('currentDate').innerText = d.toLocaleDateString();
+        } else {
+            alert("ACCESS DENIED: Internal alignment incomplete. You must graduate from the Inso Fundamentals course first.");
+            window.location.href = "hub.html";
+        }
+    });
+</script>
+
+</body>
+</html>
