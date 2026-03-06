@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subchapter 1 | The Essence of Inso</title>
-    <script src="./js/progress.js"></script>
+    <script src="../js/progress.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Quicksand:wght@400;700&display=swap');
 
@@ -23,7 +23,6 @@
             padding: 40px 20px;
         }
 
-        /* Consistent RPG Lesson Window */
         .rpg-window {
             width: 100%; max-width: 650px;
             background: rgba(10, 5, 20, 0.95);
@@ -59,14 +58,13 @@
             letter-spacing: 2px;
         }
 
-        /* Content Styling */
-        .lore-body { line-height: 1.7; font-size: 0.95rem; }
-        .doctrine-callout {
-            background: rgba(168, 85, 247, 0.1);
-            border-left: 3px solid #ffd700;
+        .lore-body { line-height: 1.8; font-size: 1rem; }
+        
+        .legacy-callout {
+            background: rgba(168, 85, 247, 0.08);
+            border-left: 3px solid #58a6ff;
             padding: 20px;
             margin: 25px 0;
-            font-style: italic;
             color: #e2e8f0;
         }
 
@@ -77,18 +75,6 @@
             margin-top: 30px;
         }
 
-        .energy-tag {
-            display: inline-block;
-            background: rgba(88, 166, 255, 0.1);
-            color: #58a6ff;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-        }
-
-        /* Button Footer */
         .action-footer {
             margin-top: 40px;
             text-align: center;
@@ -142,23 +128,25 @@
             </div>
 
             <div class="lore-body">
-                <p>Welcome to your first step in the Department of Threadarts. Before you can shape reality, you must understand the current that allows it.</p>
+                <p>Have you ever wondered why, in moments of great chaos, some people remain as still and certain as a mountain? Or why your own focus seems to flicker like a candle in the wind when you need it most?</p>
 
-                <div class="doctrine-callout">
-                    "Inso is the stabilizing current of Solaryn within the structure of Time. It is an internal development—not a gift—earned through discipline and balance."
+                <p>We believe that clarity isn't something you find out in the world—it is something you stabilize from within. It is a simple way of understanding our own nature, a tradition passed down from the <strong>Knights of Locamet</strong> long ago.</p>
+
+                <div class="legacy-callout">
+                    "Inso is the stabilizing current of Solaryn within the structure of Time. It is not a power granted to us; it is a discipline grown from our own awareness and balance."
                 </div>
 
-                <h2>Where does it come from?</h2>
-                <p>Inso doesn't come from a magic wand or a ritual. It forms inside you when three specific energies reach perfect synchronization: <span class="energy-tag">Vi</span> (Mind), <span class="energy-tag">Ki</span> (Body), and <span class="energy-tag">Chi</span> (Soul).</p>
+                <h2>The Locamet Path</h2>
+                <p>The Knights understood that we are not just one thing. We are a delicate harmony of three internal energies. When these three align under a single, unified intention, you create <strong>Inso</strong>—the steady current that lets you stand firm in any worldline.</p>
 
                 
 
-                <h2>The Goal</h2>
-                <p>By learning to align these energies under one <strong>Unified Intention</strong>, you create a stable presence in the worldline. This stability is the foundation of every technique you will learn at Vanguard University.</p>
+                <p>In the lessons ahead, we will explore this ancient, simple framework for balancing your Mind, Body, and Soul. Welcome to the first step of your alignment.</p>
             </div>
 
             <div class="action-footer">
                 <a href="./subchapter-2.html" class="next-btn" onclick="saveStep()">NEXT LESSON</a>
+                <a href="../hub.html" class="hub-link" onclick="saveStep()">RETURN TO QUEST HUB</a>
             </div>
 
         </div>
@@ -167,9 +155,9 @@
 
 <script>
     function saveStep() {
-        // Log the completion of Chapter 1 to our progress cookie
         if (typeof ProgressManager !== 'undefined') {
             ProgressManager.saveProgress('chapter_1_complete');
+            localStorage.setItem('chapter_1_complete', 'completed');
         }
     }
 </script>
