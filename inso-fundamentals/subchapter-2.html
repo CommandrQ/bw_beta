@@ -4,95 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subchapter 2 | The Triad of Energies</title>
+    <link rel="stylesheet" href="../vanguard.css">
     <script src="../js/progress.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Quicksand:wght@400;700&display=swap');
-
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background: #0d1117;
-            font-family: 'Quicksand', sans-serif;
-            color: #c9d1d9;
-            overflow-x: hidden;
+        /* Specific styles for this lesson's layout */
+        .energy-focus {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid var(--accent-gold);
         }
-
-        .lesson-viewport {
-            min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at center, #2e1065 0%, #0d1117 100%);
-            padding: 40px 20px;
+        .energy-focus h3 {
+            margin: 0 0 10px 0;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
         }
-
-        .rpg-window {
-            width: 100%; max-width: 650px;
-            background: rgba(10, 5, 20, 0.95);
-            border: 2px solid #7c3aed;
-            box-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
-            position: relative;
+        .real-life-note {
+            font-size: 0.85rem;
+            color: #58a6ff;
+            margin-top: 10px;
+            font-style: italic;
         }
-
-        .window-inner {
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            padding: 40px;
-        }
-
-        .header-section {
-            text-align: center;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-        }
-
-        .chapter-label {
-            font-family: 'Orbitron', sans-serif; font-size: 0.7rem;
-            color: #a855f7; letter-spacing: 3px;
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif; font-size: 1.6rem;
-            color: #fff; margin: 10px 0; letter-spacing: 2px;
-        }
-
-        .lore-body { line-height: 1.7; font-size: 0.95rem; }
-
-        .energy-block {
-            margin: 25px 0; padding: 15px;
-            background: rgba(168, 85, 247, 0.05);
-            border-left: 3px solid #fbbf24;
-        }
-
-        .energy-block h3 {
-            font-family: 'Orbitron', sans-serif; font-size: 0.9rem;
-            color: #fbbf24; margin: 0 0 10px 0;
-        }
-
-        .training-list { margin: 0; padding-left: 20px; font-size: 0.85rem; color: #cbd5e1; }
-
-        .action-footer {
-            margin-top: 40px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
-        }
-
-        .next-btn {
-            background: #7c3aed; color: #fff; border: none;
-            padding: 14px 40px; font-family: 'Orbitron', sans-serif;
-            font-weight: 800; font-size: 0.9rem; cursor: pointer;
-            transition: 0.3s; text-decoration: none;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        }
-
-        .next-btn:hover {
-            background: #fff; color: #7c3aed;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5); transform: translateY(-2px);
-        }
-
-        .hub-link {
-            color: #8b949e; text-decoration: none; font-size: 0.75rem;
-            font-family: 'Orbitron', sans-serif; letter-spacing: 1px;
-            transition: 0.3s; cursor: pointer;
-        }
-
-        .hub-link:hover { color: #fbbf24; }
     </style>
 </head>
 <body>
@@ -102,42 +35,45 @@
         <div class="window-inner">
             
             <div class="header-section">
-                <span class="chapter-label">INSO_FUNDAMENTALS // MODULE 02</span>
+                <span class="chapter-label">LOCAMET LEGACY // MODULE 02</span>
                 <h1>THE TRIAD OF ENERGIES</h1>
             </div>
 
             <div class="lore-body">
-                <p>To master Inso, you must refine the three internal pillars. Alignment occurs when these energies work as one.</p>
+                <p>The Knights of Locamet believed that a human being is like a ship. To sail through the storms of time, you need more than just a strong hull; you need a clear eye and a steady hand.</p>
+
+                <p>They simplified our internal world into three pillars. Without balance in these three, we become "adrift"—easily influenced by the chaos of others.</p>
 
                 
 
-                <div class="energy-block">
-                    <h3>✦ VI (MIND)</h3>
-                    <ul class="training-list">
-                        <li>Maintain upright posture and anchor your focus.</li>
-                        <li>Reduce mental static to allow for upright judgment.</li>
-                    </ul>
+                <div class="energy-focus">
+                    <h3>✦ VI (The Mind)</h3>
+                    <p>Vi is your <strong>Watchtower</strong>. It is your ability to pause, look at a situation, and see the truth behind the noise.</p>
+                    <div class="real-life-note">
+                        Real Life: It’s the difference between reacting in anger and choosing to respond with calm judgment. It is vital because without it, you are easily manipulated by distractions.
+                    </div>
                 </div>
 
-                <div class="energy-block">
-                    <h3>✦ KI (BODY)</h3>
-                    <ul class="training-list">
-                        <li>Translate intention into physical presence and movement.</li>
-                        <li>Synchronize physical action with the cadence of breath.</li>
-                    </ul>
+                <div class="energy-focus">
+                    <h3>✦ KI (The Body)</h3>
+                    <p>Ki is your <strong>Vessel</strong>. It is your physical presence, your health, and the energy you bring into a room. It is the bridge between thinking and doing.</p>
+                    <div class="real-life-note">
+                        Real Life: It’s your physical boundaries and your stamina. It is vital because a brilliant mind (Vi) is useless if the body is too exhausted or weak to take action.
+                    </div>
                 </div>
 
-                <div class="energy-block">
-                    <h3>✦ CHI (SOUL)</h3>
-                    <ul class="training-list">
-                        <li>Preserve identity and emotional balance under pressure.</li>
-                        <li>Reflect without judgment to solidify your core direction.</li>
-                    </ul>
+                <div class="energy-focus">
+                    <h3>✦ CHI (The Soul)</h3>
+                    <p>Chi is your <strong>Compass</strong>. It is your sense of "Who am I?" and your emotional core. It keeps your direction steady when the path gets dark.</p>
+                    <div class="real-life-note">
+                        Real Life: It’s your integrity and emotional resilience. It is vital because without a strong sense of self, you will eventually tire of doing the right thing and lose your way.
+                    </div>
                 </div>
             </div>
 
-            <div class="action-footer">
-                <a href="./subchapter-3.html" class="next-btn" onclick="saveStep()">FINAL LESSON</a>
+            <div class="btn-group">
+                <a href="./subchapter-3.html" class="primary-btn" onclick="saveProgress()">FINAL LESSON</a>
+                <a href="../hub.html" class="hub-link" onclick="saveProgress()">RETURN TO QUEST HUB</a>
             </div>
 
         </div>
@@ -145,12 +81,9 @@
 </div>
 
 <script>
-    function saveStep() {
-        // Log both to Cookies (for older compatibility) and Local Storage (for reliability)
+    function saveProgress() {
         if (typeof ProgressManager !== 'undefined') {
-            ProgressManager.saveProgress('chapter_2_complete');
-            localStorage.setItem('chapter_2_complete', 'synchronized');
-            console.log("Dual-Sync Complete: Progress backed up to Local Storage.");
+            ProgressManager.save('chapter_2_complete');
         }
     }
 </script>
