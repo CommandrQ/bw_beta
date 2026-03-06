@@ -4,167 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subchapter 2 | The Triad of Energies</title>
-    <script src="../../js/progress.js"></script>
+    <script src="./js/progress.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Quicksand:wght@400;700&display=swap');
 
         body, html {
-            margin: 0; padding: 0;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             background: #0d1117;
             font-family: 'Quicksand', sans-serif;
             color: #c9d1d9;
-            line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .lesson-viewport {
             min-height: 100vh;
-            background: radial-gradient(circle at top, #2e1065 0%, #0d1117 100%);
+            display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, #2e1065 0%, #0d1117 100%);
             padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
-        .lore-scroll {
-            width: 100%;
-            max-width: 800px;
-            background: rgba(13, 17, 23, 0.95);
-            border: 1px solid #7c3aed;
+        .rpg-window {
+            width: 100%; max-width: 650px;
+            background: rgba(10, 5, 20, 0.95);
+            border: 2px solid #7c3aed;
+            box-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
+            position: relative;
+        }
+
+        .window-inner {
+            border: 1px solid rgba(168, 85, 247, 0.3);
             padding: 40px;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
         }
 
-        .chapter-header {
+        .header-section {
             text-align: center;
-            border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
             margin-bottom: 30px;
             padding-bottom: 20px;
         }
 
-        .chapter-num {
+        .chapter-label {
             font-family: 'Orbitron', sans-serif;
-            color: #a78bfa;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            color: #a855f7;
             letter-spacing: 3px;
         }
 
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: #fff;
             margin: 10px 0;
+            letter-spacing: 2px;
         }
 
-        .energy-section {
-            margin: 40px 0;
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.02);
-            border-left: 4px solid #7c3aed;
+        .lore-body { line-height: 1.7; font-size: 0.95rem; }
+
+        .energy-block {
+            margin: 25px 0;
+            padding: 15px;
+            background: rgba(168, 85, 247, 0.05);
+            border-left: 3px solid #fbbf24;
         }
 
-        .energy-title {
+        .energy-block h3 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             color: #fbbf24;
+            margin: 0 0 10px 0;
+        }
+
+        .training-list {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .action-footer {
+            margin-top: 40px;
+            text-align: center;
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 15px;
         }
 
-        .training-list {
-            margin: 15px 0;
-            padding-left: 20px;
-        }
-
-        .training-list li {
-            margin-bottom: 10px;
-        }
-
-        .action-footer {
-            margin-top: 50px;
-            text-align: center;
-            border-top: 1px solid rgba(124, 58, 237, 0.2);
-            padding-top: 30px;
-        }
-
-        .complete-btn {
+        .next-btn {
             background: #7c3aed;
             color: #fff;
             border: none;
-            padding: 15px 40px;
+            padding: 14px 40px;
             font-family: 'Orbitron', sans-serif;
             font-weight: 800;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: 0.3s;
+            text-decoration: none;
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
         }
 
-        .complete-btn:hover {
+        .next-btn:hover {
             background: #fff;
             color: #7c3aed;
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
         }
+
+        .hub-link {
+            color: #8b949e;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .hub-link:hover { color: #fbbf24; }
     </style>
 </head>
 <body>
 
 <div class="lesson-viewport">
-    <div class="lore-scroll">
-        <div class="chapter-header">
-            <span class="chapter-num">MODULE II</span>
-            <h1>THE TRIAD OF ENERGIES</h1>
-        </div>
+    <div class="rpg-window">
+        <div class="window-inner">
+            
+            <div class="header-section">
+                <span class="chapter-label">INSO_FUNDAMENTALS // MODULE 02</span>
+                <h1>THE TRIAD OF ENERGIES</h1>
+            </div>
 
-        <p>Alignment is not a passive event; it is a rigorous practice. To master Inso, you must refine the three internal pillars of your existence.</p>
+            <div class="lore-body">
+                <p>To master Inso, a recruit must understand the three internal pillars. Alignment occurs when these energies work as one.</p>
 
-        
+                <div class="energy-block">
+                    <h3>✦ VI (MIND)</h3>
+                    <ul class="training-list">
+                        <li>Strengthened through upright posture and controlled focus.</li>
+                        <li>Reduces mental confusion to allow for upright judgment.</li>
+                    </ul>
+                </div>
 
-        <div class="energy-section">
-            <div class="energy-title">✦ VI: THE MIND</div>
-            <p>Vi governs your thought, focus, and perception. In a chaotic worldline, a strong Vi reduces mental confusion and allows for upright judgment.</p>
-            <ul class="training-list">
-                <li><strong>Posture:</strong> Maintain an upright spine to facilitate clear mental currents.</li>
-                <li><strong>Breath:</strong> Use controlled inhalation to anchor your focus.</li>
-                <li><strong>Isolation:</strong> Practice removing environmental distractions to strengthen internal reasoning.</li>
-            </ul>
-        </div>
+                <div class="energy-block">
+                    <h3>✦ KI (BODY)</h3>
+                    <ul class="training-list">
+                        <li>Governs physical control, strength, and endurance.</li>
+                        <li>Translates internal intention into outward physical action.</li>
+                    </ul>
+                </div>
 
-        <div class="energy-section">
-            <div class="energy-title">✦ KI: THE BODY</div>
-            <p>Ki governs your physical presence, movement, and endurance. It translates your internal intention into physical reality.</p>
-            <ul class="training-list">
-                <li><strong>Discipline:</strong> Engage in repetitive, structured physical forms to build resilience.</li>
-                <li><strong>Balance:</strong> Master your center of gravity to ensure intention is never displaced.</li>
-                <li><strong>Coordination:</strong> Synchronize your physical movement with the cadence of your breath.</li>
-            </ul>
-        </div>
+                <div class="energy-block">
+                    <h3>✦ CHI (SOUL)</h3>
+                    <ul class="training-list">
+                        <li>Governs emotional balance and personal identity.</li>
+                        <li>Maintains direction under pressure through deep breathing.</li>
+                    </ul>
+                </div>
+            </div>
 
-        <div class="energy-section">
-            <div class="energy-title">✦ CHI: THE SOUL</div>
-            <p>Chi governs your emotional balance, memory, and identity. It provides the direction and meaning behind every Threadart.</p>
-            <ul class="training-list">
-                <li><strong>Resonance:</strong> Practice deep breathing into the chest to stabilize emotional spikes.</li>
-                <li><strong>Reflection:</strong> Review your past experiences without judgment to solidify your identity.</li>
-                <li><strong>Equanimity:</strong> Maintain a calm core even when Vi and Ki are under immense pressure.</li>
-            </ul>
-        </div>
+            <div class="action-footer">
+                <a href="./subchapter-3.html" class="next-btn" onclick="saveStep()">FINAL LESSON</a>
+                <a href="./hub.html" class="hub-link">RETURN TO QUEST HUB</a>
+            </div>
 
-        <div class="action-footer">
-            <button class="complete-btn" onclick="finishLesson()">SYNC TRIAD DATA</button>
         </div>
     </div>
 </div>
 
 <script>
-    function finishLesson() {
+    function saveStep() {
         if (typeof ProgressManager !== 'undefined') {
             ProgressManager.saveProgress('chapter_2_complete');
-            alert("Triad Alignment Synchronized. Hub Status Updated.");
-            window.location.href = "../../hub.html";
         }
     }
 </script>
 
 </body>
 </html>
-
