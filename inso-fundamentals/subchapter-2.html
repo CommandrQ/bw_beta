@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subchapter 2 | The Triad of Energies</title>
-    <script src="./js/progress.js"></script>
+    <script src="../js/progress.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Quicksand:wght@400;700&display=swap');
 
@@ -75,10 +75,7 @@
         }
 
         .training-list {
-            margin: 0;
-            padding-left: 20px;
-            font-size: 0.85rem;
-            color: #cbd5e1;
+            margin: 0; padding-left: 20px; font-size: 0.85rem; color: #cbd5e1;
         }
 
         .action-footer {
@@ -105,8 +102,7 @@
         }
 
         .next-btn:hover {
-            background: #fff;
-            color: #7c3aed;
+            background: #fff; color: #7c3aed;
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
             transform: translateY(-2px);
         }
@@ -166,7 +162,7 @@
             <div class="action-footer">
                 <a href="./subchapter-3.html" class="next-btn" onclick="saveStep()">FINAL LESSON</a>
                 
-                <a href="bw_beta/hub.html" class="hub-link" onclick="saveStep()">RETURN TO QUEST HUB</a>
+                <a href="../hub.html" class="hub-link" onclick="saveStep()">RETURN TO QUEST HUB</a>
             </div>
 
         </div>
@@ -175,9 +171,10 @@
 
 <script>
     function saveStep() {
-        // This ensures the Hub sees Module 2 as complete, which will unlock Module 3
+        // This ensures the progress is saved to cookies before navigating
         if (typeof ProgressManager !== 'undefined') {
             ProgressManager.saveProgress('chapter_2_complete');
+            console.log("Progress saved: Chapter 2 alignment recorded.");
         }
     }
 </script>
